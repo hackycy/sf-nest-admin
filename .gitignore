@@ -35,5 +35,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # Code
-src/config/config.local.*
+src/config/config.development.*
 docs/sample/mysql/
