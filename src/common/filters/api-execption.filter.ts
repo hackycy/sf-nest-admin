@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import { isDev } from 'src/config/configuration';
 import { ApiException } from '../exceptions/api.exception';
 
 /**
@@ -22,7 +23,7 @@ export class ApiExecptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    // res data
+    // prod env will not return internal error message
     response.status(status).json({
       code:
         exception instanceof ApiException
@@ -30,7 +31,7 @@ export class ApiExecptionFilter implements ExceptionFilter {
           : status,
       message:
         status === HttpStatus.INTERNAL_SERVER_ERROR
-          ? process.env.NODE_ENV === 'development'
+          ? isDev()
             ? `${exception}`
             : '服务器异常，请稍后再试'
           : (exception as HttpException).getResponse(),
