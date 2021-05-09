@@ -1,4 +1,8 @@
-import { ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  ValidationError,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -12,13 +16,20 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
-  app.useGlobalFilters(new ApiExecptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
       forbidNonWhitelisted: true,
+      exceptionFactory: (errors: ValidationError[]) => {
+        const errMsg = errors
+          .filter((item) => !!item.constraints)
+          .map((item) => Object.values(item.constraints).join(','))
+          .join(';');
+        return new BadRequestException(errMsg);
+      },
     }),
   );
+  app.useGlobalFilters(new ApiExecptionFilter());
   await app.listen(3000);
 }
 
