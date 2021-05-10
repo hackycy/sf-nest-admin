@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-ioredis';
 import Configuration from './config/configuration';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -37,6 +38,8 @@ import Configuration from './config/configuration';
       }),
       inject: [ConfigService],
     }),
+    // application modules import
+    AdminModule,
   ],
   controllers: [],
   providers: [],
