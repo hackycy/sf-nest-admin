@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import * as redisStore from 'cache-manager-ioredis';
 import Configuration from './config/configuration';
 
 @Module({
@@ -21,6 +22,18 @@ import Configuration from './config/configuration';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: configService.get<boolean>('database.synchronize'),
         logging: configService.get('database.logging'),
+      }),
+      inject: [ConfigService],
+    }),
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        store: redisStore,
+        host: configService.get<string>('redis.host'), // default value
+        port: configService.get<number>('redis.port'), // default value
+        password: configService.get<string>('redis.password'),
+        db: configService.get<number>('redis.db'),
+        ttl: configService.get<number>('redis.ttl'),
       }),
       inject: [ConfigService],
     }),

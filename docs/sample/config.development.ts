@@ -26,6 +26,13 @@ export default {
     synchronize: false,
     logging: false,
   },
+  redis: {
+    host: '127.0.0.1', // default value
+    port: 6379, // default value
+    password: '123456',
+    db: 0,
+    ttl: 60,
+  },
   // qiniu config
   qiniu: {
     accessKey: 'xxx',

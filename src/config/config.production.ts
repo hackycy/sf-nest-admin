@@ -41,6 +41,14 @@ export default {
     synchronize: false,
     logging: false,
   },
+  // redis cache config
+  redis: {
+    host: process.env.REDIS_HOST || '127.0.0.1', // default value
+    port: parseInt(process.env.REDIS_PORT) || 6379, // default value
+    password: process.env.REDIS_PASSWORD || '123456',
+    db: 0,
+    ttl: 60,
+  },
   // qiniu config
   qiniu: {
     accessKey: process.env.QINIU_ACCESSKEY,

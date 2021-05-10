@@ -27,6 +27,8 @@
     "@nestjs/platform-fastify": "^7.6.15",
     "@nestjs/swagger": "^4.8.0",
     "@nestjs/typeorm": "^7.1.5",
+    "cache-manager": "^3.4.3",
+    "cache-manager-ioredis": "^2.1.0",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "fastify-swagger": "^4.7.0",
