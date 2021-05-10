@@ -4,13 +4,7 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 import * as IORedis from 'ioredis';
-import {
-  Store,
-  CachingConfig,
-  CacheOptions,
-  StoreConfig,
-  Cache,
-} from 'cache-manager';
+import { Store, CachingConfig, CacheOptions, Cache } from 'cache-manager';
 
 declare const CacheManagerIORedis: CacheManagerIORedis.RedisStoreConstructor;
 export = CacheManagerIORedis;
