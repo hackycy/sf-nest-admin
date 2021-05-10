@@ -30,6 +30,9 @@ export default {
   amap: {
     key: process.env.AMAP_KEY || '',
   },
+  jwt: {
+    secret: process.env.JWT_SECRET || '123456',
+  },
   // typeorm config
   database: {
     type: 'mysql',

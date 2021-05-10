@@ -1,6 +1,7 @@
 import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
 import * as redisStore from 'cache-manager-ioredis';
 import Configuration from './config/configuration';
 import { AdminModule } from './admin/admin.module';
@@ -35,6 +36,14 @@ import { AdminModule } from './admin/admin.module';
         password: configService.get<string>('redis.password'),
         db: configService.get<number>('redis.db'),
         ttl: configService.get<number>('redis.ttl'),
+      }),
+      inject: [ConfigService],
+    }),
+    JwtModule.registerAsync({
+      imports: [CacheModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('jwt.secret'),
+        signOptions: { expiresIn: '60s' },
       }),
       inject: [ConfigService],
     }),
