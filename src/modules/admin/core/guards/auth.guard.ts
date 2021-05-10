@@ -9,8 +9,8 @@ import {
   ADMIN_USER,
   NO_PERM_KEY_METADATA,
   OPEN_KEY_METADATA,
-} from 'src/admin/core/admin.constants';
-import { AdminLoginService } from 'src/admin/login/login.service';
+} from 'src/modules/admin/core/admin.constants';
+import { AdminLoginService } from 'src/modules/admin/login/login.service';
 
 /**
  * admin perm check guard
