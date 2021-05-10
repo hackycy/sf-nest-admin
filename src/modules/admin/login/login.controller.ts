@@ -1,8 +1,11 @@
-import { Controller, Get } from '@nestjs/common';
+import { Get } from '@nestjs/common';
+import { AdminController } from '../core/decorators/admin-controller.decorator';
+import { Open } from '../core/decorators/open.decorator';
 
-@Controller()
+@AdminController('public')
 export class AdminLoginController {
-  @Get('a')
+  @Get('captcha/img')
+  @Open()
   get(): string {
     return 'aaaa';
   }

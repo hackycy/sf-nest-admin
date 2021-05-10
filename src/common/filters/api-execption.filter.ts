@@ -30,12 +30,7 @@ export class ApiExecptionFilter implements ExceptionFilter {
         exception instanceof ApiException
           ? (exception as ApiException).getErrorCode()
           : status,
-      message:
-        status === HttpStatus.INTERNAL_SERVER_ERROR
-          ? isDev()
-            ? `${exception}`
-            : '服务器异常，请稍后再试'
-          : (exception as HttpException).getResponse(),
+      message: isDev() ? `${exception}` : '服务器异常，请稍后再试',
     });
   }
 }
