@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import { FastifyReply } from 'fastify';
 import { isDev } from 'src/config/configuration';
 import { ApiException } from '../exceptions/api.exception';
 
@@ -15,16 +16,16 @@ import { ApiException } from '../exceptions/api.exception';
 export class ApiExecptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
+    const response = ctx.getResponse<FastifyReply>();
 
     // check api exection
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
+    response.header('Content-Type', 'application/json; charset=utf-8');
     // prod env will not return internal error message
-    response.status(status).json({
+    response.status(status).send({
       code:
         exception instanceof ApiException
           ? (exception as ApiException).getErrorCode()

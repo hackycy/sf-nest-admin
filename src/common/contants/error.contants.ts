@@ -1,7 +1,7 @@
 /**
  * 统一错误代码定义
  */
-export default {
+export const ErrorCodeMap = {
   // 10000 - 99999 业务操作错误
   10000: '参数校验异常',
   10001: '系统用户已存在',

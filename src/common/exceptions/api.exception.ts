@@ -1,5 +1,5 @@
 import { HttpException } from '@nestjs/common';
-import ErrorContants from '../error.contants';
+import { ErrorCodeMap } from '../contants/error.contants';
 
 /**
  * Api业务异常均抛出该异常
@@ -11,7 +11,7 @@ export class ApiException extends HttpException {
   private errorCode: number;
 
   constructor(errorCode: number) {
-    super(ErrorContants[errorCode], 200);
+    super(ErrorCodeMap[errorCode], 200);
     this.errorCode = errorCode;
   }
 

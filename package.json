@@ -46,6 +46,7 @@
     "@nestjs/schematics": "^7.3.0",
     "@nestjs/testing": "^7.6.15",
     "@types/cache-manager": "^3.4.0",
+    "@types/ioredis": "^4.26.2",
     "@types/jest": "^26.0.22",
     "@types/lodash": "^4.14.168",
     "@types/node": "^14.14.36",
