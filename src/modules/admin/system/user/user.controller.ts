@@ -2,10 +2,10 @@ import { Body, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { PageResult } from 'src/common/interfaces/res.interface';
 import SysUser from 'src/entities/admin/sys-user.entity';
-import { ADMIN_PREFIX } from '../core/admin.constants';
-import { IAdminUser } from '../core/admin.interface';
-import { AdminController } from '../core/decorators/admin-controller.decorator';
-import { AdminUser } from '../core/decorators/admin-user.decorator';
+import { ADMIN_PREFIX } from '../../core/admin.constants';
+import { IAdminUser } from '../../core/admin.interface';
+import { AdminController } from '../../core/decorators/admin-controller.decorator';
+import { AdminUser } from '../../core/decorators/admin-user.decorator';
 import {
   CreateUserDto,
   DeleteUserDto,
@@ -13,9 +13,9 @@ import {
   PageSearchUserDto,
   PasswordUserDto,
   UpdateUserDto,
-} from './sys-user.dto';
-import { IPageSearchUserResult } from './sys-user.interface';
-import { SysUserService } from './sys-user.service';
+} from './user.dto';
+import { IPageSearchUserResult } from './user.interface';
+import { SysUserService } from './user.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('管理员模块')

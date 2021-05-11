@@ -15,8 +15,8 @@ import {
   UpdatePasswordDto,
   UpdateUserDto,
   UpdateUserInfoDto,
-} from './sys-user.dto';
-import { IAccountInfo, IPageSearchUserResult } from './sys-user.interface';
+} from './user.dto';
+import { IAccountInfo, IPageSearchUserResult } from './user.interface';
 
 @Injectable()
 export class SysUserService {
