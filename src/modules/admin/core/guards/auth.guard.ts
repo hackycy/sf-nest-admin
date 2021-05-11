@@ -10,7 +10,7 @@ import {
   NO_PERM_KEY_METADATA,
   OPEN_KEY_METADATA,
 } from 'src/modules/admin/core/admin.constants';
-import { AdminLoginService } from 'src/modules/admin/login/login.service';
+import { LoginService } from 'src/modules/admin/login/login.service';
 
 /**
  * admin perm check guard
@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private jwtService: JwtService,
-    private loginService: AdminLoginService,
+    private loginService: LoginService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

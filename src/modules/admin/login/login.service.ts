@@ -6,12 +6,14 @@ import { IImageCaptcha } from './login.interface';
 import { isEmpty } from 'lodash';
 import { ImageCaptchaDto } from './login.dto';
 import { UtilProvider } from 'src/utils/util.provider';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class AdminLoginService {
+export class LoginService {
   constructor(
     @Inject(REDIS_INSTANCE) private redis: Redis,
     private util: UtilProvider,
+    private jwtService: JwtService,
   ) {}
 
   /**

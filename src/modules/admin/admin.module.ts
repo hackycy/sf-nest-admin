@@ -5,8 +5,8 @@ import { JwtModule } from '@nestjs/jwt';
 import * as redisStore from 'cache-manager-ioredis';
 import { redisProvider } from 'src/common/providers/redis.provider';
 import { AuthGuard } from './core/guards/auth.guard';
-import { AdminLoginController } from './login/login.controller';
-import { AdminLoginService } from './login/login.service';
+import { LoginController } from './login/login.controller';
+import { LoginService } from './login/login.service';
 
 /**
  * Admin模块，所有API都需要加入/admin前缀
@@ -44,9 +44,9 @@ export class AdminModule {
           useClass: AuthGuard,
         },
         redisProvider(),
-        AdminLoginService,
+        LoginService,
       ],
-      controllers: [AdminLoginController],
+      controllers: [LoginController],
     };
   }
 }
