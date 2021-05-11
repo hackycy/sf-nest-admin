@@ -31,7 +31,9 @@ export class ApiExecptionFilter implements ExceptionFilter {
         exception instanceof ApiException
           ? (exception as ApiException).getErrorCode()
           : status,
-      message: isDev() ? `${exception}` : '服务器异常，请稍后再试',
+      message: isDev()
+        ? `${exception}`.replace('Error: ', '')
+        : '服务器异常，请稍后再试',
     };
     response.status(status).send(result);
   }
