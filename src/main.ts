@@ -1,14 +1,14 @@
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationError } from 'class-validator';
 import { AppModule } from './app.module';
 import { ApiExecptionFilter } from './common/filters/api-execption.filter';
 import { ApiTransformInterceptor } from './common/interceptors/api-transform.interceptor';
-import { isDev } from './config/configuration';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -19,8 +19,11 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      whitelist: true,
       forbidNonWhitelisted: true,
-      disableErrorMessages: isDev() ? false : true,
+      exceptionFactory: (errors: ValidationError[]) => {
+        return new BadRequestException(errors[0]?.toString());
+      },
     }),
   );
   // execption

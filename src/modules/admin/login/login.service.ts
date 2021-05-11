@@ -26,6 +26,7 @@ export class AdminLoginService {
       noise: 4,
       width: isEmpty(captcha.width) ? 100 : captcha.width,
       height: isEmpty(captcha.height) ? 50 : captcha.height,
+      charPreset: '1234567890',
     });
     const result = {
       img: `data:image/svg+xml;base64,${Buffer.from(svg.data).toString(

@@ -1,4 +1,4 @@
-import { Body, Get } from '@nestjs/common';
+import { Get, Query } from '@nestjs/common';
 import { AdminController } from '../core/decorators/admin-controller.decorator';
 import { Open } from '../core/decorators/open.decorator';
 import { ImageCaptchaDto } from './login.dto';
@@ -11,7 +11,7 @@ export class AdminLoginController {
 
   @Get('captcha/img')
   @Open()
-  async get(@Body() dto: ImageCaptchaDto): Promise<IImageCaptcha> {
+  async get(@Query() dto: ImageCaptchaDto): Promise<IImageCaptcha> {
     return await this.loginService.createImageCaptcha(dto);
   }
 }
