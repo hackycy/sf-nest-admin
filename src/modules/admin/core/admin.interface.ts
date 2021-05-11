@@ -1,4 +1,4 @@
-export interface AdminUser {
+export interface IAdminUser {
   uid: number;
   pv: number;
 }

@@ -9,6 +9,7 @@ import { ValidationError } from 'class-validator';
 import { AppModule } from './app.module';
 import { ApiExecptionFilter } from './common/filters/api-execption.filter';
 import { ApiTransformInterceptor } from './common/interceptors/api-transform.interceptor';
+import { ADMIN_PREFIX } from './modules/admin/core/admin.constants';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -35,7 +36,7 @@ async function bootstrap() {
     .setTitle('SF后台管理系统')
     .setDescription('Api文档')
     .setVersion('2.0.0')
-    .addSecurity('admin', {
+    .addSecurity(ADMIN_PREFIX, {
       description: '后台管理接口授权',
       type: 'apiKey',
       in: 'header',
@@ -43,7 +44,7 @@ async function bootstrap() {
     })
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('/admin/doc/swagger-api', app, document);
+  SwaggerModule.setup(`/${ADMIN_PREFIX}/doc/swagger-api`, app, document);
   // start
   await app.listen(7001);
 }

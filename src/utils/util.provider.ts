@@ -1,9 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { customAlphabet, nanoid } from 'nanoid';
 import * as CryptoJS from 'crypto-js';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UtilProvider {
+  constructor(private configService: ConfigService) {}
+
+  /**
+   * Root Role Id
+   */
+  public getRootRoleId(): number {
+    return this.configService.get<number>('rootRoleId');
+  }
+
   /**
    * AES加密
    */

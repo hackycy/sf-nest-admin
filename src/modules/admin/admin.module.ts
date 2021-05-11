@@ -2,11 +2,17 @@ import { CacheModule, DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-ioredis';
 import { redisProvider } from 'src/common/providers/redis.provider';
+import SysDepartment from 'src/entities/admin/sys-department.entity';
+import SysUserRole from 'src/entities/admin/sys-user-role.entity';
+import SysUser from 'src/entities/admin/sys-user.entity';
 import { AuthGuard } from './core/guards/auth.guard';
 import { LoginController } from './login/login.controller';
 import { LoginService } from './login/login.service';
+import { SysUserController } from './sys-user/sys-user.controller';
+import { SysUserService } from './sys-user/sys-user.service';
 
 /**
  * Admin模块，所有API都需要加入/admin前缀
@@ -17,6 +23,7 @@ export class AdminModule {
     return {
       module: AdminModule,
       imports: [
+        TypeOrmModule.forFeature([SysUser, SysDepartment, SysUserRole]),
         CacheModule.registerAsync({
           imports: [ConfigModule],
           useFactory: (configService: ConfigService) => ({
@@ -45,8 +52,9 @@ export class AdminModule {
         },
         redisProvider(),
         LoginService,
+        SysUserService,
       ],
-      controllers: [LoginController],
+      controllers: [LoginController, SysUserController],
     };
   }
 }
