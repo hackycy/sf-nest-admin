@@ -5,10 +5,14 @@ import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
 import { IImageCaptcha } from './login.interface';
 import { isEmpty } from 'lodash';
 import { ImageCaptchaDto } from './login.dto';
+import { UtilProvider } from 'src/utils/util.provider';
 
 @Injectable()
 export class AdminLoginService {
-  constructor(@Inject(REDIS_INSTANCE) private redis: Redis) {}
+  constructor(
+    @Inject(REDIS_INSTANCE) private redis: Redis,
+    private util: UtilProvider,
+  ) {}
 
   /**
    * 创建验证码并缓存加入redis缓存
@@ -27,7 +31,7 @@ export class AdminLoginService {
       img: `data:image/svg+xml;base64,${Buffer.from(svg.data).toString(
         'base64',
       )}`,
-      id: 'generateUUID()', // this.utils.generateUUID()
+      id: this.util.generateUUID(), // this.utils.generateUUID()
     };
     // 10分钟过期时间
     await this.redis.set(
