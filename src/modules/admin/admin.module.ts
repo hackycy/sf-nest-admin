@@ -7,13 +7,16 @@ import * as redisStore from 'cache-manager-ioredis';
 import { redisProvider } from 'src/common/providers/redis.provider';
 import SysDepartment from 'src/entities/admin/sys-department.entity';
 import SysMenu from 'src/entities/admin/sys-menu.entity';
+import SysRoleDepartment from 'src/entities/admin/sys-role-department.entity';
 import SysRoleMenu from 'src/entities/admin/sys-role-menu.entity';
+import SysRole from 'src/entities/admin/sys-role.entity';
 import SysUserRole from 'src/entities/admin/sys-user-role.entity';
 import SysUser from 'src/entities/admin/sys-user.entity';
 import { AuthGuard } from './core/guards/auth.guard';
 import { LoginController } from './login/login.controller';
 import { LoginService } from './login/login.service';
 import { SysMenuService } from './sys-menu/sys-menu.service';
+import { SysRoleService } from './sys-role/sys-role.service';
 import { SysUserController } from './sys-user/sys-user.controller';
 import { SysUserService } from './sys-user/sys-user.service';
 
@@ -32,6 +35,9 @@ export class AdminModule {
           SysUserRole,
           SysMenu,
           SysRoleMenu,
+          SysRole,
+          SysRoleDepartment,
+          SysUserRole,
         ]),
         CacheModule.registerAsync({
           imports: [ConfigModule],
@@ -63,6 +69,7 @@ export class AdminModule {
         LoginService,
         SysUserService,
         SysMenuService,
+        SysRoleService,
       ],
       controllers: [LoginController, SysUserController],
     };
