@@ -1,4 +1,4 @@
 import { SetMetadata } from '@nestjs/common';
-import { OPEN_KEY_METADATA } from '../admin.constants';
+import { OPEN_KEY_METADATA } from '../../../../common/contants/admin.constants';
 
 export const Open = () => SetMetadata(OPEN_KEY_METADATA, true);

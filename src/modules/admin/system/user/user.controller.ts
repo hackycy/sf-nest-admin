@@ -2,8 +2,8 @@ import { Body, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { PageResult } from 'src/common/interfaces/res.interface';
 import SysUser from 'src/entities/admin/sys-user.entity';
-import { ADMIN_PREFIX } from '../../core/admin.constants';
-import { IAdminUser } from '../../core/admin.interface';
+import { ADMIN_PREFIX } from '../../../../common/contants/admin.constants';
+import { IAdminUser } from '../../admin.interface';
 import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { AdminUser } from '../../core/decorators/admin-user.decorator';
 import {

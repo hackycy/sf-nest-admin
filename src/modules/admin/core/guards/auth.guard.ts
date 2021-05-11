@@ -9,7 +9,7 @@ import {
   ADMIN_USER,
   NO_PERM_KEY_METADATA,
   OPEN_KEY_METADATA,
-} from 'src/modules/admin/core/admin.constants';
+} from 'src/common/contants/admin.constants';
 import { LoginService } from 'src/modules/admin/login/login.service';
 
 /**

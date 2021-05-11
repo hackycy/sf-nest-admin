@@ -16,7 +16,7 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { isEmpty } from 'lodash';
-import { PageSearchGetDto } from '../../core/dto/page.dto';
+import { PageSearchGetDto } from '../../../../common/dto/page.dto';
 
 export class UpdateUserInfoDto {
   @ApiProperty({
