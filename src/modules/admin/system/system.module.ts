@@ -8,6 +8,7 @@ import SysRole from 'src/entities/admin/sys-role.entity';
 import SysUserRole from 'src/entities/admin/sys-user-role.entity';
 import SysUser from 'src/entities/admin/sys-user.entity';
 import { SysMenuService } from './menu/menu.service';
+import { SysRoleController } from './role/role.controller';
 import { SysRoleService } from './role/role.service';
 import { SysUserController } from './user/user.controller';
 import { SysUserService } from './user/user.service';
@@ -25,7 +26,7 @@ import { SysUserService } from './user/user.service';
       SysUserRole,
     ]),
   ],
-  controllers: [SysUserController],
+  controllers: [SysUserController, SysRoleController],
   providers: [SysUserService, SysRoleService, SysMenuService],
   exports: [SysUserService, SysRoleService, SysMenuService],
 })
