@@ -1,4 +1,4 @@
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, flatten, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -23,7 +23,13 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       exceptionFactory: (errors: ValidationError[]) => {
-        return new BadRequestException(errors[0]?.toString());
+        return new BadRequestException(
+          flatten(
+            errors
+              .filter((item) => !!item.constraints)
+              .map((item) => Object.values(item.constraints)),
+          ).join('; '),
+        );
       },
     }),
   );
@@ -44,7 +50,7 @@ async function bootstrap() {
     })
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup(`/${ADMIN_PREFIX}/doc/swagger-api`, app, document);
+  SwaggerModule.setup(`/doc/${ADMIN_PREFIX}/swagger-api`, app, document);
   // start
   await app.listen(7001);
 }
