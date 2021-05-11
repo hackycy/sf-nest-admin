@@ -8,6 +8,7 @@ import {
 import { FastifyReply } from 'fastify';
 import { isDev } from 'src/config/configuration';
 import { ApiException } from '../exceptions/api.exception';
+import { ResOp } from '../interfaces/res.interface';
 
 /**
  * 异常接管，统一异常返回数据
@@ -25,12 +26,13 @@ export class ApiExecptionFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
     response.header('Content-Type', 'application/json; charset=utf-8');
     // prod env will not return internal error message
-    response.status(status).send({
+    const result: ResOp<any> = {
       code:
         exception instanceof ApiException
           ? (exception as ApiException).getErrorCode()
           : status,
       message: isDev() ? `${exception}` : '服务器异常，请稍后再试',
-    });
+    };
+    response.status(status).send(result);
   }
 }

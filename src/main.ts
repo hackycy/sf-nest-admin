@@ -1,5 +1,5 @@
 import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
@@ -7,6 +7,7 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ApiExecptionFilter } from './common/filters/api-execption.filter';
+import { ApiTransformInterceptor } from './common/interceptors/api-transform.interceptor';
 import { isDev } from './config/configuration';
 
 async function bootstrap() {
@@ -24,6 +25,8 @@ async function bootstrap() {
   );
   // execption
   app.useGlobalFilters(new ApiExecptionFilter());
+  // api interceptor
+  app.useGlobalInterceptors(new ApiTransformInterceptor(new Reflector()));
   // swagger
   const swaggerConfig = new DocumentBuilder()
     .setTitle('SF后台管理系统')
