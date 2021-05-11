@@ -1,15 +1,19 @@
-import { BadRequestException, flatten, ValidationPipe } from '@nestjs/common';
+import {
+  HttpStatus,
+  UnprocessableEntityException,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationError } from 'class-validator';
+import { flatten } from 'lodash';
 import { AppModule } from './app.module';
 import { ApiExecptionFilter } from './common/filters/api-execption.filter';
 import { ApiTransformInterceptor } from './common/interceptors/api-transform.interceptor';
-import { ADMIN_PREFIX } from './modules/admin/core/admin.constants';
+import { setupSwagger } from './setup-swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -22,8 +26,9 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
+      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       exceptionFactory: (errors: ValidationError[]) => {
-        return new BadRequestException(
+        return new UnprocessableEntityException(
           flatten(
             errors
               .filter((item) => !!item.constraints)
@@ -38,19 +43,7 @@ async function bootstrap() {
   // api interceptor
   app.useGlobalInterceptors(new ApiTransformInterceptor(new Reflector()));
   // swagger
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('SF后台管理系统')
-    .setDescription('Api文档')
-    .setVersion('2.0.0')
-    .addSecurity(ADMIN_PREFIX, {
-      description: '后台管理接口授权',
-      type: 'apiKey',
-      in: 'header',
-      name: 'Authorization',
-    })
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup(`/doc/${ADMIN_PREFIX}/swagger-api`, app, document);
+  setupSwagger(app);
   // start
   await app.listen(7001);
 }

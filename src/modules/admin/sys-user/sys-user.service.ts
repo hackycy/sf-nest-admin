@@ -8,7 +8,7 @@ import { ApiException } from 'src/common/exceptions/api.exception';
 import SysDepartment from 'src/entities/admin/sys-department.entity';
 import SysUserRole from 'src/entities/admin/sys-user-role.entity';
 import SysUser from 'src/entities/admin/sys-user.entity';
-import { UtilProvider } from 'src/utils/util.provider';
+import { UtilService } from 'src/shared/services/util.service';
 import { Connection, In, Not, Repository } from 'typeorm';
 import {
   CreateUserDto,
@@ -29,7 +29,7 @@ export class SysUserService {
     @Inject(REDIS_INSTANCE) private redis: Redis,
     @InjectConnection() private connection: Connection,
     private configService: ConfigService,
-    private util: UtilProvider,
+    private util: UtilService,
   ) {}
 
   /**

@@ -1,9 +1,11 @@
+import './polyfill';
+
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import Configuration from './config/configuration';
 import { AdminModule } from './modules/admin/admin.module';
-import { UtilModule } from './utils/util.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
@@ -26,7 +28,7 @@ import { UtilModule } from './utils/util.module';
       }),
       inject: [ConfigService],
     }),
-    UtilModule,
+    SharedModule,
     // application modules import
     AdminModule.register(),
   ],

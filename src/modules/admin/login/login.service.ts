@@ -5,14 +5,14 @@ import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
 import { IImageCaptcha } from './login.interface';
 import { isEmpty } from 'lodash';
 import { ImageCaptchaDto } from './login.dto';
-import { UtilProvider } from 'src/utils/util.provider';
 import { JwtService } from '@nestjs/jwt';
+import { UtilService } from 'src/shared/services/util.service';
 
 @Injectable()
 export class LoginService {
   constructor(
     @Inject(REDIS_INSTANCE) private redis: Redis,
-    private util: UtilProvider,
+    private util: UtilService,
     private jwtService: JwtService,
   ) {}
 

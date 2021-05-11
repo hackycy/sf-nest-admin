@@ -4,7 +4,7 @@ import * as CryptoJS from 'crypto-js';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class UtilProvider {
+export class UtilService {
   constructor(private configService: ConfigService) {}
 
   /**

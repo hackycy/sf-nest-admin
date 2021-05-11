@@ -1,9 +1,6 @@
-import { CacheModule, DynamicModule, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DynamicModule, Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as redisStore from 'cache-manager-ioredis';
 import { redisProvider } from 'src/common/providers/redis.provider';
 import SysDepartment from 'src/entities/admin/sys-department.entity';
 import SysMenu from 'src/entities/admin/sys-menu.entity';
@@ -39,26 +36,6 @@ export class AdminModule {
           SysRoleDepartment,
           SysUserRole,
         ]),
-        CacheModule.registerAsync({
-          imports: [ConfigModule],
-          useFactory: (configService: ConfigService) => ({
-            store: redisStore,
-            host: configService.get<string>('redis.host'),
-            port: configService.get<number>('redis.port'),
-            password: configService.get<string>('redis.password'),
-            db: configService.get<number>('redis.db'),
-            ttl: configService.get<number>('redis.ttl'),
-          }),
-          inject: [ConfigService],
-        }),
-        JwtModule.registerAsync({
-          imports: [ConfigModule],
-          useFactory: (configService: ConfigService) => ({
-            secret: configService.get<string>('jwt.secret'),
-            signOptions: { expiresIn: '60s' },
-          }),
-          inject: [ConfigService],
-        }),
       ],
       providers: [
         {
