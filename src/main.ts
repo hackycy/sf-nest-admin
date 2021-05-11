@@ -43,7 +43,7 @@ async function bootstrap() {
     })
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('swagger-api', app, document);
+  SwaggerModule.setup('/admin/doc/swagger-api', app, document);
   // start
   await app.listen(7001);
 }
