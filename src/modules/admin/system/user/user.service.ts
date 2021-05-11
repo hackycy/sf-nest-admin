@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { Redis } from 'ioredis';
 import { findIndex, isEmpty } from 'lodash';
 import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
@@ -9,7 +8,7 @@ import SysDepartment from 'src/entities/admin/sys-department.entity';
 import SysUserRole from 'src/entities/admin/sys-user-role.entity';
 import SysUser from 'src/entities/admin/sys-user.entity';
 import { UtilService } from 'src/shared/services/util.service';
-import { Connection, In, Not, Repository } from 'typeorm';
+import { EntityManager, In, Not, Repository } from 'typeorm';
 import {
   CreateUserDto,
   UpdatePasswordDto,
@@ -27,8 +26,7 @@ export class SysUserService {
     @InjectRepository(SysUserRole)
     private userRoleRepository: Repository<SysUserRole>,
     @Inject(REDIS_INSTANCE) private redis: Redis,
-    @InjectConnection() private connection: Connection,
-    private configService: ConfigService,
+    @InjectEntityManager() private entityManager: EntityManager,
     private util: UtilService,
   ) {}
 
@@ -103,7 +101,7 @@ export class SysUserService {
       throw new ApiException(10001);
     }
     // 所有用户初始密码为123456
-    await this.connection.transaction(async (manager) => {
+    await this.entityManager.transaction(async (manager) => {
       const salt = this.util.generateRandomValue(32);
       const password = this.util.md5(`123456${salt}`);
       const u = manager.create(SysUser, {
@@ -135,7 +133,7 @@ export class SysUserService {
    * 更新用户信息
    */
   async update(param: UpdateUserDto): Promise<void> {
-    await this.connection.transaction(async (manager) => {
+    await this.entityManager.transaction(async (manager) => {
       await manager.update(SysUser, param.id, {
         departmentId: param.departmentId,
         username: param.username,
