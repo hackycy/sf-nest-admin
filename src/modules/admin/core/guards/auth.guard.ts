@@ -63,12 +63,20 @@ export class AuthGuard implements CanActivate {
       // 与redis保存不一致
       throw new ApiException(11002);
     }
-    const notNeedPerm = this.reflector.get<boolean>(
+    // 注册在Controller时，全部Api都会放行检测
+    const allNotNeedPerm = this.reflector.get<boolean>(
+      NO_PERM_KEY_METADATA,
+      context.getClass(),
+    );
+    if (allNotNeedPerm) {
+      return true;
+    }
+    const curNotNeedPerm = this.reflector.get<boolean>(
       NO_PERM_KEY_METADATA,
       context.getHandler(),
     );
     // Token校验身份通过，判断是否需要权限的url，不需要权限则pass
-    if (notNeedPerm) {
+    if (curNotNeedPerm) {
       return true;
     }
     const perms: string = await this.loginService.getRedisPermsById(

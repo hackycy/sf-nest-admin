@@ -69,7 +69,7 @@ export class SysUserService {
   /**
    * 更改管理员密码
    */
-  async updatePassword(uid: number, dto: UpdatePasswordDto): Promise<boolean> {
+  async updatePassword(uid: number, dto: UpdatePasswordDto): Promise<void> {
     const user = await this.userRepository.findOne({ id: uid });
     if (isEmpty(user)) {
       throw new ApiException(10017);
@@ -77,12 +77,11 @@ export class SysUserService {
     const comparePassword = this.util.md5(`${dto.originPassword}${user.psalt}`);
     // 原密码不一致，不允许更改
     if (user.password !== comparePassword) {
-      return false;
+      throw new ApiException(10011);
     }
     const password = this.util.md5(`${dto.newPassword}${user.psalt}`);
     await this.userRepository.update({ id: uid }, { password });
     await this.upgradePasswordV(user.id);
-    return true;
   }
 
   /**
