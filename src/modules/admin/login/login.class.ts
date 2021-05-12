@@ -1,8 +1,8 @@
-export class IImageCaptcha {
+export class ImageCaptcha {
   img: string;
   id: string;
 }
 
-export class ILoginToken {
+export class LoginToken {
   token: string;
 }

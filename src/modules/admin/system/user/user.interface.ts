@@ -1,4 +1,4 @@
-export class IAccountInfo {
+export class AccountInfo {
   name: string;
   nickName: string;
   email: string;
@@ -7,7 +7,7 @@ export class IAccountInfo {
   headImg: string;
 }
 
-export class IPageSearchUserResult {
+export class PageSearchUserInfo {
   createTime: string;
   departmentId: number;
   email: string;

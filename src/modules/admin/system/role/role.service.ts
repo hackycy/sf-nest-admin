@@ -8,7 +8,7 @@ import SysUserRole from 'src/entities/admin/sys-user-role.entity';
 import { UtilService } from 'src/shared/services/util.service';
 import { EntityManager, In, Not, Repository } from 'typeorm';
 import { CreateRoleDto, UpdateRoleDto } from './role.dto';
-import { IAddRoleResult, IRoleInfoResult } from './role.class';
+import { CreatedRoleId, RoleInfo } from './role.class';
 
 @Injectable()
 export class SysRoleService {
@@ -47,7 +47,7 @@ export class SysRoleService {
   /**
    * 根据角色获取角色信息
    */
-  async info(rid: number): Promise<IRoleInfoResult> {
+  async info(rid: number): Promise<RoleInfo> {
     const roleInfo = await this.roleRepository.findOne({ id: rid });
     const menus = await this.roleMenuRepository.find({ roleId: rid });
     const depts = await this.roleDepartmentRepository.find({ roleId: rid });
@@ -72,7 +72,7 @@ export class SysRoleService {
   /**
    * 增加角色
    */
-  async add(param: CreateRoleDto, uid: number): Promise<IAddRoleResult> {
+  async add(param: CreateRoleDto, uid: number): Promise<CreatedRoleId> {
     const { name, label, remark, menus, depts } = param;
     const role = await this.roleRepository.insert({
       name,

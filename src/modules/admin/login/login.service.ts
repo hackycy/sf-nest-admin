@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import * as svgCaptcha from 'svg-captcha';
 import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
-import { IImageCaptcha } from './login.class';
+import { ImageCaptcha } from './login.class';
 import { isEmpty } from 'lodash';
 import { ImageCaptchaDto } from './login.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -21,7 +21,7 @@ export class LoginService {
    * @param captcha 验证码长宽
    * @returns svg & id obj
    */
-  async createImageCaptcha(captcha: ImageCaptchaDto): Promise<IImageCaptcha> {
+  async createImageCaptcha(captcha: ImageCaptchaDto): Promise<ImageCaptcha> {
     const svg = svgCaptcha.create({
       size: 4,
       color: true,

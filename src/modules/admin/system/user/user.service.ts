@@ -15,7 +15,7 @@ import {
   UpdateUserDto,
   UpdateUserInfoDto,
 } from './user.dto';
-import { IAccountInfo, IPageSearchUserResult } from './user.interface';
+import { AccountInfo, PageSearchUserInfo } from './user.interface';
 
 @Injectable()
 export class SysUserService {
@@ -34,7 +34,7 @@ export class SysUserService {
    * 获取用户信息
    * @param uid user id
    */
-  async getAccountInfo(uid: number): Promise<IAccountInfo> {
+  async getAccountInfo(uid: number): Promise<AccountInfo> {
     const user: SysUser = await this.userRepository.findOne({ id: uid });
     if (isEmpty(user)) {
       throw new ApiException(10017);
@@ -242,7 +242,7 @@ export class SysUserService {
     deptIds: number[],
     page: number,
     count: number,
-  ): Promise<IPageSearchUserResult[]> {
+  ): Promise<PageSearchUserInfo[]> {
     const queryAll: boolean = isEmpty(deptIds);
     const rootUserId = await this.findRootUserId();
     const result = await this.userRepository
@@ -265,7 +265,7 @@ export class SysUserService {
       .offset(page * count)
       .limit(count)
       .getRawMany();
-    const dealResult: IPageSearchUserResult[] = [];
+    const dealResult: PageSearchUserInfo[] = [];
     // 过滤去重
     result.forEach((e) => {
       const index = findIndex(dealResult, (e2) => e2.id === e.user_id);

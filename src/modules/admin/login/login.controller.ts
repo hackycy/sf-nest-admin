@@ -3,7 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AdminController } from '../core/decorators/admin-controller.decorator';
 import { Open } from '../core/decorators/open.decorator';
 import { ImageCaptchaDto } from './login.dto';
-import { IImageCaptcha, ILoginToken } from './login.class';
+import { ImageCaptcha, LoginToken } from './login.class';
 import { LoginService } from './login.service';
 
 @ApiTags('登录模块')
@@ -16,13 +16,13 @@ export class LoginController {
   })
   @Get('captcha/img')
   @Open()
-  async captchaByImg(@Query() dto: ImageCaptchaDto): Promise<IImageCaptcha> {
+  async captchaByImg(@Query() dto: ImageCaptchaDto): Promise<ImageCaptcha> {
     return await this.loginService.createImageCaptcha(dto);
   }
 
   @Post('login')
   @Open()
-  async login(@Body() dto: ImageCaptchaDto): Promise<ILoginToken> {
+  async login(@Body() dto: ImageCaptchaDto): Promise<LoginToken> {
     return {
       token: '',
     };

@@ -4,11 +4,13 @@ export class ResOp<T> {
   message?: string;
 }
 
+export class Pagination {
+  total: number;
+  page: number;
+  size: number;
+}
+
 export class PageResult<T> {
   list?: Array<T>;
-  pagination: {
-    total: number;
-    page: number;
-    size: number;
-  };
+  pagination: Pagination;
 }

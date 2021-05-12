@@ -14,7 +14,7 @@ import {
   PasswordUserDto,
   UpdateUserDto,
 } from './user.dto';
-import { IPageSearchUserResult } from './user.interface';
+import { PageSearchUserInfo } from './user.interface';
 import { SysUserService } from './user.service';
 
 @ApiSecurity(ADMIN_PREFIX)
@@ -57,7 +57,7 @@ export class SysUserController {
   async page(
     @Body() dto: PageSearchUserDto,
     @AdminUser() user: IAdminUser,
-  ): Promise<PageResult<IPageSearchUserResult>> {
+  ): Promise<PageResult<PageSearchUserInfo>> {
     const list = await this.userService.page(
       user.uid,
       dto.departmentIds,
