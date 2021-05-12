@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumberString, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsOptional } from 'class-validator';
 
 export class ImageCaptchaDto {
   @ApiProperty({
@@ -7,16 +8,18 @@ export class ImageCaptchaDto {
     default: 100,
     description: '验证码宽度',
   })
-  @IsNumberString()
+  @Type(() => Number)
+  @IsInt()
   @IsOptional()
-  width: number;
+  readonly width: number = 100;
 
   @ApiProperty({
     required: false,
     default: 50,
     description: '验证码宽度',
   })
-  @IsNumberString()
+  @Type(() => Number)
+  @IsInt()
   @IsOptional()
-  height: number;
+  readonly height: number = 50;
 }

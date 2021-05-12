@@ -1,18 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumberString, Matches } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, Min } from 'class-validator';
 
-export class PageSearchGetDto {
+export class PageOptionsDto {
   @ApiProperty({
     description: '当前页包含数量',
   })
-  @IsNumberString()
-  @Matches(/!(^-)/)
-  limit: number;
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  readonly limit: number = 10;
 
   @ApiProperty({
     description: '当前页包含数量',
   })
-  @IsNumberString()
-  @Matches(/!(^-)/)
-  page: number;
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  readonly page: number = 1;
 }

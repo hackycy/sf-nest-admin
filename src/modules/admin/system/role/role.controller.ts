@@ -1,6 +1,8 @@
-import { Get } from '@nestjs/common';
+import { Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { ADMIN_PREFIX } from 'src/common/contants/admin.constants';
+import { PageOptionsDto } from 'src/common/dto/page.dto';
+import { PageResult } from 'src/common/interfaces/res.interface';
 import SysRole from 'src/entities/admin/sys-role.entity';
 import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { SysRoleService } from './role.service';
@@ -17,5 +19,22 @@ export class SysRoleController {
   @Get('list')
   async list(): Promise<SysRole[]> {
     return await this.roleService.list();
+  }
+
+  @ApiOperation({
+    summary: '分页查询角色信息',
+  })
+  @Get('page')
+  async page(@Query() dto: PageOptionsDto): Promise<PageResult<SysRole>> {
+    const list = await this.roleService.page(dto.page - 1, dto.limit);
+    const count = await this.roleService.count();
+    return {
+      list,
+      pagination: {
+        size: dto.limit,
+        page: dto.page,
+        total: count,
+      },
+    };
   }
 }

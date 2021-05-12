@@ -16,7 +16,7 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { isEmpty } from 'lodash';
-import { PageSearchGetDto } from '../../../../common/dto/page.dto';
+import { PageOptionsDto } from '../../../../common/dto/page.dto';
 
 export class UpdateUserInfoDto {
   @ApiProperty({
@@ -169,7 +169,7 @@ export class DeleteUserDto {
   userIds: number[];
 }
 
-export class PageSearchUserDto extends PageSearchGetDto {
+export class PageSearchUserDto extends PageOptionsDto {
   @ApiProperty({
     required: false,
     description: '部门列表',
