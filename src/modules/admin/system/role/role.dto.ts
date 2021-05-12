@@ -13,7 +13,7 @@ import {
 export class DeleteRoleDto {
   @ApiProperty({
     description: '需要删除的角色ID列表',
-    isArray: true,
+    type: [Number],
   })
   @IsArray()
   @ArrayNotEmpty()

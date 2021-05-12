@@ -1,4 +1,4 @@
-import { Get, Query } from '@nestjs/common';
+import { Body, Get, Post, Query } from '@nestjs/common';
 import {
   ApiOperation,
   ApiOkResponse,
@@ -11,6 +11,16 @@ import { PageResult } from 'src/common/class/res.class';
 import SysRole from 'src/entities/admin/sys-role.entity';
 import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { SysRoleService } from './role.service';
+import {
+  CreateRoleDto,
+  DeleteRoleDto,
+  InfoRoleDto,
+  UpdateRoleDto,
+} from './role.dto';
+import { ApiException } from 'src/common/exceptions/api.exception';
+import { AdminUser } from '../../core/decorators/admin-user.decorator';
+import { IAdminUser } from '../../admin.interface';
+import { RoleInfo } from './role.class';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('角色模块')
@@ -18,18 +28,14 @@ import { SysRoleService } from './role.service';
 export class SysRoleController {
   constructor(private roleService: SysRoleService) {}
 
-  @ApiOperation({
-    summary: '获取角色列表',
-  })
+  @ApiOperation({ summary: '获取角色列表' })
   @ApiOkResponse({ type: [SysRole] })
   @Get('list')
   async list(): Promise<SysRole[]> {
     return await this.roleService.list();
   }
 
-  @ApiOperation({
-    summary: '分页查询角色信息',
-  })
+  @ApiOperation({ summary: '分页查询角色信息' })
   @ApiOkResponse({ type: [SysRole] })
   @Get('page')
   async page(@Query() dto: PageOptionsDto): Promise<PageResult<SysRole>> {
@@ -43,5 +49,41 @@ export class SysRoleController {
         total: count,
       },
     };
+  }
+
+  @ApiOperation({ summary: '删除角色' })
+  @Post('delete')
+  async delete(@Body() dto: DeleteRoleDto): Promise<void> {
+    const count = await this.roleService.countUserIdByRole(dto.roleIds);
+    if (count > 0) {
+      throw new ApiException(10008);
+    }
+    await this.roleService.delete(dto.roleIds);
+    // TODO add adminSysMenuService
+    // await this.adminSysMenuService.refreshOnlineUserPerms();
+  }
+
+  @ApiOperation({ summary: '新增角色' })
+  @Post('add')
+  async add(
+    @Body() dto: CreateRoleDto,
+    @AdminUser() user: IAdminUser,
+  ): Promise<void> {
+    await this.roleService.add(dto, user.uid);
+  }
+
+  @ApiOperation({ summary: '更新角色' })
+  @Post('update')
+  async update(@Body() dto: UpdateRoleDto): Promise<void> {
+    await this.roleService.update(dto);
+    // TODO adminSysMenuService
+    // await this.adminSysMenuService.refreshOnlineUserPerms();
+  }
+
+  @ApiOperation({ summary: '获取角色信息' })
+  @ApiOkResponse({ type: RoleInfo })
+  @Get('info')
+  async info(@Query() dto: InfoRoleDto): Promise<RoleInfo> {
+    return await this.roleService.info(dto.roleId);
   }
 }
