@@ -184,7 +184,6 @@ export class PageSearchUserDto extends PageOptionsDto {
 export class PasswordUserDto {
   @ApiProperty({
     description: '管理员ID',
-    type: [Number],
   })
   @IsInt()
   @Min(0)
