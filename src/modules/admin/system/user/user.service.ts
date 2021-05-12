@@ -31,6 +31,16 @@ export class SysUserService {
   ) {}
 
   /**
+   * 根据用户名查找已经启用的用户
+   */
+  async findUserByUserName(username: string): Promise<SysUser | undefined> {
+    return await this.userRepository.findOne({
+      username: username,
+      status: 1,
+    });
+  }
+
+  /**
    * 获取用户信息
    * @param uid user id
    */

@@ -33,7 +33,6 @@ const providers = [UtilService];
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('jwt.secret'),
-        signOptions: { expiresIn: '60s' },
       }),
       inject: [ConfigService],
     }),
