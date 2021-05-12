@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayMinSize,
@@ -156,6 +157,7 @@ export class InfoUserDto {
   })
   @IsInt()
   @Min(0)
+  @Type(() => Number)
   userId: number;
 }
 

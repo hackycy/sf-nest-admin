@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsIn,
@@ -90,5 +91,6 @@ export class InfoMenuDto {
   @ApiProperty({ description: '查询的菜单ID' })
   @IsInt()
   @Min(0)
+  @Type(() => Number)
   menuId: number;
 }

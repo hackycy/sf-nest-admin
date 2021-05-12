@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   ArrayNotEmpty,
   IsArray,
@@ -75,5 +76,6 @@ export class InfoRoleDto {
   })
   @IsInt()
   @Min(0)
+  @Type(() => Number)
   roleId: number;
 }
