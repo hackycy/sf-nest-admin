@@ -1,10 +1,10 @@
-export interface ResOp<T> {
+export class ResOp<T> {
   data?: T;
   code?: number;
   message?: string;
 }
 
-export interface PageResult<T> {
+export class PageResult<T> {
   list?: Array<T>;
   pagination: {
     total: number;

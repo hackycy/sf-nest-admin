@@ -8,7 +8,7 @@ import SysUserRole from 'src/entities/admin/sys-user-role.entity';
 import { UtilService } from 'src/shared/services/util.service';
 import { EntityManager, In, Not, Repository } from 'typeorm';
 import { CreateRoleDto, UpdateRoleDto } from './role.dto';
-import { IAddRoleResult, IRoleInfoResult } from './role.interface';
+import { IAddRoleResult, IRoleInfoResult } from './role.class';
 
 @Injectable()
 export class SysRoleService {

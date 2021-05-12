@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import * as svgCaptcha from 'svg-captcha';
 import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
-import { IImageCaptcha } from './login.interface';
+import { IImageCaptcha } from './login.class';
 import { isEmpty } from 'lodash';
 import { ImageCaptchaDto } from './login.dto';
 import { JwtService } from '@nestjs/jwt';

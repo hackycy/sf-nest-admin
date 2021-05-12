@@ -1,6 +1,6 @@
 import { Body, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
-import { PageResult } from 'src/common/interfaces/res.interface';
+import { PageResult } from 'src/common/class/res.class';
 import SysUser from 'src/entities/admin/sys-user.entity';
 import { ADMIN_PREFIX } from '../../../../common/contants/admin.constants';
 import { IAdminUser } from '../../admin.interface';

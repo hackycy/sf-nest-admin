@@ -8,7 +8,7 @@ import {
 import { FastifyReply } from 'fastify';
 import { isDev } from 'src/config/configuration';
 import { ApiException } from '../exceptions/api.exception';
-import { ResOp } from '../interfaces/res.interface';
+import { ResOp } from '../class/res.class';
 
 /**
  * 异常接管，统一异常返回数据

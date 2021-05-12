@@ -3,7 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AdminController } from '../core/decorators/admin-controller.decorator';
 import { Open } from '../core/decorators/open.decorator';
 import { ImageCaptchaDto } from './login.dto';
-import { IImageCaptcha, ILoginToken } from './login.interface';
+import { IImageCaptcha, ILoginToken } from './login.class';
 import { LoginService } from './login.service';
 
 @ApiTags('登录模块')
