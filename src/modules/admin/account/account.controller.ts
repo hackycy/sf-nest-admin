@@ -5,7 +5,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
-import { ADMIN_PREFIX } from 'src/common/contants/admin.constants';
+import { ADMIN_PREFIX } from 'src/modules/admin/admin.constants';
 import { IAdminUser } from '../admin.interface';
 import { AdminController } from '../core/decorators/admin-controller.decorator';
 import { AdminUser } from '../core/decorators/admin-user.decorator';

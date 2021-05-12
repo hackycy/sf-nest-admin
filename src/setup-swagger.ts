@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { version, name, homepage, license } from '../package.json';
-import { ADMIN_PREFIX } from './common/contants/admin.constants';
+import { ADMIN_PREFIX } from './modules/admin/admin.constants';
 
 export function setupSwagger(app: INestApplication): void {
   const swaggerConfig = new DocumentBuilder()

@@ -5,7 +5,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
-import { ADMIN_PREFIX } from 'src/common/contants/admin.constants';
+import { ADMIN_PREFIX } from 'src/modules/admin/admin.constants';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysDepartment from 'src/entities/admin/sys-department.entity';
 import { AdminController } from '../../core/decorators/admin-controller.decorator';

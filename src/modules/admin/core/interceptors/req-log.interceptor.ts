@@ -13,7 +13,7 @@ import { SysLogService } from '../../system/log/log.service';
 import {
   ADMIN_USER,
   NO_LOG_KEY_METADATA,
-} from 'src/common/contants/admin.constants';
+} from 'src/modules/admin/admin.constants';
 import { ResOp } from 'src/common/class/res.class';
 
 @Injectable()

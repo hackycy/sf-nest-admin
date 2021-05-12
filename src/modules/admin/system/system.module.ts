@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ROOT_ROLE_ID } from 'src/common/contants/admin.constants';
+import { ROOT_ROLE_ID } from 'src/modules/admin/admin.constants';
 import SysDepartment from 'src/entities/admin/sys-department.entity';
 import SysLoginLog from 'src/entities/admin/sys-login-log.entity';
 import SysMenu from 'src/entities/admin/sys-menu.entity';

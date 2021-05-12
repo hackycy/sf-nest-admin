@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { includes, isEmpty } from 'lodash';
-import { ROOT_ROLE_ID } from 'src/common/contants/admin.constants';
+import { ROOT_ROLE_ID } from 'src/modules/admin/admin.constants';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysDepartment from 'src/entities/admin/sys-department.entity';
 import SysRoleDepartment from 'src/entities/admin/sys-role-department.entity';

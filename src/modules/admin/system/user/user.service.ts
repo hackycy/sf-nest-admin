@@ -16,7 +16,7 @@ import {
   UpdateUserInfoDto,
 } from './user.dto';
 import { AccountInfo, PageSearchUserInfo } from './user.class';
-import { ROOT_ROLE_ID } from 'src/common/contants/admin.constants';
+import { ROOT_ROLE_ID } from 'src/modules/admin/admin.constants';
 
 @Injectable()
 export class SysUserService {

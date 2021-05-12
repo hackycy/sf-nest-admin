@@ -8,7 +8,7 @@ import SysUserRole from 'src/entities/admin/sys-user-role.entity';
 import { EntityManager, In, Not, Repository } from 'typeorm';
 import { CreateRoleDto, UpdateRoleDto } from './role.dto';
 import { CreatedRoleId, RoleInfo } from './role.class';
-import { ROOT_ROLE_ID } from 'src/common/contants/admin.constants';
+import { ROOT_ROLE_ID } from 'src/modules/admin/admin.constants';
 
 @Injectable()
 export class SysRoleService {

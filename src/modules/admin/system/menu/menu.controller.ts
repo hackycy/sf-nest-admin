@@ -6,7 +6,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { flattenDeep } from 'lodash';
-import { ADMIN_PREFIX } from 'src/common/contants/admin.constants';
+import { ADMIN_PREFIX } from 'src/modules/admin/admin.constants';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysMenu from 'src/entities/admin/sys-menu.entity';
 import { IAdminUser } from '../../admin.interface';

@@ -1,6 +1,6 @@
 import { FactoryProvider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ROOT_ROLE_ID } from 'src/common/contants/admin.constants';
+import { ROOT_ROLE_ID } from 'src/modules/admin/admin.constants';
 
 /**
  * 提供使用 @Inject(ROOT_ROLE_ID) 直接获取RootRoleId

@@ -1,5 +1,5 @@
 import { HttpException } from '@nestjs/common';
-import { ErrorCodeMap } from '../contants/error.contants';
+import { ErrorCodeMap } from '../contants/error-code.contants';
 
 /**
  * Api业务异常均抛出该异常

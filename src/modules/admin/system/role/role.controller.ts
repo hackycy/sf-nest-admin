@@ -5,7 +5,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
-import { ADMIN_PREFIX } from 'src/common/contants/admin.constants';
+import { ADMIN_PREFIX } from 'src/modules/admin/admin.constants';
 import { PageOptionsDto } from 'src/common/dto/page.dto';
 import { PageResult } from 'src/common/class/res.class';
 import SysRole from 'src/entities/admin/sys-role.entity';

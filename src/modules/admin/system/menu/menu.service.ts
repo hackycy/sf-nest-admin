@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Redis } from 'ioredis';
 import { concat, includes, isEmpty, uniq } from 'lodash';
-import { ROOT_ROLE_ID } from 'src/common/contants/admin.constants';
+import { ROOT_ROLE_ID } from 'src/modules/admin/admin.constants';
 import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysMenu from 'src/entities/admin/sys-menu.entity';
