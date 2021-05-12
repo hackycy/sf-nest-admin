@@ -1,7 +1,13 @@
-export class ResOp<T> {
-  data?: T;
-  code?: number;
-  message?: string;
+export class ResOp {
+  readonly data: any;
+  readonly code: number;
+  readonly message: string;
+
+  constructor(code: number, data?: any, message = 'success') {
+    this.code = code;
+    this.data = data;
+    this.message = message;
+  }
 }
 
 export class Pagination {

@@ -9,13 +9,12 @@ import { ResOp } from '../class/res.class';
 /**
  * 统一处理返回接口结果，如果不需要则添加@Keep装饰器
  */
-export class ApiTransformInterceptor<T>
-  implements NestInterceptor<T, ResOp<T>> {
+export class ApiTransformInterceptor implements NestInterceptor {
   constructor(private readonly reflector: Reflector) {}
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>,
-  ): Observable<ResOp<T> | unknown> {
+  ): Observable<any> {
     return next.handle().pipe(
       map((data) => {
         const keep = this.reflector.get<boolean>(
@@ -27,12 +26,7 @@ export class ApiTransformInterceptor<T>
         } else {
           const response = context.switchToHttp().getResponse<FastifyReply>();
           response.header('Content-Type', 'application/json; charset=utf-8');
-          const result: ResOp<T> = {
-            code: 200,
-            data,
-            message: 'success',
-          };
-          return result;
+          return new ResOp(200, data);
         }
       }),
     );

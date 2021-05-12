@@ -1,7 +1,8 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AccountModule } from './account/account.module';
 import { AuthGuard } from './core/guards/auth.guard';
+import { ReqLogInterceptor } from './core/interceptors/req-log.interceptor';
 import { LoginModule } from './login/login.module';
 import { SystemModule } from './system/system.module';
 
@@ -18,6 +19,10 @@ export class AdminModule {
         {
           provide: APP_GUARD,
           useClass: AuthGuard,
+        },
+        {
+          provide: APP_INTERCEPTOR,
+          useClass: ReqLogInterceptor,
         },
       ],
     };

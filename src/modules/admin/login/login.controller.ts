@@ -5,6 +5,7 @@ import { Open } from '../core/decorators/open.decorator';
 import { ImageCaptchaDto, LoginInfoDto } from './login.dto';
 import { ImageCaptcha, LoginToken } from './login.class';
 import { LoginService } from './login.service';
+import { NoLog } from '../core/decorators/no-log.decorator';
 
 @ApiTags('登录模块')
 @AdminController('public')
@@ -26,6 +27,7 @@ export class LoginController {
   })
   @ApiOkResponse({ type: LoginToken })
   @Post('login')
+  @NoLog()
   @Open()
   async login(@Body() dto: LoginInfoDto): Promise<LoginToken> {
     await this.loginService.checkImgCaptcha(dto.captchaId, dto.verifyCode);

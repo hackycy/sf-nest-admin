@@ -56,6 +56,6 @@ import { SysUserService } from './user/user.service';
     SysDeptService,
     SysLogService,
   ],
-  exports: [ROOT_ROLE_ID, SysUserService, SysMenuService],
+  exports: [ROOT_ROLE_ID, SysUserService, SysMenuService, SysLogService],
 })
 export class SystemModule {}

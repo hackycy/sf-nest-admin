@@ -26,15 +26,14 @@ export class ApiExecptionFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
     response.header('Content-Type', 'application/json; charset=utf-8');
     // prod env will not return internal error message
-    const result: ResOp<any> = {
-      code:
-        exception instanceof ApiException
-          ? (exception as ApiException).getErrorCode()
-          : status,
-      message: isDev()
-        ? `${exception}`.replace('Error: ', '')
-        : '服务器异常，请稍后再试',
-    };
+    const code =
+      exception instanceof ApiException
+        ? (exception as ApiException).getErrorCode()
+        : status;
+    const message = isDev()
+      ? `${exception}`.replace('Error: ', '')
+      : '服务器异常，请稍后再试';
+    const result = new ResOp(code, null, message);
     response.status(status).send(result);
   }
 }

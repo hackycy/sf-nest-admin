@@ -89,7 +89,7 @@ export class SysLogService {
   async saveReqLog(
     ip: string,
     url: string,
-    params: string,
+    params: any,
     status: number,
     consumeTime: number,
     method: string | undefined,
