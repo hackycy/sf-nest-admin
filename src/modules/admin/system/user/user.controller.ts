@@ -1,7 +1,11 @@
 import { Body, Get, Post, Query } from '@nestjs/common';
-import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { PageResult } from 'src/common/class/res.class';
-import SysUser from 'src/entities/admin/sys-user.entity';
 import { ADMIN_PREFIX } from '../../../../common/contants/admin.constants';
 import { IAdminUser } from '../../admin.interface';
 import { AdminController } from '../../core/decorators/admin-controller.decorator';
@@ -14,7 +18,7 @@ import {
   PasswordUserDto,
   UpdateUserDto,
 } from './user.dto';
-import { PageSearchUserInfo } from './user.interface';
+import { PageSearchUserInfo, UserDetailInfo } from './user.class';
 import { SysUserService } from './user.service';
 
 @ApiSecurity(ADMIN_PREFIX)
@@ -34,10 +38,9 @@ export class SysUserController {
   @ApiOperation({
     summary: '查询管理员信息',
   })
+  @ApiOkResponse({ type: UserDetailInfo })
   @Get('info')
-  async info(
-    @Query() dto: InfoUserDto,
-  ): Promise<SysUser & { roles: number[]; departmentName: string }> {
+  async info(@Query() dto: InfoUserDto): Promise<UserDetailInfo> {
     return await this.userService.info(dto.userId);
   }
 
@@ -53,6 +56,7 @@ export class SysUserController {
   @ApiOperation({
     summary: '分页获取管理员列表',
   })
+  @ApiOkResponse({ type: [PageSearchUserInfo] })
   @Post('page')
   async page(
     @Body() dto: PageSearchUserDto,

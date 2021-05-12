@@ -1,5 +1,5 @@
 import { Body, Get, Post, Query } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AdminController } from '../core/decorators/admin-controller.decorator';
 import { Open } from '../core/decorators/open.decorator';
 import { ImageCaptchaDto } from './login.dto';
@@ -14,12 +14,17 @@ export class LoginController {
   @ApiOperation({
     summary: '获取登录图片验证码',
   })
+  @ApiOkResponse({ type: ImageCaptcha })
   @Get('captcha/img')
   @Open()
   async captchaByImg(@Query() dto: ImageCaptchaDto): Promise<ImageCaptcha> {
     return await this.loginService.createImageCaptcha(dto);
   }
 
+  @ApiOperation({
+    summary: '管理员登录',
+  })
+  @ApiOkResponse({ type: LoginToken })
   @Post('login')
   @Open()
   async login(@Body() dto: ImageCaptchaDto): Promise<LoginToken> {

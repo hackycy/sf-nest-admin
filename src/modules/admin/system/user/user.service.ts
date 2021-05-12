@@ -15,7 +15,7 @@ import {
   UpdateUserDto,
   UpdateUserInfoDto,
 } from './user.dto';
-import { AccountInfo, PageSearchUserInfo } from './user.interface';
+import { AccountInfo, PageSearchUserInfo } from './user.class';
 
 @Injectable()
 export class SysUserService {
