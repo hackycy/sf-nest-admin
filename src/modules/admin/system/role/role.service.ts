@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { difference, filter, includes, isEmpty, map } from 'lodash';
 import SysRoleDepartment from 'src/entities/admin/sys-role-department.entity';
 import SysRoleMenu from 'src/entities/admin/sys-role-menu.entity';
 import SysRole from 'src/entities/admin/sys-role.entity';
 import SysUserRole from 'src/entities/admin/sys-user-role.entity';
-import { UtilService } from 'src/shared/services/util.service';
 import { EntityManager, In, Not, Repository } from 'typeorm';
 import { CreateRoleDto, UpdateRoleDto } from './role.dto';
 import { CreatedRoleId, RoleInfo } from './role.class';
+import { ROOT_ROLE_ID } from 'src/common/contants/admin.constants';
 
 @Injectable()
 export class SysRoleService {
@@ -21,7 +21,7 @@ export class SysRoleService {
     @InjectRepository(SysUserRole)
     private userRoleRepository: Repository<SysUserRole>,
     @InjectEntityManager() private entityManager: EntityManager,
-    private util: UtilService,
+    @Inject(ROOT_ROLE_ID) private rootRoleId: number,
   ) {}
 
   /**
@@ -29,7 +29,7 @@ export class SysRoleService {
    */
   async list(): Promise<SysRole[]> {
     const result = await this.roleRepository.find({
-      id: Not(this.util.getRootRoleId()),
+      id: Not(this.rootRoleId),
     });
     return result;
   }
@@ -39,7 +39,7 @@ export class SysRoleService {
    */
   async count(): Promise<number> {
     const count = await this.roleRepository.count({
-      id: Not(this.util.getRootRoleId()),
+      id: Not(this.rootRoleId),
     });
     return count;
   }
@@ -58,7 +58,7 @@ export class SysRoleService {
    * 根据角色Id数组删除
    */
   async delete(roleIds: number[]): Promise<void> {
-    if (includes(roleIds, this.util.getRootRoleId())) {
+    if (includes(roleIds, this.rootRoleId)) {
       throw new Error('Not Support Delete Root');
     }
     await this.entityManager.transaction(async (manager) => {
@@ -180,7 +180,7 @@ export class SysRoleService {
   async page(page: number, count: number): Promise<SysRole[]> {
     const result = await this.roleRepository.find({
       where: {
-        id: Not(this.util.getRootRoleId()),
+        id: Not(this.rootRoleId),
       },
       order: {
         id: 'ASC',
@@ -212,7 +212,7 @@ export class SysRoleService {
    * 根据角色ID列表查找关联用户ID
    */
   async countUserIdByRole(ids: number[]): Promise<number | never> {
-    if (includes(ids, this.util.getRootRoleId())) {
+    if (includes(ids, this.rootRoleId)) {
       throw new Error('Not Support Delete Root');
     }
     return await this.userRoleRepository.count({ roleId: In(ids) });

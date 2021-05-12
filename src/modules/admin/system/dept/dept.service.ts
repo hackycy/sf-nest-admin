@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { includes, isEmpty } from 'lodash';
+import { ROOT_ROLE_ID } from 'src/common/contants/admin.constants';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysDepartment from 'src/entities/admin/sys-department.entity';
 import SysRoleDepartment from 'src/entities/admin/sys-role-department.entity';
 import SysUser from 'src/entities/admin/sys-user.entity';
-import { UtilService } from 'src/shared/services/util.service';
 import { EntityManager, In, Repository } from 'typeorm';
 import { SysRoleService } from '../role/role.service';
 import { DeptDetailInfo } from './dept.class';
@@ -20,8 +20,8 @@ export class SysDeptService {
     @InjectRepository(SysRoleDepartment)
     private roleDeptRepositoty: Repository<SysUser>,
     @InjectEntityManager() private entityManager: EntityManager,
+    @Inject(ROOT_ROLE_ID) private rootRoleId: number,
     private roleService: SysRoleService,
-    private util: UtilService,
   ) {}
 
   /**
@@ -128,7 +128,7 @@ export class SysDeptService {
   async getDepts(uid: number): Promise<SysDepartment[]> {
     const roleIds = await this.roleService.getRoleIdByUser(uid);
     let depts: any = [];
-    if (includes(roleIds, this.util.getRootRoleId())) {
+    if (includes(roleIds, this.rootRoleId)) {
       // root find all
       depts = await this.deptRepositoty.find();
     } else {

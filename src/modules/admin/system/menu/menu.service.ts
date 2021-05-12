@@ -2,10 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Redis } from 'ioredis';
 import { concat, includes, isEmpty, uniq } from 'lodash';
+import { ROOT_ROLE_ID } from 'src/common/contants/admin.constants';
 import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysMenu from 'src/entities/admin/sys-menu.entity';
-import { UtilService } from 'src/shared/services/util.service';
 import { IsNull, Not, Repository } from 'typeorm';
 import { SysRoleService } from '../role/role.service';
 import { MenuItemAndParentInfoResult } from './menu.class';
@@ -16,8 +16,8 @@ export class SysMenuService {
   constructor(
     @InjectRepository(SysMenu) private menuRepository: Repository<SysMenu>,
     @Inject(REDIS_INSTANCE) private redis: Redis,
+    @Inject(ROOT_ROLE_ID) private rootRoleId: number,
     private roleService: SysRoleService,
-    private util: UtilService,
   ) {}
 
   /**
@@ -40,7 +40,7 @@ export class SysMenuService {
   async getMenus(uid: number): Promise<SysMenu[]> {
     const roleIds = await this.roleService.getRoleIdByUser(uid);
     let menus: SysMenu[] = [];
-    if (includes(roleIds, this.util.getRootRoleId())) {
+    if (includes(roleIds, this.rootRoleId)) {
       // root find all
       menus = await this.menuRepository.find();
     } else {
@@ -138,7 +138,7 @@ export class SysMenuService {
     const roleIds = await this.roleService.getRoleIdByUser(uid);
     let perms: any[] = [];
     let result: any = null;
-    if (includes(roleIds, this.util.getRootRoleId())) {
+    if (includes(roleIds, this.rootRoleId)) {
       // root find all perms
       result = await this.menuRepository.find({
         perms: Not(IsNull()),

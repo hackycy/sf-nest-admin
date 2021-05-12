@@ -1,6 +1,6 @@
 import { FactoryProvider } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ROOT_ROLE_ID } from 'src/common/contants/admin.constants';
-import { UtilService } from 'src/shared/services/util.service';
 
 /**
  * 提供使用 @Inject(ROOT_ROLE_ID) 直接获取RootRoleId
@@ -8,9 +8,9 @@ import { UtilService } from 'src/shared/services/util.service';
 export function rootRoleIdProvider(): FactoryProvider {
   return {
     provide: ROOT_ROLE_ID,
-    useFactory: (util: UtilService) => {
-      return util.getRootRoleId();
+    useFactory: (configService: ConfigService) => {
+      return configService.get<number>('rootRoleId', 1);
     },
-    inject: [UtilService],
+    inject: [ConfigService],
   };
 }

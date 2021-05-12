@@ -16,6 +16,7 @@ import {
   UpdateUserInfoDto,
 } from './user.dto';
 import { AccountInfo, PageSearchUserInfo } from './user.class';
+import { ROOT_ROLE_ID } from 'src/common/contants/admin.constants';
 
 @Injectable()
 export class SysUserService {
@@ -27,6 +28,7 @@ export class SysUserService {
     private userRoleRepository: Repository<SysUserRole>,
     @Inject(REDIS_INSTANCE) private redis: Redis,
     @InjectEntityManager() private entityManager: EntityManager,
+    @Inject(ROOT_ROLE_ID) private rootRoleId: number,
     private util: UtilService,
   ) {}
 
@@ -237,7 +239,7 @@ export class SysUserService {
    */
   async findRootUserId(): Promise<number> {
     const result = await this.userRoleRepository.findOne({
-      id: this.util.getRootRoleId(),
+      id: this.rootRoleId,
     });
     return result.userId;
   }
