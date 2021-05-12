@@ -20,12 +20,16 @@ import {
 } from './user.dto';
 import { PageSearchUserInfo, UserDetailInfo } from './user.class';
 import { SysUserService } from './user.service';
+import { SysMenuService } from '../menu/menu.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('管理员模块')
 @AdminController('sys/user')
 export class SysUserController {
-  constructor(private userService: SysUserService) {}
+  constructor(
+    private userService: SysUserService,
+    private menuService: SysMenuService,
+  ) {}
 
   @ApiOperation({
     summary: '新增管理员',
@@ -85,8 +89,7 @@ export class SysUserController {
   @Post('update')
   async update(@Body() dto: UpdateUserDto): Promise<void> {
     await this.userService.update(dto);
-    // TODO insert menu service
-    // await this.menuService.refreshPerms(dto.id);
+    await this.menuService.refreshPerms(dto.id);
   }
 
   @ApiOperation({

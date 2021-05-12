@@ -21,12 +21,16 @@ import { ApiException } from 'src/common/exceptions/api.exception';
 import { AdminUser } from '../../core/decorators/admin-user.decorator';
 import { IAdminUser } from '../../admin.interface';
 import { RoleInfo } from './role.class';
+import { SysMenuService } from '../menu/menu.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('角色模块')
 @AdminController('sys/role')
 export class SysRoleController {
-  constructor(private roleService: SysRoleService) {}
+  constructor(
+    private roleService: SysRoleService,
+    private menuService: SysMenuService,
+  ) {}
 
   @ApiOperation({ summary: '获取角色列表' })
   @ApiOkResponse({ type: [SysRole] })
@@ -59,8 +63,7 @@ export class SysRoleController {
       throw new ApiException(10008);
     }
     await this.roleService.delete(dto.roleIds);
-    // TODO add adminSysMenuService
-    // await this.adminSysMenuService.refreshOnlineUserPerms();
+    await this.menuService.refreshOnlineUserPerms();
   }
 
   @ApiOperation({ summary: '新增角色' })
@@ -76,8 +79,7 @@ export class SysRoleController {
   @Post('update')
   async update(@Body() dto: UpdateRoleDto): Promise<void> {
     await this.roleService.update(dto);
-    // TODO adminSysMenuService
-    // await this.adminSysMenuService.refreshOnlineUserPerms();
+    await this.menuService.refreshOnlineUserPerms();
   }
 
   @ApiOperation({ summary: '获取角色信息' })
