@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { version, name } from '../package.json';
+import { version, name, homepage, license } from '../package.json';
 import { ADMIN_PREFIX } from './common/contants/admin.constants';
 
 export function setupSwagger(app: INestApplication): void {
@@ -9,6 +9,8 @@ export function setupSwagger(app: INestApplication): void {
     .setTitle(name)
     .setDescription('Api文档')
     .setVersion(version)
+    .setLicense(license, homepage)
+    .setTermsOfService(homepage)
     .addSecurity(ADMIN_PREFIX, {
       description: '后台管理接口授权',
       type: 'apiKey',

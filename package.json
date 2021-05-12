@@ -1,10 +1,11 @@
 {
   "name": "sf-nest-admin",
-  "version": "2.0.0",
-  "description": "",
-  "author": "",
+  "version": "2.0.1",
+  "description": "sf admin",
+  "author": "hackycy",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "homepage": "https://github.com/hackycy/sf-nest-admin",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
