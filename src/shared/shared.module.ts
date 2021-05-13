@@ -38,6 +38,6 @@ const providers = [UtilService];
     }),
   ],
   providers: [...providers, redisProvider()],
-  exports: [...providers, HttpModule, CacheModule, JwtModule, REDIS_INSTANCE],
+  exports: [HttpModule, CacheModule, JwtModule, REDIS_INSTANCE, ...providers],
 })
 export class SharedModule {}

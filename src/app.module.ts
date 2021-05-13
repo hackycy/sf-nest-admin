@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import Configuration from './config/configuration';
 import { AdminModule } from './modules/admin/admin.module';
 import { SharedModule } from './shared/shared.module';
+import { MissionModule } from './mission/mission.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -28,7 +30,9 @@ import { SharedModule } from './shared/shared.module';
       }),
       inject: [ConfigService],
     }),
+    BullModule.forRoot({}),
     SharedModule,
+    MissionModule,
     // application modules import
     AdminModule.register(),
   ],
