@@ -25,7 +25,7 @@ import { SFileList, TaskExecStatusInfo, UploadToken } from './manage.class';
 import { ApiException } from 'src/common/exceptions/api.exception';
 
 @ApiSecurity(ADMIN_PREFIX)
-@ApiTags('网盘空间模块')
+@ApiTags('网盘管理模块')
 @AdminController('netdisk/manage')
 export class NetDiskManageController {
   constructor(
