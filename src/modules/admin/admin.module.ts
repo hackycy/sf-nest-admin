@@ -4,6 +4,7 @@ import { AccountModule } from './account/account.module';
 import { AuthGuard } from './core/guards/auth.guard';
 import { ReqLogInterceptor } from './core/interceptors/req-log.interceptor';
 import { LoginModule } from './login/login.module';
+import { NetdiskModule } from './netdisk/netdisk.module';
 import { SystemModule } from './system/system.module';
 
 /**
@@ -14,7 +15,7 @@ export class AdminModule {
   static register(): DynamicModule {
     return {
       module: AdminModule,
-      imports: [LoginModule, SystemModule, AccountModule],
+      imports: [LoginModule, SystemModule, AccountModule, NetdiskModule],
       providers: [
         {
           provide: APP_GUARD,

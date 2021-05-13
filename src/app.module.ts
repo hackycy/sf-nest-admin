@@ -3,11 +3,12 @@ import './polyfill';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BullModule } from '@nestjs/bull';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import Configuration from './config/configuration';
 import { AdminModule } from './modules/admin/admin.module';
 import { SharedModule } from './shared/shared.module';
 import { MissionModule } from './mission/mission.module';
-import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -30,7 +31,9 @@ import { BullModule } from '@nestjs/bull';
       }),
       inject: [ConfigService],
     }),
+    EventEmitterModule.forRoot({}),
     BullModule.forRoot({}),
+    // custom module
     SharedModule,
     MissionModule,
     // application modules import
