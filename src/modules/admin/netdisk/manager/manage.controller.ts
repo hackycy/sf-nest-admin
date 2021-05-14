@@ -96,7 +96,9 @@ export class NetDiskManageController {
   @ApiOkResponse({ type: String })
   @Post('download')
   async download(@Body() dto: DownloadDto): Promise<string> {
-    return this.manageService.getDownloadLink(`${dto.path}${dto.name}`);
+    return `${this.manageService.getDownloadLink(
+      `${dto.path}${dto.name}`,
+    )}?attname=${dto.name}`;
   }
 
   @ApiOperation({ summary: '检查任务执行状态' })
