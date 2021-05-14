@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsOptional,
@@ -50,6 +50,11 @@ export class GetFileListDto {
   @ApiProperty({ description: '当前路径' })
   @IsString()
   path: string;
+
+  @ApiPropertyOptional({ description: '搜索关键字' })
+  @IsString()
+  @IsOptional()
+  key: string;
 }
 
 export class MKDirDto {

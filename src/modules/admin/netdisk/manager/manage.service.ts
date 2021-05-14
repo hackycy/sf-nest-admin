@@ -1,5 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NETDISK_EVENT_RENAME, QINIU_CONFIG } from '../../admin.constants';
+import {
+  NETDISK_EVENT_DELETE,
+  NETDISK_EVENT_RENAME,
+  QINIU_CONFIG,
+} from '../../admin.constants';
 import { IQiniuConfig } from '../../admin.interface';
 import * as qiniu from 'qiniu';
 import { rs, conf, auth } from 'qiniu';
@@ -42,7 +46,7 @@ export class NetDiskManageService {
    * @param marker 下一页标识
    * @returns iFileListResult
    */
-  async getFileList(prefix = '', marker = ''): Promise<SFileList> {
+  async getFileList(prefix = '', marker = '', skey = ''): Promise<SFileList> {
     return new Promise<SFileList>((resolve, reject) => {
       this.bucketManager.listPrefix(
         this.qiniuConfig.bucket,
@@ -64,24 +68,32 @@ export class NetDiskManageService {
             if (!isEmpty(respBody.commonPrefixes)) {
               // dir
               for (const dirPath of respBody.commonPrefixes) {
-                fileList.push({
-                  name: (dirPath as string)
-                    .substr(0, dirPath.length - 1)
-                    .replace(prefix, ''),
-                  type: 'dir',
-                  id: this.util.generateRandomValue(12),
-                });
+                const name = (dirPath as string)
+                  .substr(0, dirPath.length - 1)
+                  .replace(prefix, '');
+                if (isEmpty(skey) || name.includes(skey)) {
+                  fileList.push({
+                    name: (dirPath as string)
+                      .substr(0, dirPath.length - 1)
+                      .replace(prefix, ''),
+                    type: 'dir',
+                    id: this.util.generateRandomValue(12),
+                  });
+                }
               }
             }
             if (!isEmpty(respBody.items)) {
               // file
               for (const item of respBody.items) {
-                const key = item.key.replace(prefix, '');
+                const fileKey = item.key.replace(prefix, '') as string;
                 // 模拟目录
-                if (!isEmpty(key)) {
+                if (
+                  !isEmpty(fileKey) &&
+                  (isEmpty(skey) || fileKey.includes(skey))
+                ) {
                   fileList.push({
                     id: this.util.generateRandomValue(12),
-                    name: key,
+                    name: fileKey,
                     type: 'file',
                     fsize: item.fsize,
                     mimeType: item.mimeType,
@@ -443,6 +455,7 @@ export class NetDiskManageService {
    * @param dir 文件夹所在的上级目录
    * @param name 文件目录名称
    */
+  @OnEvent(NETDISK_EVENT_DELETE)
   async deleteDir(path: string, name: string): Promise<void> {
     try {
       await this.setQiniuTaskStatus('delete', path, name, 0);

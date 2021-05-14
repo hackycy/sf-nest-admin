@@ -37,7 +37,7 @@ export class NetDiskManageController {
   @ApiOkResponse({ type: SFileList })
   @Get('list')
   async list(@Query() dto: GetFileListDto): Promise<SFileList> {
-    return await this.manageService.getFileList(dto.path, dto.marker);
+    return await this.manageService.getFileList(dto.path, dto.marker, dto.key);
   }
 
   @ApiOperation({ summary: '创建文件夹，支持多级' })
