@@ -122,26 +122,24 @@ export class NetDiskManageService {
    * 创建文件夹
    * @returns true创建成功
    */
-  async createDir(dirName: string): Promise<boolean> {
-    const path = dirName.endsWith('/') ? dirName : `${dirName}/`;
+  async createDir(dirName: string): Promise<void> {
+    const safeDirName = dirName.endsWith('/') ? dirName : `${dirName}/`;
     return new Promise((resolve, reject) => {
-      // fix path end must a /
-
-      // 检测文件夹是否存在
-      this.bucketManager.stat(
-        this.qiniuConfig.bucket,
-        path,
+      // 上传一个空文件以用于显示文件夹效果
+      const formUploader = new qiniu.form_up.FormUploader(this.config);
+      const putExtra = new qiniu.form_up.PutExtra();
+      formUploader.put(
+        this.createUploadToken(),
+        safeDirName,
+        ' ',
+        putExtra,
         (respErr, respBody, respInfo) => {
           if (respErr) {
             reject(respErr);
             return;
           }
           if (respInfo.statusCode === 200) {
-            // 文件夹存在
-            resolve(true);
-          } else if (respInfo.statusCode === 612) {
-            // 文件夹不存在
-            resolve(false);
+            resolve();
           } else {
             reject(
               new Error(
@@ -151,38 +149,6 @@ export class NetDiskManageService {
           }
         },
       );
-    }).then((hasDir) => {
-      return new Promise((resolve, reject) => {
-        if (hasDir) {
-          // 如果已存在则返回false
-          resolve(false);
-          return;
-        }
-        // 上传一个空文件以用于显示文件夹效果
-        const formUploader = new qiniu.form_up.FormUploader(this.config);
-        const putExtra = new qiniu.form_up.PutExtra();
-        formUploader.put(
-          this.createUploadToken(),
-          path,
-          ' ',
-          putExtra,
-          (respErr, respBody, respInfo) => {
-            if (respErr) {
-              reject(respErr);
-              return;
-            }
-            if (respInfo.statusCode === 200) {
-              resolve(true);
-            } else {
-              reject(
-                new Error(
-                  `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
-                ),
-              );
-            }
-          },
-        );
-      });
     });
   }
 
@@ -190,14 +156,13 @@ export class NetDiskManageService {
    * 检查文件是否存在，同可检查目录
    */
   async checkFileExist(filePath: string): Promise<boolean> {
-    const path = filePath.endsWith('/') ? filePath : `${filePath}/`;
     return new Promise((resolve, reject) => {
       // fix path end must a /
 
       // 检测文件夹是否存在
       this.bucketManager.stat(
         this.qiniuConfig.bucket,
-        path,
+        filePath,
         (respErr, respBody, respInfo) => {
           if (respErr) {
             reject(respErr);

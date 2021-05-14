@@ -5,28 +5,23 @@ import {
   IsString,
   Matches,
   Validate,
+  ValidateIf,
   ValidationArguments,
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { isEmpty } from 'lodash';
 
-@ValidatorConstraint({ name: 'IsLegalDirExpression', async: false })
-export class IsLegalDirExpression implements ValidatorConstraintInterface {
+@ValidatorConstraint({ name: 'IsLegalNameExpression', async: false })
+export class IsLegalNameExpression implements ValidatorConstraintInterface {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validate(value: string, args: ValidationArguments) {
     try {
       if (isEmpty(value)) {
         throw new Error('dir name is empty');
       }
-      if (value.startsWith('/')) {
+      if (value.includes('/')) {
         throw new Error('dir name not allow / start');
-      }
-      if (/([\\/])\1/.test(value)) {
-        throw new Error('// this is not allow');
-      }
-      if (value.endsWith('/')) {
-        throw new Error('dir name not allow / end');
       }
       return true;
     } catch (e) {
@@ -37,7 +32,7 @@ export class IsLegalDirExpression implements ValidatorConstraintInterface {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   defaultMessage(_args: ValidationArguments) {
     // here you can provide default error message if validation failed
-    return 'dir name invalid invalid';
+    return 'file or dir name invalid';
   }
 }
 
@@ -52,8 +47,9 @@ export class GetFileListDto {
   path: string;
 
   @ApiPropertyOptional({ description: '搜索关键字' })
+  @Validate(IsLegalNameExpression)
+  @ValidateIf((o) => !isEmpty(o.key))
   @IsString()
-  @IsOptional()
   key: string;
 }
 
@@ -61,8 +57,12 @@ export class MKDirDto {
   @ApiProperty({ description: '文件夹名称' })
   @IsNotEmpty()
   @IsString()
-  @Validate(IsLegalDirExpression)
+  @Validate(IsLegalNameExpression)
   dirName: string;
+
+  @ApiProperty({ description: '所属路径' })
+  @IsString()
+  path: string;
 }
 
 export class RenameDto {

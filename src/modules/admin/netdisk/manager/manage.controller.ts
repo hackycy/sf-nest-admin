@@ -43,24 +43,13 @@ export class NetDiskManageController {
   @ApiOperation({ summary: '创建文件夹，支持多级' })
   @Post('mkdir')
   async mkdir(@Body() dto: MKDirDto): Promise<void> {
-    let result = false;
-    if (dto.dirName.includes('/')) {
-      // 多级目录
-      const paths: string[] = dto.dirName.split('/');
-      for (let index = 1; index <= paths.length; index++) {
-        const dir = paths.slice(0, index).join('/');
-        const tmp = await this.manageService.createDir(dir);
-        if (index === paths.length) {
-          result = tmp;
-        }
-      }
-    } else {
-      // 单目录
-      result = await this.manageService.createDir(dto.dirName);
-    }
-    if (!result) {
+    const result = await this.manageService.checkFileExist(
+      `${dto.path}${dto.dirName}/`,
+    );
+    if (result) {
       throw new ApiException(20001);
     }
+    await this.manageService.createDir(`${dto.path}${dto.dirName}`);
   }
 
   @ApiOperation({ summary: '获取上传Token，无Token前端无法上传' })
@@ -72,11 +61,11 @@ export class NetDiskManageController {
     };
   }
 
-  @ApiOperation({ summary: '删除文件或文件夹' })
+  @ApiOperation({ summary: '重命名文件或文件夹' })
   @Post('rename')
   async rename(@Body() dto: RenameDto): Promise<void> {
     const result = await this.manageService.checkFileExist(
-      `${dto.path}${dto.toName}`,
+      `${dto.path}${dto.toName}${dto.type === 'dir' ? '/' : ''}`,
     );
     if (result) {
       throw new ApiException(20001);
