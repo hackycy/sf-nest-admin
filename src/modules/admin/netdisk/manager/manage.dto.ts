@@ -86,7 +86,7 @@ export class RenameDto {
   path: string;
 }
 
-export class DownloadDto {
+export class FileInfoDto {
   @ApiProperty({ description: '文件名' })
   @IsString()
   @IsNotEmpty()

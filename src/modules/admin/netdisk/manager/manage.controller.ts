@@ -16,7 +16,7 @@ import { Body, Get, Post, Query } from '@nestjs/common';
 import {
   CheckStatusDto,
   DeleteDto,
-  DownloadDto,
+  FileInfoDto,
   GetFileListDto,
   MKDirDto,
   RenameDto,
@@ -95,7 +95,7 @@ export class NetDiskManageController {
   @ApiOperation({ summary: '获取下载链接，不支持下载文件夹' })
   @ApiOkResponse({ type: String })
   @Post('download')
-  async download(@Body() dto: DownloadDto): Promise<string> {
+  async download(@Body() dto: FileInfoDto): Promise<string> {
     return `${this.manageService.getDownloadLink(
       `${dto.path}${dto.name}`,
     )}?attname=${dto.name}`;
@@ -110,5 +110,11 @@ export class NetDiskManageController {
       dto.path,
       dto.name,
     );
+  }
+
+  @ApiOperation({ summary: '获取文件详细信息' })
+  @Post('info')
+  async info(@Body() dto: FileInfoDto): Promise<void> {
+    await this.manageService.getFileInfo(dto.name, dto.path);
   }
 }

@@ -118,6 +118,31 @@ export class NetDiskManageService {
     });
   }
 
+  async getFileInfo(name: string, path: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.bucketManager.stat(
+        this.qiniuConfig.bucket,
+        `${path}${name}`,
+        (err, respBody, respInfo) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          if (respInfo.statusCode == 200) {
+            console.log(respBody, respInfo);
+            resolve();
+          } else {
+            reject(
+              new Error(
+                `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
+              ),
+            );
+          }
+        },
+      );
+    });
+  }
+
   /**
    * 创建文件夹
    * @returns true创建成功
