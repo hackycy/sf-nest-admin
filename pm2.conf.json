@@ -1,0 +1,13 @@
+{
+  "apps": {
+    "name": "sf-server",
+    "script": "dist/main.js",
+    "error_file": "err.log",
+    "out_file": "out.log",
+    "log_file": "combined.log",
+    "time": true,
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }
+}

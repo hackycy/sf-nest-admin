@@ -1,16 +1,15 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { version, name, homepage, license } from '../package.json';
 import { ADMIN_PREFIX } from './modules/admin/admin.constants';
 
 export function setupSwagger(app: INestApplication): void {
   const swaggerConfig = new DocumentBuilder()
-    .setTitle(name)
+    .setTitle('sf-nest-admin')
     .setDescription('Api文档')
-    .setVersion(version)
-    .setLicense(license, homepage)
-    .setTermsOfService(homepage)
+    .setVersion('v2.0.1')
+    .setLicense('MIT', 'https://github.com/hackycy/sf-nest-admin')
+    .setTermsOfService('https://github.com/hackycy/sf-nest-admin')
     .addSecurity(ADMIN_PREFIX, {
       description: '后台管理接口授权',
       type: 'apiKey',
