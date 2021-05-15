@@ -42,3 +42,29 @@ export class UploadToken {
   @ApiProperty({ description: '上传token' })
   token: string;
 }
+
+export class SFileInfoDetail {
+  @ApiProperty({ description: '文件大小，int64类型，单位为字节（Byte）' })
+  fsize: number;
+
+  @ApiProperty({ description: '文件HASH值' })
+  hash: string;
+
+  @ApiProperty({ description: '文件MIME类型，string类型' })
+  mimeType: string;
+
+  @ApiProperty({
+    description:
+      '文件存储类型，2 表示归档存储，1 表示低频存储，0表示普通存储。',
+  })
+  type: number;
+
+  @ApiProperty({ description: '文件上传时间', type: Date })
+  putTime: Date;
+
+  @ApiProperty({ description: '文件md5值' })
+  md5: string;
+
+  @ApiProperty({ description: '上传人' })
+  uploader: string;
+}

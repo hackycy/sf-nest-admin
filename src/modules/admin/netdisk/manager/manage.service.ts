@@ -11,10 +11,17 @@ import * as qiniu from 'qiniu';
 import { rs, conf, auth } from 'qiniu';
 import { UtilService } from 'src/shared/services/util.service';
 import { isEmpty } from 'lodash';
-import { SFileInfo, SFileList, TaskExecStatusInfo } from './manage.class';
+import {
+  SFileInfo,
+  SFileInfoDetail,
+  SFileList,
+  TaskExecStatusInfo,
+} from './manage.class';
 import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
 import { Redis } from 'ioredis';
 import { OnEvent } from '@nestjs/event-emitter';
+import { SysUserService } from '../../system/user/user.service';
+import { AccountInfo } from '../../system/user/user.class';
 
 @Injectable()
 export class NetDiskManageService {
@@ -25,6 +32,7 @@ export class NetDiskManageService {
   constructor(
     @Inject(QINIU_CONFIG) private qiniuConfig: IQiniuConfig,
     @Inject(REDIS_INSTANCE) private redis: Redis,
+    private userService: SysUserService,
     private util: UtilService,
   ) {
     this.mac = new qiniu.auth.digest.Mac(
@@ -116,7 +124,10 @@ export class NetDiskManageService {
     });
   }
 
-  async getFileInfo(name: string, path: string): Promise<void> {
+  /**
+   * 获取文件信息
+   */
+  async getFileInfo(name: string, path: string): Promise<SFileInfoDetail> {
     return new Promise((resolve, reject) => {
       this.bucketManager.stat(
         this.qiniuConfig.bucket,
@@ -127,8 +138,29 @@ export class NetDiskManageService {
             return;
           }
           if (respInfo.statusCode == 200) {
-            console.log(respBody, respInfo);
-            resolve();
+            const detailInfo: SFileInfoDetail = {
+              fsize: respBody.fsize,
+              hash: respBody.hash,
+              md5: respBody.md5,
+              mimeType: respBody.mimeType,
+              putTime: new Date(parseInt(respBody.putTime) / 10000),
+              type: respBody.type,
+              uploader: '',
+            };
+            if (!respBody.endUser) {
+              resolve(detailInfo);
+            } else {
+              this.userService
+                .getAccountInfo(parseInt(respBody.endUser))
+                .then((user: AccountInfo) => {
+                  if (isEmpty(user)) {
+                    resolve(detailInfo);
+                  } else {
+                    detailInfo.uploader = user.name;
+                    resolve(detailInfo);
+                  }
+                });
+            }
           } else {
             reject(
               new Error(

@@ -21,7 +21,12 @@ import {
   MKDirDto,
   RenameDto,
 } from './manage.dto';
-import { SFileList, TaskExecStatusInfo, UploadToken } from './manage.class';
+import {
+  SFileInfoDetail,
+  SFileList,
+  TaskExecStatusInfo,
+  UploadToken,
+} from './manage.class';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import { AdminUser } from '../../core/decorators/admin-user.decorator';
 import { IAdminUser } from '../../admin.interface';
@@ -98,9 +103,7 @@ export class NetDiskManageController {
   @ApiOkResponse({ type: String })
   @Post('download')
   async download(@Body() dto: FileInfoDto): Promise<string> {
-    return `${this.manageService.getDownloadLink(
-      `${dto.path}${dto.name}`,
-    )}?attname=${dto.name}`;
+    return this.manageService.getDownloadLink(`${dto.path}${dto.name}`);
   }
 
   @ApiOperation({ summary: '检查任务执行状态' })
@@ -115,8 +118,9 @@ export class NetDiskManageController {
   }
 
   @ApiOperation({ summary: '获取文件详细信息' })
+  @ApiOkResponse({ type: SFileInfoDetail })
   @Post('info')
-  async info(@Body() dto: FileInfoDto): Promise<void> {
-    await this.manageService.getFileInfo(dto.name, dto.path);
+  async info(@Body() dto: FileInfoDto): Promise<SFileInfoDetail> {
+    return await this.manageService.getFileInfo(dto.name, dto.path);
   }
 }
