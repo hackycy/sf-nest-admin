@@ -16,6 +16,7 @@ const parseZone = (zone: string) => {
 };
 
 export default {
+  rootRoleId: parseInt(process.env.ROOT_ROLE_ID || '1'),
   // nodemailer config
   mailer: {
     host: process.env.MAILER_HOST || '',

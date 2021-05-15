@@ -1,6 +1,7 @@
 import * as qiniu from 'qiniu';
 
 export default {
+  rootRoleId: 1,
   // nodemailer config
   mailer: {
     host: 'xxx',
