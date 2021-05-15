@@ -23,6 +23,8 @@ import {
 } from './manage.dto';
 import { SFileList, TaskExecStatusInfo, UploadToken } from './manage.class';
 import { ApiException } from 'src/common/exceptions/api.exception';
+import { AdminUser } from '../../core/decorators/admin-user.decorator';
+import { IAdminUser } from '../../admin.interface';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('网盘管理模块')
@@ -55,9 +57,9 @@ export class NetDiskManageController {
   @ApiOperation({ summary: '获取上传Token，无Token前端无法上传' })
   @ApiOkResponse({ type: UploadToken })
   @Get('token')
-  async token(): Promise<UploadToken> {
+  async token(@AdminUser() user: IAdminUser): Promise<UploadToken> {
     return {
-      token: this.manageService.createUploadToken(),
+      token: this.manageService.createUploadToken(`${user.uid}`),
     };
   }
 

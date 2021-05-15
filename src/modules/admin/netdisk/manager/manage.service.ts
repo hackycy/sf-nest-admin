@@ -152,7 +152,7 @@ export class NetDiskManageService {
       const formUploader = new qiniu.form_up.FormUploader(this.config);
       const putExtra = new qiniu.form_up.PutExtra();
       formUploader.put(
-        this.createUploadToken(),
+        this.createUploadToken(''),
         safeDirName,
         ' ',
         putExtra,
@@ -213,10 +213,11 @@ export class NetDiskManageService {
    * 创建Upload Token, 默认过期时间一小时
    * @returns upload token
    */
-  createUploadToken(): string {
+  createUploadToken(endUser: string): string {
     const policy = new qiniu.rs.PutPolicy({
       scope: this.qiniuConfig.bucket,
       insertOnly: 1,
+      endUser,
     });
     const uploadToken = policy.uploadToken(this.mac);
     return uploadToken;
