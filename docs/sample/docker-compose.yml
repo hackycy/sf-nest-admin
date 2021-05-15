@@ -28,7 +28,7 @@ services:
       TZ: Asia/Shanghai
 
   sfserver:
-    image: qa894178522/sfmidwayadmin:rc
+    image: qa894178522/sfnestadmin:stable
     restart: always
     depends_on:
       - db
