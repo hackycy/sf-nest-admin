@@ -19,8 +19,6 @@ RUN npm run build
 RUN rm -rf node_modules && rm package-lock.json
 RUN npm install --production
 
-ENV NODE_ENV production
-
 # bootstrap set port
 EXPOSE 7001
 
