@@ -13,3 +13,6 @@ export const ADMIN_PREFIX = 'admin';
 
 export const NETDISK_EVENT_RENAME = 'NetDiskAction.Rename';
 export const NETDISK_EVENT_DELETE = 'NetDiskAction.Delete';
+// 目录分隔符
+export const NETDISK_DELIMITER = '/';
+export const NETDISK_LIMIT = 20;

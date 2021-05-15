@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  NETDISK_DELIMITER,
   NETDISK_EVENT_DELETE,
   NETDISK_EVENT_RENAME,
+  NETDISK_LIMIT,
   QINIU_CONFIG,
 } from '../../admin.constants';
 import { IQiniuConfig } from '../../admin.interface';
@@ -13,10 +15,6 @@ import { SFileInfo, SFileList, TaskExecStatusInfo } from './manage.class';
 import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
 import { Redis } from 'ioredis';
 import { OnEvent } from '@nestjs/event-emitter';
-
-// 目录分隔符
-export const DELIMITER = '/';
-export const LIMIT = 100;
 
 @Injectable()
 export class NetDiskManageService {
@@ -52,8 +50,8 @@ export class NetDiskManageService {
         this.qiniuConfig.bucket,
         {
           prefix,
-          limit: LIMIT,
-          delimiter: DELIMITER,
+          limit: NETDISK_LIMIT,
+          delimiter: NETDISK_DELIMITER,
           marker,
         },
         (err, respBody, respInfo) => {
