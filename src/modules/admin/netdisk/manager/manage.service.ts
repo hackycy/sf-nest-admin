@@ -90,7 +90,7 @@ export class NetDiskManageService {
                   (isEmpty(skey) || fileKey.includes(skey))
                 ) {
                   fileList.push({
-                    id: this.util.generateRandomValue(12),
+                    id: item.hash,
                     name: fileKey,
                     type: 'file',
                     fsize: item.fsize,
