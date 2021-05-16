@@ -16,4 +16,5 @@ INSERT INTO `sys_menu` (`createTime`, `updateTime`, `id`, `parent_id`, `name`, `
 ('2021-05-16 01:40:57.687251', '2021-05-16 01:41:36.000000', 77, 73, '重命名', NULL, 'netdisk:manage:rename,netdisk:manage:check', 2, NULL, 255, NULL, 1, 1),
 ('2021-05-16 01:41:15.070191', '2021-05-16 01:41:15.070191', 78, 73, '下载', NULL, 'netdisk:manage:download', 2, NULL, 255, NULL, 1, 1),
 ('2021-05-16 01:41:56.637858', '2021-05-16 01:41:56.637858', 79, 73, '删除', NULL, 'netdisk:manage:delete,netdisk:manage:check', 2, NULL, 255, NULL, 1, 1),
-('2021-05-16 01:42:17.793185', '2021-05-16 01:42:17.793185', 80, 73, '预览', NULL, 'netdisk:manage:info', 2, NULL, 255, NULL, 1, 1);
+('2021-05-16 01:42:17.793185', '2021-05-16 01:42:17.793185', 80, 73, '预览', NULL, 'netdisk:manage:info', 2, NULL, 255, NULL, 1, 1),
+('2021-05-16 23:42:36.775883', '2021-05-16 23:42:36.775883', 81, 73, '备注', NULL, 'netdisk:manage:mark', 2, NULL, 255, NULL, 1, 1);
