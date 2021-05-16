@@ -174,6 +174,36 @@ export class NetDiskManageService {
   }
 
   /**
+   * 修改文件MimeType
+   */
+  async changeHeaders(name: string, path: string, mark: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.bucketManager.changeHeaders(
+        this.qiniuConfig.bucket,
+        `${path}${name}`,
+        {
+          mark,
+        },
+        (err, _, respInfo) => {
+          if (err) {
+            reject();
+            return;
+          }
+          if (respInfo.statusCode == 200) {
+            resolve();
+          } else {
+            reject(
+              new Error(
+                `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
+              ),
+            );
+          }
+        },
+      );
+    });
+  }
+
+  /**
    * 创建文件夹
    * @returns true创建成功
    */

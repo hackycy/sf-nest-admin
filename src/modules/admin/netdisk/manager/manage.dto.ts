@@ -129,3 +129,20 @@ export class CheckStatusDto {
   @IsString()
   path: string;
 }
+
+export class MarkFileDto {
+  @ApiProperty({ description: '文件名' })
+  @IsString()
+  @IsNotEmpty()
+  @Validate(IsLegalNameExpression)
+  name: string;
+
+  @ApiProperty({ description: '文件所在路径' })
+  @IsString()
+  path: string;
+
+  @ApiProperty({ description: '备注信息' })
+  @IsNotEmpty()
+  @IsString()
+  mark: string;
+}

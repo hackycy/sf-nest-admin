@@ -18,6 +18,7 @@ import {
   DeleteDto,
   FileInfoDto,
   GetFileListDto,
+  MarkFileDto,
   MKDirDto,
   RenameDto,
 } from './manage.dto';
@@ -122,5 +123,11 @@ export class NetDiskManageController {
   @Post('info')
   async info(@Body() dto: FileInfoDto): Promise<SFileInfoDetail> {
     return await this.manageService.getFileInfo(dto.name, dto.path);
+  }
+
+  @ApiOperation({ summary: '添加文件备注' })
+  @Post('mark')
+  async mark(@Body() dto: MarkFileDto): Promise<void> {
+    await this.manageService.changeHeaders(dto.name, dto.path, dto.mark);
   }
 }
