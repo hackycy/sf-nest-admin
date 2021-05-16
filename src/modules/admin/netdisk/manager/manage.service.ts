@@ -142,10 +142,11 @@ export class NetDiskManageService {
               fsize: respBody.fsize,
               hash: respBody.hash,
               md5: respBody.md5,
-              mimeType: respBody.mimeType,
+              mimeType: respBody.mimeType.split('/x-qn-meta')[0],
               putTime: new Date(parseInt(respBody.putTime) / 10000),
               type: respBody.type,
               uploader: '',
+              mark: respBody?.['x-qn-meta']?.['!mark'] ?? '',
             };
             if (!respBody.endUser) {
               resolve(detailInfo);

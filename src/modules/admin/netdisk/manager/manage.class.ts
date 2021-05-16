@@ -67,4 +67,7 @@ export class SFileInfoDetail {
 
   @ApiProperty({ description: '上传人' })
   uploader: string;
+
+  @ApiProperty({ description: '文件备注' })
+  mark?: string;
 }
