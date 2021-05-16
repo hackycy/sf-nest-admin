@@ -142,7 +142,6 @@ export class MarkFileDto {
   path: string;
 
   @ApiProperty({ description: '备注信息' })
-  @IsNotEmpty()
   @IsString()
   mark: string;
 }
