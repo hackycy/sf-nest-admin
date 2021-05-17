@@ -48,18 +48,20 @@ export class NetDiskManageService {
 
   /**
    * 获取文件列表
-   * @param prefix 当前文件夹路径
+   * @param prefix 当前文件夹路径，搜索模式下会被忽略
    * @param marker 下一页标识
    * @returns iFileListResult
    */
   async getFileList(prefix = '', marker = '', skey = ''): Promise<SFileList> {
+    // 是否需要搜索
+    const searching = !isEmpty(skey);
     return new Promise<SFileList>((resolve, reject) => {
       this.bucketManager.listPrefix(
         this.qiniuConfig.bucket,
         {
           prefix,
           limit: NETDISK_LIMIT,
-          delimiter: NETDISK_DELIMITER,
+          delimiter: searching ? '' : NETDISK_DELIMITER,
           marker,
         },
         (err, respBody, respInfo) => {
@@ -71,7 +73,8 @@ export class NetDiskManageService {
             // 如果这个nextMarker不为空，那么还有未列举完毕的文件列表，下次调用listPrefix的时候，
             // 指定options里面的marker为这个值
             const fileList: SFileInfo[] = [];
-            if (!isEmpty(respBody.commonPrefixes)) {
+            // 处理目录，但只有非搜索模式下可用
+            if (!searching && !isEmpty(respBody.commonPrefixes)) {
               // dir
               for (const dirPath of respBody.commonPrefixes) {
                 const name = (dirPath as string)
@@ -88,23 +91,52 @@ export class NetDiskManageService {
                 }
               }
             }
+            // handle items
             if (!isEmpty(respBody.items)) {
               // file
               for (const item of respBody.items) {
-                const fileKey = item.key.replace(prefix, '') as string;
-                // 模拟目录
-                if (
-                  !isEmpty(fileKey) &&
-                  (isEmpty(skey) || fileKey.includes(skey))
-                ) {
-                  fileList.push({
-                    id: item.hash,
-                    name: fileKey,
-                    type: 'file',
-                    fsize: item.fsize,
-                    mimeType: item.mimeType,
-                    putTime: new Date(parseInt(item.putTime) / 10000),
-                  });
+                // 搜索模式下处理
+                if (searching) {
+                  const pathList: string[] = item.key.split(NETDISK_DELIMITER);
+                  // dir is empty stirng, file is key string
+                  const name = pathList.pop();
+                  if (
+                    item.key.endsWith(NETDISK_DELIMITER) &&
+                    pathList[pathList.length - 1].includes(skey)
+                  ) {
+                    // 结果是目录
+                    const ditName = pathList.pop();
+                    fileList.push({
+                      id: this.util.generateRandomValue(12),
+                      name: ditName,
+                      type: 'dir',
+                      belongTo: pathList.join(NETDISK_DELIMITER),
+                    });
+                  } else if (name.includes(skey)) {
+                    // 文件
+                    fileList.push({
+                      id: item.hash,
+                      name,
+                      type: 'file',
+                      fsize: item.fsize,
+                      mimeType: item.mimeType,
+                      putTime: new Date(parseInt(item.putTime) / 10000),
+                      belongTo: pathList.join(NETDISK_DELIMITER),
+                    });
+                  }
+                } else {
+                  // 正常获取列表
+                  const fileKey = item.key.replace(prefix, '') as string;
+                  if (!isEmpty(fileKey)) {
+                    fileList.push({
+                      id: item.hash,
+                      name: fileKey,
+                      type: 'file',
+                      fsize: item.fsize,
+                      mimeType: item.mimeType,
+                      putTime: new Date(parseInt(item.putTime) / 10000),
+                    });
+                  }
                 }
               }
             }

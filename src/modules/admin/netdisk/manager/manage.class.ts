@@ -20,6 +20,9 @@ export class SFileInfo {
 
   @ApiProperty({ description: '文件的mime-type' })
   mimeType?: string;
+
+  @ApiProperty({ description: '所属目录' })
+  belongTo?: string;
 }
 
 export class SFileList {
