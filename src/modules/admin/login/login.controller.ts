@@ -9,7 +9,6 @@ import { NoLog } from '../core/decorators/no-log.decorator';
 
 @ApiTags('登录模块')
 @AdminController('public')
-@Open()
 export class LoginController {
   constructor(private loginService: LoginService) {}
 
@@ -18,6 +17,7 @@ export class LoginController {
   })
   @ApiOkResponse({ type: ImageCaptcha })
   @Get('captcha/img')
+  @Open()
   async captchaByImg(@Query() dto: ImageCaptchaDto): Promise<ImageCaptcha> {
     return await this.loginService.createImageCaptcha(dto);
   }
@@ -28,6 +28,7 @@ export class LoginController {
   @ApiOkResponse({ type: LoginToken })
   @Post('login')
   @NoLog()
+  @Open()
   async login(
     @Body() dto: LoginInfoDto,
     @Ip() ip: string,
