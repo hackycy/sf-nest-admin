@@ -10,6 +10,7 @@ import { UtilService } from 'src/shared/services/util.service';
 import { SysMenuService } from '../system/menu/menu.service';
 import { SysUserService } from '../system/user/user.service';
 import { ApiException } from 'src/common/exceptions/api.exception';
+import { SysLogService } from '../system/log/log.service';
 
 @Injectable()
 export class LoginService {
@@ -17,6 +18,7 @@ export class LoginService {
     @Inject(REDIS_INSTANCE) private redis: Redis,
     private menuService: SysMenuService,
     private userService: SysUserService,
+    private logService: SysLogService,
     private util: UtilService,
     private jwtService: JwtService,
   ) {}
@@ -67,7 +69,12 @@ export class LoginService {
    * 获取登录JWT
    * 返回null则账号密码有误，不存在该用户
    */
-  async getLoginSign(username: string, password: string): Promise<string> {
+  async getLoginSign(
+    username: string,
+    password: string,
+    ip: string,
+    ua: string,
+  ): Promise<string> {
     const user = await this.userService.findUserByUserName(username);
     if (isEmpty(user)) {
       throw new ApiException(10003);
@@ -89,8 +96,7 @@ export class LoginService {
     await this.redis.set(`admin:passwordVersion:${user.id}`, 1);
     await this.redis.set(`admin:token:${user.id}`, jwtSign);
     await this.redis.set(`admin:perms:${user.id}`, JSON.stringify(perms));
-    // TODO 保存登录日志
-    // await this.adminSysLoginLogService.save(user.id);
+    await this.logService.saveLoginLog(user.id, ip, ua);
     return jwtSign;
   }
 
