@@ -21,7 +21,7 @@ export class IsLegalNameExpression implements ValidatorConstraintInterface {
         throw new Error('dir name is empty');
       }
       if (value.includes('/')) {
-        throw new Error('dir name not allow / start');
+        throw new Error('dir name not allow /');
       }
       return true;
     } catch (e) {
