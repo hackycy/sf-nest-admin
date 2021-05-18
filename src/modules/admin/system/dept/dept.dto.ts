@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   ArrayNotEmpty,
   IsArray,
@@ -7,7 +8,6 @@ import {
   IsString,
   Min,
   MinLength,
-  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 
@@ -61,11 +61,6 @@ export class TransferDeptDto {
   departmentId: number;
 }
 
-export class MoveDeptDto {
-  @ValidateNested()
-  depts: MoveDept[];
-}
-
 export class MoveDept {
   @ApiProperty({ description: '当前部门ID' })
   @IsInt()
@@ -75,6 +70,13 @@ export class MoveDept {
   @ApiProperty({ description: '移动到指定父级部门的ID' })
   @IsInt()
   @Min(0)
-  @ValidateIf((o) => o.parentId === null || o.parentId === undefined)
-  parentId?: number;
+  @IsOptional()
+  parentId: number;
+}
+
+export class MoveDeptDto {
+  @ApiProperty({ description: '部门列表', type: [MoveDept] })
+  @ValidateNested({ each: true })
+  @Type(() => MoveDept)
+  depts: MoveDept[];
 }
