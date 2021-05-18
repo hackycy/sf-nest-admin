@@ -17,6 +17,7 @@ import {
   CheckStatusDto,
   DeleteDto,
   FileInfoDto,
+  FileOpDto,
   GetFileListDto,
   MarkFileDto,
   MKDirDto,
@@ -129,5 +130,33 @@ export class NetDiskManageController {
   @Post('mark')
   async mark(@Body() dto: MarkFileDto): Promise<void> {
     await this.manageService.changeHeaders(dto.name, dto.path, dto.mark);
+  }
+
+  @ApiOperation({ summary: '剪切文件或文件夹，支持批量' })
+  @Post('cut')
+  async cut(@Body() dto: FileOpDto): Promise<void> {
+    if (dto.files.length === 1 && dto.files[0].type === 'file') {
+      this.manageService.moveFile(
+        dto.originPath,
+        dto.toPath,
+        dto.files[0].name,
+      );
+    } else {
+      throw new Error('un support');
+    }
+  }
+
+  @ApiOperation({ summary: '复制文件或文件夹，支持批量' })
+  @Post('copy')
+  async copy(@Body() dto: FileOpDto): Promise<void> {
+    if (dto.files.length === 1 && dto.files[0].type === 'file') {
+      this.manageService.copyFile(
+        dto.originPath,
+        dto.toPath,
+        dto.files[0].name,
+      );
+    } else {
+      throw new Error('un support');
+    }
   }
 }

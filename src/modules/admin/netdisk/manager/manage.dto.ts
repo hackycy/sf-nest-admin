@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsOptional,
@@ -6,6 +7,7 @@ import {
   Matches,
   Validate,
   ValidateIf,
+  ValidateNested,
   ValidationArguments,
   ValidatorConstraint,
   ValidatorConstraintInterface,
@@ -74,11 +76,13 @@ export class RenameDto {
   @ApiProperty({ description: '更改的名称' })
   @IsString()
   @IsNotEmpty()
+  @Validate(IsLegalNameExpression)
   toName: string;
 
   @ApiProperty({ description: '原来的名称' })
   @IsString()
   @IsNotEmpty()
+  @Validate(IsLegalNameExpression)
   name: string;
 
   @ApiProperty({ description: '路径' })
@@ -107,6 +111,7 @@ export class DeleteDto {
   @ApiProperty({ description: '文件名' })
   @IsString()
   @IsNotEmpty()
+  @Validate(IsLegalNameExpression)
   name: string;
 
   @ApiProperty({ description: '文件/文件夹所在路径' })
@@ -123,6 +128,7 @@ export class CheckStatusDto {
   @ApiProperty({ description: '文件/文件夹名' })
   @IsString()
   @IsNotEmpty()
+  @Validate(IsLegalNameExpression)
   name: string;
 
   @ApiProperty({ description: '文件/文件夹所在路径' })
@@ -144,4 +150,32 @@ export class MarkFileDto {
   @ApiProperty({ description: '备注信息' })
   @IsString()
   mark: string;
+}
+
+export class FileOpItem {
+  @ApiProperty({ description: '文件类型', enum: ['file', 'dir'] })
+  @IsString()
+  @Matches(/(^file$)|(^dir$)/)
+  type: string;
+
+  @ApiProperty({ description: '文件名称' })
+  @IsString()
+  @IsNotEmpty()
+  @Validate(IsLegalNameExpression)
+  name: string;
+}
+
+export class FileOpDto {
+  @ApiProperty({ description: '需要操作的文件或文件夹', type: [FileOpItem] })
+  @Type(() => FileOpItem)
+  @ValidateNested({ each: true })
+  files: FileOpItem[];
+
+  @ApiProperty({ description: '操作前的目录' })
+  @IsString()
+  originPath: string;
+
+  @ApiProperty({ description: '操作后的目录' })
+  @IsString()
+  toPath: string;
 }

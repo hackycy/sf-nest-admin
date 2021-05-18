@@ -16,3 +16,4 @@ export const NETDISK_EVENT_DELETE = 'NetDiskAction.Delete';
 // 目录分隔符
 export const NETDISK_DELIMITER = '/';
 export const NETDISK_LIMIT = 50;
+export const NETDISK_COPY_SUFFIX = '的副本';

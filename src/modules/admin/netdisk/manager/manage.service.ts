@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  NETDISK_COPY_SUFFIX,
   NETDISK_DELIMITER,
   NETDISK_EVENT_DELETE,
   NETDISK_EVENT_RENAME,
@@ -22,6 +23,7 @@ import { Redis } from 'ioredis';
 import { OnEvent } from '@nestjs/event-emitter';
 import { SysUserService } from '../../system/user/user.service';
 import { AccountInfo } from '../../system/user/user.class';
+import { extname, basename } from 'path';
 
 @Injectable()
 export class NetDiskManageService {
@@ -331,6 +333,79 @@ export class NetDiskManageService {
     };
     return new Promise((resolve, reject) => {
       this.bucketManager.move(
+        this.qiniuConfig.bucket,
+        fileName,
+        this.qiniuConfig.bucket,
+        toFileName,
+        op,
+        (err, respBody, respInfo) => {
+          if (err) {
+            reject(err);
+          } else {
+            if (respInfo.statusCode === 200) {
+              resolve();
+            } else {
+              reject(
+                new Error(
+                  `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
+                ),
+              );
+            }
+          }
+        },
+      );
+    });
+  }
+
+  /**
+   * 移动文件
+   */
+  async moveFile(dir: string, toDir: string, name: string): Promise<void> {
+    const fileName = `${dir}${name}`;
+    const toFileName = `${toDir}${name}`;
+    const op = {
+      force: true,
+    };
+    return new Promise((resolve, reject) => {
+      this.bucketManager.move(
+        this.qiniuConfig.bucket,
+        fileName,
+        this.qiniuConfig.bucket,
+        toFileName,
+        op,
+        (err, respBody, respInfo) => {
+          if (err) {
+            reject(err);
+          } else {
+            if (respInfo.statusCode === 200) {
+              resolve();
+            } else {
+              reject(
+                new Error(
+                  `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
+                ),
+              );
+            }
+          }
+        },
+      );
+    });
+  }
+
+  /**
+   * 复制文件
+   */
+  async copyFile(dir: string, toDir: string, name: string): Promise<void> {
+    const fileName = `${dir}${name}`;
+    // 拼接文件名
+    const ext = extname(name);
+    const bn = basename(name, ext);
+    const toFileName = `${toDir}${bn}${NETDISK_COPY_SUFFIX}${ext}`;
+    const op = {
+      force: true,
+    };
+    return new Promise((resolve, reject) => {
+      this.bucketManager.copy(
         this.qiniuConfig.bucket,
         fileName,
         this.qiniuConfig.bucket,
