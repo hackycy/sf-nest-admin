@@ -51,7 +51,7 @@
 
 - 前后端请求参数校验
 - JWT 认证
-- 基于 MidwayJs 框架，内置了基础的中间件支持（用户认证、访问日志、请求追踪等）
+- 基于 NestJs 框架，内置了基础的中间件支持（用户认证、访问日志、请求追踪等）
 - 用户权限动态刷新
 - 代码简单，结构清晰
 
@@ -59,7 +59,7 @@
 
 #### 后端
 
-- MidwayJs + TypeScript
+- NestJs + TypeScript
 - TypeORM（MYSQL）
 - ioredis（Redis）
 - bull（队列）
