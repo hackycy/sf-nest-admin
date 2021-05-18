@@ -135,6 +135,9 @@ export class NetDiskManageController {
   @ApiOperation({ summary: '剪切文件或文件夹，支持批量' })
   @Post('cut')
   async cut(@Body() dto: FileOpDto): Promise<void> {
+    if (dto.originPath === dto.toPath) {
+      throw new ApiException(20002);
+    }
     if (dto.files.length === 1 && dto.files[0].type === 'file') {
       this.manageService.moveFile(
         dto.originPath,

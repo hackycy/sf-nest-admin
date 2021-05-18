@@ -32,4 +32,5 @@ export const ErrorCodeMap = {
 
   // OSS相关
   20001: '当前创建的文件或目录已存在',
+  20002: '无需操作',
 };
