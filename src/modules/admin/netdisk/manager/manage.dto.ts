@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -13,6 +14,8 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { isEmpty } from 'lodash';
+import { NETDISK_HANDLE_MAX_ITEM } from '../../admin.constants';
+import { ActionType } from './manage.class';
 
 @ValidatorConstraint({ name: 'IsLegalNameExpression', async: false })
 export class IsLegalNameExpression implements ValidatorConstraintInterface {
@@ -36,6 +39,19 @@ export class IsLegalNameExpression implements ValidatorConstraintInterface {
     // here you can provide default error message if validation failed
     return 'file or dir name invalid';
   }
+}
+
+export class FileOpItem {
+  @ApiProperty({ description: '文件类型', enum: ['file', 'dir'] })
+  @IsString()
+  @Matches(/(^file$)|(^dir$)/)
+  type: string;
+
+  @ApiProperty({ description: '文件名称' })
+  @IsString()
+  @IsNotEmpty()
+  @Validate(IsLegalNameExpression)
+  name: string;
 }
 
 export class GetFileListDto {
@@ -103,18 +119,13 @@ export class FileInfoDto {
 }
 
 export class DeleteDto {
-  @ApiProperty({ description: '文件类型' })
-  @IsString()
-  @Matches(/(^file$)|(^dir$)/)
-  type: string;
+  @ApiProperty({ description: '需要操作的文件或文件夹', type: [FileOpItem] })
+  @Type(() => FileOpItem)
+  @ArrayMaxSize(NETDISK_HANDLE_MAX_ITEM)
+  @ValidateNested({ each: true })
+  files: FileOpItem[];
 
-  @ApiProperty({ description: '文件名' })
-  @IsString()
-  @IsNotEmpty()
-  @Validate(IsLegalNameExpression)
-  name: string;
-
-  @ApiProperty({ description: '文件/文件夹所在路径' })
+  @ApiProperty({ description: '所在目录' })
   @IsString()
   path: string;
 }
@@ -122,13 +133,11 @@ export class DeleteDto {
 export class CheckStatusDto {
   @ApiProperty({ description: '队列Action' })
   @IsString()
-  @Matches(/(^rename$)|(^delete$)/)
-  action: string;
+  @Matches(/(^rename$)|(^delete$)|(^cut$)|(^copy$)|(^zip$)/)
+  action: ActionType;
 
   @ApiProperty({ description: '文件/文件夹名' })
   @IsString()
-  @IsNotEmpty()
-  @Validate(IsLegalNameExpression)
   name: string;
 
   @ApiProperty({ description: '文件/文件夹所在路径' })
@@ -152,22 +161,10 @@ export class MarkFileDto {
   mark: string;
 }
 
-export class FileOpItem {
-  @ApiProperty({ description: '文件类型', enum: ['file', 'dir'] })
-  @IsString()
-  @Matches(/(^file$)|(^dir$)/)
-  type: string;
-
-  @ApiProperty({ description: '文件名称' })
-  @IsString()
-  @IsNotEmpty()
-  @Validate(IsLegalNameExpression)
-  name: string;
-}
-
 export class FileOpDto {
   @ApiProperty({ description: '需要操作的文件或文件夹', type: [FileOpItem] })
   @Type(() => FileOpItem)
+  @ArrayMaxSize(NETDISK_HANDLE_MAX_ITEM)
   @ValidateNested({ each: true })
   files: FileOpItem[];
 

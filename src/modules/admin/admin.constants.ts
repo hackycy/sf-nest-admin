@@ -13,7 +13,10 @@ export const ADMIN_PREFIX = 'admin';
 
 export const NETDISK_EVENT_RENAME = 'NetDiskAction.Rename';
 export const NETDISK_EVENT_DELETE = 'NetDiskAction.Delete';
+export const NETDISK_EVENT_COPY = 'NetDiskAction.Copy';
+export const NETDISK_EVENT_CUT = 'NetDiskAction.Cut';
 // 目录分隔符
 export const NETDISK_DELIMITER = '/';
-export const NETDISK_LIMIT = 50;
+export const NETDISK_LIMIT = 100;
+export const NETDISK_HANDLE_MAX_ITEM = 1000;
 export const NETDISK_COPY_SUFFIX = '的副本';

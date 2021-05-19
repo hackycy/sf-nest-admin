@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export type FileType = 'file' | 'dir';
+export type ActionType = 'delete' | 'rename' | 'copy' | 'cut' | 'zip';
 
 export class SFileInfo {
   @ApiProperty({ description: '文件id' })

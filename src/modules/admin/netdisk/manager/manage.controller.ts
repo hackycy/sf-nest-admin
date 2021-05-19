@@ -6,6 +6,8 @@ import {
 } from '@nestjs/swagger';
 import {
   ADMIN_PREFIX,
+  NETDISK_EVENT_COPY,
+  NETDISK_EVENT_CUT,
   NETDISK_EVENT_DELETE,
   NETDISK_EVENT_RENAME,
 } from '../../admin.constants';
@@ -94,10 +96,10 @@ export class NetDiskManageController {
   @ApiOperation({ summary: '删除文件或文件夹' })
   @Post('delete')
   async delete(@Body() dto: DeleteDto): Promise<void> {
-    if (dto.type === 'file') {
-      await this.manageService.deleteFile(dto.path, dto.name);
+    if (dto.files.length === 0 && dto.files[0].type === 'file') {
+      await this.manageService.deleteFile(dto.path, dto.files[0].name);
     } else {
-      this.eventEmitter.emit(NETDISK_EVENT_DELETE, dto.path, dto.name);
+      this.eventEmitter.emit(NETDISK_EVENT_DELETE, dto.files, dto.path);
     }
   }
 
@@ -139,13 +141,18 @@ export class NetDiskManageController {
       throw new ApiException(20002);
     }
     if (dto.files.length === 1 && dto.files[0].type === 'file') {
-      this.manageService.moveFile(
+      await this.manageService.moveFile(
         dto.originPath,
         dto.toPath,
         dto.files[0].name,
       );
     } else {
-      throw new Error('un support');
+      this.eventEmitter.emit(
+        NETDISK_EVENT_CUT,
+        dto.files,
+        dto.originPath,
+        dto.toPath,
+      );
     }
   }
 
@@ -153,13 +160,18 @@ export class NetDiskManageController {
   @Post('copy')
   async copy(@Body() dto: FileOpDto): Promise<void> {
     if (dto.files.length === 1 && dto.files[0].type === 'file') {
-      this.manageService.copyFile(
+      await this.manageService.copyFile(
         dto.originPath,
         dto.toPath,
         dto.files[0].name,
       );
     } else {
-      throw new Error('un support');
+      this.eventEmitter.emit(
+        NETDISK_EVENT_COPY,
+        dto.files,
+        dto.originPath,
+        dto.toPath,
+      );
     }
   }
 }
