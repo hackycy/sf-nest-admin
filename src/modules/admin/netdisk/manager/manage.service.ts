@@ -741,7 +741,7 @@ export class NetDiskManageService {
       if (files.length > 0) {
         // 批处理文件
         const copyOperations = files.map((item) => {
-          const fileName = `${dir}${name}`;
+          const fileName = `${dir}${item.name}`;
           // 拼接文件名
           const ext = extname(item.name);
           const bn = basename(item.name, ext);
