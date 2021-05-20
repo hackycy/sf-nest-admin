@@ -136,13 +136,9 @@ export class CheckStatusDto {
   @Matches(/(^rename$)|(^delete$)|(^cut$)|(^copy$)|(^zip$)/)
   action: ActionType;
 
-  @ApiProperty({ description: '文件/文件夹名' })
+  @ApiProperty({ description: '任务Id' })
   @IsString()
-  name: string;
-
-  @ApiProperty({ description: '文件/文件夹所在路径' })
-  @IsString()
-  path: string;
+  taskId: string;
 }
 
 export class MarkFileDto {

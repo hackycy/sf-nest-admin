@@ -8,6 +8,7 @@ import {
   NETDISK_EVENT_RENAME,
   NETDISK_HANDLE_MAX_ITEM,
   NETDISK_LIMIT,
+  NETDISK_TASK_PREFIX,
   QINIU_CONFIG,
 } from '../../admin.constants';
 import { IQiniuConfig } from '../../admin.interface';
@@ -16,6 +17,7 @@ import { rs, conf, auth } from 'qiniu';
 import { UtilService } from 'src/shared/services/util.service';
 import { isEmpty } from 'lodash';
 import {
+  ActionStatus,
   ActionType,
   SFileInfo,
   SFileInfoDetail,
@@ -437,19 +439,15 @@ export class NetDiskManageService {
 
   /**
    * 设置队列任务状态
-   * 0 -> 启动
-   * 1 -> 成功 | 不存在redis key
-   * 2 -> 失败，在获取状态后会自动移除
    */
   async setQiniuTaskStatus(
     action: ActionType,
-    path: string,
-    name: string,
-    status: number,
+    taskId: string,
+    status: ActionStatus,
     err?: string,
   ): Promise<void> {
-    const redisKey = `admin:qiniu:${action}:${path}${name}`;
-    if (status === 1) {
+    const redisKey = `${NETDISK_TASK_PREFIX}${action}:${taskId}`;
+    if (status === ActionStatus.SUCCESS) {
       await this.redis.del(redisKey);
     } else {
       await this.redis.set(
@@ -458,8 +456,18 @@ export class NetDiskManageService {
           status,
           err,
         }),
+        'EX',
+        60 * 30,
       );
     }
+  }
+
+  /**
+   * 创建后台任务编号
+   */
+  createQiniuBgTaskId(): string {
+    const taksId = this.util.generateRandomValue(10);
+    return taksId;
   }
 
   /**
@@ -467,10 +475,9 @@ export class NetDiskManageService {
    */
   async getQiniuTaskStatus(
     action: ActionType,
-    path: string,
-    name: string,
+    taskId: string,
   ): Promise<TaskExecStatusInfo> {
-    const redisKey = `admin:qiniu:${action}:${path}${name}`;
+    const redisKey = `${NETDISK_TASK_PREFIX}${action}:${taskId}`;
     const str = await this.redis.get(redisKey);
     if (isEmpty(str)) {
       return {
@@ -489,9 +496,14 @@ export class NetDiskManageService {
    * 重命名文件夹
    */
   @OnEvent(NETDISK_EVENT_RENAME)
-  async renameDir(path: string, name: string, toName: string): Promise<void> {
+  async renameDir(
+    path: string,
+    name: string,
+    toName: string,
+    taskId: string,
+  ): Promise<void> {
     try {
-      await this.setQiniuTaskStatus('rename', path, name, 0);
+      await this.setQiniuTaskStatus('rename', taskId, ActionStatus.RUNNING);
       const dirName = `${path}${name}`;
       const toDirName = `${path}${toName}`;
       let hasFile = true;
@@ -561,9 +573,14 @@ export class NetDiskManageService {
           );
         });
       }
-      await this.setQiniuTaskStatus('rename', path, name, 1);
+      await this.setQiniuTaskStatus('rename', taskId, ActionStatus.SUCCESS);
     } catch (err) {
-      await this.setQiniuTaskStatus('rename', path, name, 2, `${err}`);
+      await this.setQiniuTaskStatus(
+        'rename',
+        taskId,
+        ActionStatus.FAIL,
+        `${err}`,
+      );
     }
   }
 
@@ -620,9 +637,13 @@ export class NetDiskManageService {
    * @param name 文件目录名称
    */
   @OnEvent(NETDISK_EVENT_DELETE)
-  async deleteFileOrDir(fileList: FileOpItem[], dir: string): Promise<void> {
+  async deleteMultiFileOrDir(
+    fileList: FileOpItem[],
+    dir: string,
+    taskId: string,
+  ): Promise<void> {
     try {
-      await this.setQiniuTaskStatus('delete', dir, '', 0);
+      await this.setQiniuTaskStatus('delete', taskId, ActionStatus.RUNNING);
       const files = fileList.filter((item) => item.type === 'file');
       if (files.length > 0) {
         // 批处理文件
@@ -717,9 +738,14 @@ export class NetDiskManageService {
           }
         }
       }
-      await this.setQiniuTaskStatus('delete', dir, '', 1);
+      await this.setQiniuTaskStatus('delete', taskId, ActionStatus.SUCCESS);
     } catch (err) {
-      await this.setQiniuTaskStatus('delete', dir, '', 2, `${err}`);
+      await this.setQiniuTaskStatus(
+        'delete',
+        taskId,
+        ActionStatus.FAIL,
+        `${err}`,
+      );
     }
   }
 
@@ -727,13 +753,14 @@ export class NetDiskManageService {
    * 复制文件，含文件夹
    */
   @OnEvent(NETDISK_EVENT_COPY)
-  async copyFileOrDir(
+  async copyMultiFileOrDir(
     fileList: FileOpItem[],
     dir: string,
     toDir: string,
+    taskId: string,
   ): Promise<void> {
     try {
-      await this.setQiniuTaskStatus('copy', dir, toDir, 0);
+      await this.setQiniuTaskStatus('copy', taskId, ActionStatus.RUNNING);
       const files = fileList.filter((item) => item.type === 'file');
       const op = {
         force: true,
@@ -849,9 +876,14 @@ export class NetDiskManageService {
           }
         }
       }
-      await this.setQiniuTaskStatus('copy', dir, toDir, 1);
+      await this.setQiniuTaskStatus('copy', taskId, ActionStatus.SUCCESS);
     } catch (err) {
-      await this.setQiniuTaskStatus('copy', dir, toDir, 2, `${err}`);
+      await this.setQiniuTaskStatus(
+        'copy',
+        taskId,
+        ActionStatus.FAIL,
+        `${err}`,
+      );
     }
   }
 
@@ -859,13 +891,14 @@ export class NetDiskManageService {
    * 移动文件，含文件夹
    */
   @OnEvent(NETDISK_EVENT_CUT)
-  async moveFileOrDir(
+  async moveMultiFileOrDir(
     fileList: FileOpItem[],
     dir: string,
     toDir: string,
+    taskId: string,
   ): Promise<void> {
     try {
-      await this.setQiniuTaskStatus('cut', dir, toDir, 0);
+      await this.setQiniuTaskStatus('cut', taskId, ActionStatus.RUNNING);
       const files = fileList.filter((item) => item.type === 'file');
       const op = {
         force: true,
@@ -982,9 +1015,9 @@ export class NetDiskManageService {
           }
         }
       }
-      await this.setQiniuTaskStatus('cut', dir, toDir, 1);
+      await this.setQiniuTaskStatus('cut', taskId, ActionStatus.SUCCESS);
     } catch (err) {
-      await this.setQiniuTaskStatus('cut', dir, toDir, 2, `${err}`);
+      await this.setQiniuTaskStatus('cut', taskId, ActionStatus.FAIL, `${err}`);
     }
   }
 }

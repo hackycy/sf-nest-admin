@@ -15,6 +15,7 @@ export const NETDISK_EVENT_RENAME = 'NetDiskAction.Rename';
 export const NETDISK_EVENT_DELETE = 'NetDiskAction.Delete';
 export const NETDISK_EVENT_COPY = 'NetDiskAction.Copy';
 export const NETDISK_EVENT_CUT = 'NetDiskAction.Cut';
+export const NETDISK_TASK_PREFIX = 'admin:netdisk:';
 // 目录分隔符
 export const NETDISK_DELIMITER = '/';
 export const NETDISK_LIMIT = 100;
