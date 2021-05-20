@@ -912,7 +912,11 @@ export class NetDiskManageService {
         // 处理文件夹的复制
         for (let i = 0; i < dirs.length; i++) {
           const dirName = `${dir}${dirs[i].name}/`;
-          const copyDirName = `${toDir}${dirs[i].name}/`;
+          const toDirName = `${toDir}${dirs[i].name}/`;
+          // 移动的目录不是是自己
+          if (toDirName.startsWith(dirName)) {
+            continue;
+          }
           let hasFile = true;
           let marker = '';
           while (hasFile) {
@@ -933,7 +937,7 @@ export class NetDiskManageService {
                   if (respInfo.statusCode === 200) {
                     const moveOperations = respBody.items.map((item) => {
                       const { key } = item;
-                      const destKey = key.replace(dirName, copyDirName);
+                      const destKey = key.replace(dirName, toDirName);
                       return qiniu.rs.moveOp(
                         this.qiniuConfig.bucket,
                         key,
