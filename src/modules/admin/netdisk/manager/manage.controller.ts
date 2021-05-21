@@ -83,7 +83,9 @@ export class NetDiskManageController {
   @ApiOperation({ summary: '添加文件备注' })
   @Post('mark')
   async mark(@Body() dto: MarkFileDto): Promise<void> {
-    await this.manageService.changeHeaders(dto.name, dto.path, dto.mark);
+    await this.manageService.changeFileHeaders(dto.name, dto.path, {
+      mark: dto.mark,
+    });
   }
 
   @ApiOperation({ summary: '获取下载链接，不支持下载文件夹' })

@@ -218,14 +218,16 @@ export class NetDiskManageService {
   /**
    * 修改文件MimeType
    */
-  async changeHeaders(name: string, path: string, mark: string): Promise<void> {
+  async changeFileHeaders(
+    name: string,
+    path: string,
+    headers: { [k: string]: string },
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       this.bucketManager.changeHeaders(
         this.qiniuConfig.bucket,
         `${path}${name}`,
-        {
-          mark,
-        },
+        headers,
         (err, _, respInfo) => {
           if (err) {
             reject();
