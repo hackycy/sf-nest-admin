@@ -1,9 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { FastifyRequest } from 'fastify';
 import { customAlphabet, nanoid } from 'nanoid';
 import * as CryptoJS from 'crypto-js';
 
 @Injectable()
 export class UtilService {
+  /**
+   * 获取请求IP
+   */
+  getReqIP(req: FastifyRequest): string {
+    return (
+      // 判断是否有反向代理 IP
+      (
+        (req.headers['x-forwarded-for'] as string) ||
+        // 判断 connection 的远程 IP
+        req.connection.remoteAddress ||
+        // 判断后端的 socket 的 IP
+        req.socket.remoteAddress
+      ).replace('::ffff:', '')
+    );
+  }
+
   /**
    * AES加密
    */

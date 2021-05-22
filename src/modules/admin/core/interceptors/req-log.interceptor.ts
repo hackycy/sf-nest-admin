@@ -15,12 +15,14 @@ import {
   NO_LOG_KEY_METADATA,
 } from 'src/modules/admin/admin.constants';
 import { ResOp } from 'src/common/class/res.class';
+import { UtilService } from 'src/shared/services/util.service';
 
 @Injectable()
 export class ReqLogInterceptor implements NestInterceptor {
   constructor(
     private reflector: Reflector,
     private logService: SysLogService,
+    private utils: UtilService,
   ) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const startTime = Date.now();
@@ -47,7 +49,7 @@ export class ReqLogInterceptor implements NestInterceptor {
     }
     const request = context.switchToHttp().getRequest<FastifyRequest>();
     this.logService.saveReqLog(
-      request.ip,
+      this.utils.getReqIP(request),
       request.url.split('?')[0],
       request.method.toUpperCase() === 'GET' ? request.query : request.body,
       data instanceof HttpException
