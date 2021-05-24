@@ -7,7 +7,6 @@ export function setupSwagger(app: INestApplication): void {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('sf-nest-admin')
     .setDescription('Api文档')
-    .setVersion('v2.0.1')
     .setLicense('MIT', 'https://github.com/hackycy/sf-nest-admin')
     .setTermsOfService('https://github.com/hackycy/sf-nest-admin')
     .addSecurity(ADMIN_PREFIX, {
