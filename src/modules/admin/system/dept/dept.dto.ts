@@ -44,6 +44,7 @@ export class DeleteDeptDto {
 
 export class InfoDeptDto {
   @ApiProperty({ description: '查询的系统部门ID' })
+  @Type(() => Number)
   @IsInt()
   @Min(0)
   departmentId: number;
