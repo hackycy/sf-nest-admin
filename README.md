@@ -9,6 +9,7 @@
 ### 演示地址
 
 - [http://opensource.admin.si-yee.com](http://opensource.admin.si-yee.com/)
+- [Swagger Api文档](http://opensource.admin.si-yee.com/api/doc/admin/swagger-api/static/index.html)
 
 演示环境账号密码：
 
