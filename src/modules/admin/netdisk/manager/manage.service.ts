@@ -68,7 +68,7 @@ export class NetDiskManageService {
       this.bucketManager.listPrefix(
         this.qiniuConfig.bucket,
         {
-          prefix,
+          prefix: searching ? '' : prefix,
           limit: NETDISK_LIMIT,
           delimiter: searching ? '' : NETDISK_DELIMITER,
           marker,
