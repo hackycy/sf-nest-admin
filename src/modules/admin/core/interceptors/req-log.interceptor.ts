@@ -12,7 +12,7 @@ import { tap } from 'rxjs/operators';
 import { SysLogService } from '../../system/log/log.service';
 import {
   ADMIN_USER,
-  NO_LOG_KEY_METADATA,
+  LOG_DISABLED_KEY_METADATA,
 } from 'src/modules/admin/admin.constants';
 import { ResOp } from 'src/common/class/res.class';
 import { UtilService } from 'src/shared/services/util.service';
@@ -40,11 +40,11 @@ export class ReqLogInterceptor implements NestInterceptor {
 
   log(startTime: number, context: ExecutionContext, data: unknown): void {
     // check need log ?
-    const noLog = this.reflector.get<boolean>(
-      NO_LOG_KEY_METADATA,
+    const logDisabled = this.reflector.get<boolean>(
+      LOG_DISABLED_KEY_METADATA,
       context.getHandler(),
     );
-    if (noLog) {
+    if (logDisabled) {
       return;
     }
     const request = context.switchToHttp().getRequest<FastifyRequest>();

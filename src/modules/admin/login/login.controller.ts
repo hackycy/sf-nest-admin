@@ -6,7 +6,7 @@ import { Open } from '../core/decorators/open.decorator';
 import { ImageCaptchaDto, LoginInfoDto } from './login.dto';
 import { ImageCaptcha, LoginToken } from './login.class';
 import { LoginService } from './login.service';
-import { NoLog } from '../core/decorators/no-log.decorator';
+import { LogDisabled } from '../core/decorators/log-disabled.decorator';
 import { UtilService } from 'src/shared/services/util.service';
 
 @ApiTags('登录模块')
@@ -29,7 +29,7 @@ export class LoginController {
   })
   @ApiOkResponse({ type: LoginToken })
   @Post('login')
-  @NoLog()
+  @LogDisabled()
   @Open()
   async login(
     @Body() dto: LoginInfoDto,
