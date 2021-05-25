@@ -8,7 +8,7 @@ import {
   ADMIN_PREFIX,
   ADMIN_USER,
   NO_PERM_KEY_METADATA,
-  OPEN_KEY_METADATA,
+  AUTHORIZE_KEY_METADATA,
 } from 'src/modules/admin/admin.constants';
 import { LoginService } from 'src/modules/admin/login/login.service';
 
@@ -25,11 +25,11 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // 检测是否是开放类型的，例如获取验证码类型的接口不需要校验，可以加入@Open可自动放过
-    const isOpen = this.reflector.get<boolean>(
-      OPEN_KEY_METADATA,
+    const authorize = this.reflector.get<boolean>(
+      AUTHORIZE_KEY_METADATA,
       context.getHandler(),
     );
-    if (isOpen) {
+    if (authorize) {
       return true;
     }
     const request = context.switchToHttp().getRequest<FastifyRequest>();

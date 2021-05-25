@@ -2,7 +2,7 @@ import { Body, Get, Headers, Post, Query, Req } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AdminController } from '../core/decorators/admin-controller.decorator';
-import { Open } from '../core/decorators/open.decorator';
+import { Authorize } from '../core/decorators/authorize.decorator';
 import { ImageCaptchaDto, LoginInfoDto } from './login.dto';
 import { ImageCaptcha, LoginToken } from './login.class';
 import { LoginService } from './login.service';
@@ -19,7 +19,7 @@ export class LoginController {
   })
   @ApiOkResponse({ type: ImageCaptcha })
   @Get('captcha/img')
-  @Open()
+  @Authorize()
   async captchaByImg(@Query() dto: ImageCaptchaDto): Promise<ImageCaptcha> {
     return await this.loginService.createImageCaptcha(dto);
   }
@@ -30,7 +30,7 @@ export class LoginController {
   @ApiOkResponse({ type: LoginToken })
   @Post('login')
   @LogDisabled()
-  @Open()
+  @Authorize()
   async login(
     @Body() dto: LoginInfoDto,
     @Req() req: FastifyRequest,

@@ -1,5 +1,5 @@
 export const ADMIN_USER = 'adminUser';
-export const OPEN_KEY_METADATA = 'admin_module:open_auth';
+export const AUTHORIZE_KEY_METADATA = 'admin_module:authorize';
 export const NO_PERM_KEY_METADATA = 'admin_module:no_perm_auth';
 export const LOG_DISABLED_KEY_METADATA = 'admin_module:log_disabled';
 
