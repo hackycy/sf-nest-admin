@@ -11,6 +11,7 @@ export const SYS_TASK_QUEUE_NAME = 'admin_module:sys-task';
 export const SYS_TASK_QUEUE_PREFIX = 'admin:sys:task';
 
 export const ADMIN_PREFIX = 'admin';
+export const QINIU_API = 'http://api.qiniu.com';
 
 export const NETDISK_EVENT_RENAME = 'NetDiskAction.Rename';
 export const NETDISK_EVENT_DELETE = 'NetDiskAction.Delete';
