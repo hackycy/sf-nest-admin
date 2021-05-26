@@ -13,8 +13,6 @@ export class UtilService {
       // 判断是否有反向代理 IP
       (
         (req.headers['x-forwarded-for'] as string) ||
-        // 判断 connection 的远程 IP
-        req.connection.remoteAddress ||
         // 判断后端的 socket 的 IP
         req.socket.remoteAddress
       ).replace('::ffff:', '')
