@@ -17,21 +17,23 @@ import { NetDiskOverviewService } from './overview.service';
 export class NetDiskOverviewController {
   constructor(private overviewService: NetDiskOverviewService) {}
 
-  @ApiOperation({ summary: '获取存储空间数量' })
+  @ApiOperation({ summary: '获取网盘空间数据统计' })
   @ApiOkResponse({ type: OverviewSpaceInfo })
   @PermissionOptional()
   @Get('desc')
   async space(): Promise<OverviewSpaceInfo> {
-    const date = this.overviewService.getZeroHourToDay(new Date());
+    const date = this.overviewService.getZeroHourAnd1Day(new Date());
     const hit = await this.overviewService.getHit(date);
     const flow = await this.overviewService.getFlow(date);
     const space = await this.overviewService.getSpace(date);
     const count = await this.overviewService.getCount(date);
     return {
-      fileSize: count.datas[0],
-      flowSize: flow.datas[0],
-      hitSize: hit.datas[0],
-      spaceSize: space.datas[0],
+      fileSize: count.datas[count.datas.length - 1],
+      flowSize: flow.datas[flow.datas.length - 1],
+      hitSize: hit.datas[hit.datas.length - 1],
+      spaceSize: space.datas[space.datas.length - 1],
+      flowTrend: flow,
+      sizeTrend: space,
     };
   }
 }
