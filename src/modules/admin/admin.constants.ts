@@ -1,7 +1,8 @@
 export const ADMIN_USER = 'adminUser';
-export const OPEN_KEY_METADATA = 'admin_module:open_auth';
-export const NO_PERM_KEY_METADATA = 'admin_module:no_perm_auth';
-export const NO_LOG_KEY_METADATA = 'admin_module:no_log';
+export const AUTHORIZE_KEY_METADATA = 'admin_module:authorize';
+export const PERMISSION_OPTIONAL_KEY_METADATA =
+  'admin_module:permission_optional';
+export const LOG_DISABLED_KEY_METADATA = 'admin_module:log_disabled';
 
 export const ROOT_ROLE_ID = 'admin_module:root_role_id';
 export const QINIU_CONFIG = 'admin_module:qiniu_config';
@@ -10,9 +11,15 @@ export const SYS_TASK_QUEUE_NAME = 'admin_module:sys-task';
 export const SYS_TASK_QUEUE_PREFIX = 'admin:sys:task';
 
 export const ADMIN_PREFIX = 'admin';
+export const QINIU_API = 'http://api.qiniu.com';
 
 export const NETDISK_EVENT_RENAME = 'NetDiskAction.Rename';
 export const NETDISK_EVENT_DELETE = 'NetDiskAction.Delete';
+export const NETDISK_EVENT_COPY = 'NetDiskAction.Copy';
+export const NETDISK_EVENT_CUT = 'NetDiskAction.Cut';
+export const NETDISK_TASK_PREFIX = 'admin:netdisk:';
 // 目录分隔符
 export const NETDISK_DELIMITER = '/';
-export const NETDISK_LIMIT = 20;
+export const NETDISK_LIMIT = 100;
+export const NETDISK_HANDLE_MAX_ITEM = 1000;
+export const NETDISK_COPY_SUFFIX = '的副本';

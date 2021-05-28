@@ -6,6 +6,8 @@ import {
 } from '@nestjs/swagger';
 import {
   ADMIN_PREFIX,
+  NETDISK_EVENT_COPY,
+  NETDISK_EVENT_CUT,
   NETDISK_EVENT_DELETE,
   NETDISK_EVENT_RENAME,
 } from '../../admin.constants';
@@ -17,6 +19,7 @@ import {
   CheckStatusDto,
   DeleteDto,
   FileInfoDto,
+  FileOpDto,
   GetFileListDto,
   MarkFileDto,
   MKDirDto,
@@ -26,6 +29,7 @@ import {
   SFileInfoDetail,
   SFileList,
   TaskExecStatusInfo,
+  TaskInfo,
   UploadToken,
 } from './manage.class';
 import { ApiException } from 'src/common/exceptions/api.exception';
@@ -69,35 +73,19 @@ export class NetDiskManageController {
     };
   }
 
-  @ApiOperation({ summary: '重命名文件或文件夹' })
-  @Post('rename')
-  async rename(@Body() dto: RenameDto): Promise<void> {
-    const result = await this.manageService.checkFileExist(
-      `${dto.path}${dto.toName}${dto.type === 'dir' ? '/' : ''}`,
-    );
-    if (result) {
-      throw new ApiException(20001);
-    }
-    if (dto.type === 'file') {
-      await this.manageService.renameFile(dto.path, dto.name, dto.toName);
-    } else {
-      this.eventEmitter.emit(
-        NETDISK_EVENT_RENAME,
-        dto.path,
-        dto.name,
-        dto.toName,
-      );
-    }
+  @ApiOperation({ summary: '获取文件详细信息' })
+  @ApiOkResponse({ type: SFileInfoDetail })
+  @Post('info')
+  async info(@Body() dto: FileInfoDto): Promise<SFileInfoDetail> {
+    return await this.manageService.getFileInfo(dto.name, dto.path);
   }
 
-  @ApiOperation({ summary: '删除文件或文件夹' })
-  @Post('delete')
-  async delete(@Body() dto: DeleteDto): Promise<void> {
-    if (dto.type === 'file') {
-      await this.manageService.deleteFile(dto.path, dto.name);
-    } else {
-      this.eventEmitter.emit(NETDISK_EVENT_DELETE, dto.path, dto.name);
-    }
+  @ApiOperation({ summary: '添加文件备注' })
+  @Post('mark')
+  async mark(@Body() dto: MarkFileDto): Promise<void> {
+    await this.manageService.changeFileHeaders(dto.name, dto.path, {
+      mark: dto.mark,
+    });
   }
 
   @ApiOperation({ summary: '获取下载链接，不支持下载文件夹' })
@@ -111,23 +99,117 @@ export class NetDiskManageController {
   @ApiOkResponse({ type: TaskExecStatusInfo })
   @Post('check')
   async check(@Body() dto: CheckStatusDto): Promise<TaskExecStatusInfo> {
-    return await this.manageService.getQiniuTaskStatus(
-      dto.action,
-      dto.path,
-      dto.name,
+    return await this.manageService.getQiniuTaskStatus(dto.action, dto.taskId);
+  }
+
+  @ApiOperation({ summary: '重命名文件或文件夹' })
+  @ApiOkResponse({ type: TaskInfo })
+  @Post('rename')
+  async rename(@Body() dto: RenameDto): Promise<TaskInfo> {
+    const result = await this.manageService.checkFileExist(
+      `${dto.path}${dto.toName}${dto.type === 'dir' ? '/' : ''}`,
     );
+    if (result) {
+      throw new ApiException(20001);
+    }
+    if (dto.type === 'file') {
+      await this.manageService.renameFile(dto.path, dto.name, dto.toName);
+      return {
+        bgMode: false,
+      };
+    } else {
+      const taskId = this.manageService.createQiniuBgTaskId();
+      this.eventEmitter.emit(
+        NETDISK_EVENT_RENAME,
+        dto.path,
+        dto.name,
+        dto.toName,
+        taskId,
+      );
+      return {
+        bgMode: true,
+        taskId,
+      };
+    }
   }
 
-  @ApiOperation({ summary: '获取文件详细信息' })
-  @ApiOkResponse({ type: SFileInfoDetail })
-  @Post('info')
-  async info(@Body() dto: FileInfoDto): Promise<SFileInfoDetail> {
-    return await this.manageService.getFileInfo(dto.name, dto.path);
+  @ApiOperation({ summary: '删除文件或文件夹' })
+  @ApiOkResponse({ type: TaskInfo })
+  @Post('delete')
+  async delete(@Body() dto: DeleteDto): Promise<TaskInfo> {
+    if (dto.files.length === 0 && dto.files[0].type === 'file') {
+      await this.manageService.deleteFile(dto.path, dto.files[0].name);
+      return {
+        bgMode: false,
+      };
+    } else {
+      const taskId = this.manageService.createQiniuBgTaskId();
+      this.eventEmitter.emit(NETDISK_EVENT_DELETE, dto.files, dto.path, taskId);
+      return {
+        bgMode: true,
+        taskId,
+      };
+    }
   }
 
-  @ApiOperation({ summary: '添加文件备注' })
-  @Post('mark')
-  async mark(@Body() dto: MarkFileDto): Promise<void> {
-    await this.manageService.changeHeaders(dto.name, dto.path, dto.mark);
+  @ApiOperation({ summary: '剪切文件或文件夹，支持批量' })
+  @ApiOkResponse({ type: TaskInfo })
+  @Post('cut')
+  async cut(@Body() dto: FileOpDto): Promise<TaskInfo> {
+    if (dto.originPath === dto.toPath) {
+      throw new ApiException(20002);
+    }
+    if (dto.files.length === 1 && dto.files[0].type === 'file') {
+      await this.manageService.moveFile(
+        dto.originPath,
+        dto.toPath,
+        dto.files[0].name,
+      );
+      return {
+        bgMode: false,
+      };
+    } else {
+      const taskId = this.manageService.createQiniuBgTaskId();
+      this.eventEmitter.emit(
+        NETDISK_EVENT_CUT,
+        dto.files,
+        dto.originPath,
+        dto.toPath,
+        taskId,
+      );
+      return {
+        bgMode: true,
+        taskId,
+      };
+    }
+  }
+
+  @ApiOperation({ summary: '复制文件或文件夹，支持批量' })
+  @ApiOkResponse({ type: TaskInfo })
+  @Post('copy')
+  async copy(@Body() dto: FileOpDto): Promise<TaskInfo> {
+    if (dto.files.length === 1 && dto.files[0].type === 'file') {
+      await this.manageService.copyFile(
+        dto.originPath,
+        dto.toPath,
+        dto.files[0].name,
+      );
+      return {
+        bgMode: false,
+      };
+    } else {
+      const taskId = this.manageService.createQiniuBgTaskId();
+      this.eventEmitter.emit(
+        NETDISK_EVENT_COPY,
+        dto.files,
+        dto.originPath,
+        dto.toPath,
+        taskId,
+      );
+      return {
+        bgMode: true,
+        taskId,
+      };
+    }
   }
 }

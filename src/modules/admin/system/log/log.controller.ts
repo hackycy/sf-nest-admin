@@ -7,7 +7,7 @@ import SysReqLog from 'src/entities/admin/sys-req-log.entity';
 import { IAdminUser } from '../../admin.interface';
 import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { AdminUser } from '../../core/decorators/admin-user.decorator';
-import { NoLog } from '../../core/decorators/no-log.decorator';
+import { LogDisabled } from '../../core/decorators/log-disabled.decorator';
 import { SysUserService } from '../user/user.service';
 import { LoginLogInfo, OnlineUserInfo, TaskLogInfo } from './log.class';
 import { KickDto } from './log.dto';
@@ -23,7 +23,7 @@ export class SysLogController {
 
   @ApiOperation({ summary: '分页查询登录日志' })
   @ApiOkResponse({ type: [LoginLogInfo] })
-  @NoLog()
+  @LogDisabled()
   @Get('log/login/page')
   async loginLogPage(
     @Query() dto: PageOptionsDto,
@@ -42,7 +42,7 @@ export class SysLogController {
 
   @ApiOperation({ summary: '分页查询请求追踪日志' })
   @ApiOkResponse({ type: [SysReqLog] })
-  @NoLog()
+  @LogDisabled()
   @Get('log/req/page')
   async reqPage(@Query() dto: PageOptionsDto): Promise<PageResult<SysReqLog>> {
     const list = await this.logService.pageGetReqLog(dto.page - 1, dto.limit);
@@ -59,7 +59,7 @@ export class SysLogController {
 
   @ApiOperation({ summary: '分页查询任务日志' })
   @ApiOkResponse({ type: [TaskLogInfo] })
-  @NoLog()
+  @LogDisabled()
   @Get('log/task/page')
   async taskPage(
     @Query() dto: PageOptionsDto,
@@ -78,7 +78,7 @@ export class SysLogController {
 
   @ApiOperation({ summary: '查询当前在线用户' })
   @ApiOkResponse({ type: [OnlineUserInfo] })
-  @NoLog()
+  @LogDisabled()
   @Get('online/list')
   async list(@AdminUser() user: IAdminUser): Promise<OnlineUserInfo[]> {
     return await this.logService.listOnlineUser(user.uid);

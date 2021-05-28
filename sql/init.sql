@@ -108,8 +108,6 @@ INSERT INTO `sys_menu` VALUES ('2020-09-11 06:13:23.752133', '2020-09-11 06:13:2
 INSERT INTO `sys_menu` VALUES ('2020-09-11 06:29:52.437621', '2020-09-11 06:29:52.437621', 41, 4, '部门更新', '', 'sys:dept:update', 2, '', 0, '', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2021-04-12 04:28:03.312443', '2021-04-20 10:18:22', 20, 4, '部门移动排序', NULL, 'sys:dept:move', 2, NULL, 255, NULL, 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-09-14 03:56:24.740870', '2020-10-09 07:47:05.000000', 44, NULL, '文档', '/document', '', 0, 'documentation', 0, '', 1, 1);
-INSERT INTO `sys_menu` VALUES ('2020-09-14 06:55:17.544866', '2020-09-24 08:00:12.000000', 45, NULL, '通用权限', '/common', '', 0, '', 0, '', 1, 0);
-INSERT INTO `sys_menu` VALUES ('2020-09-23 07:31:28.700348', '2020-09-24 05:22:45.000000', 46, 45, '图片空间', '', 'space:image:type:list,space:image:type:add,space:image:type:delete,space:image:page,space:image:delete,space:image:upload', 2, '', 0, '', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-10-12 10:00:49.463487', '2020-10-12 10:00:49.463487', 51, 37, '在线用户', '/sys/monitor/online', NULL, 1, 'people', 0, 'views/system/monitor/online', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-10-13 03:01:13.787832', '2020-10-13 03:01:13.787832', 52, 51, '查询', '', 'sys:online:list', 2, '', 0, '', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-10-13 03:01:51.480667', '2020-10-13 03:01:51.480667', 53, 51, '下线', '', 'sys:online:kick', 2, '', 0, '', 1, 1);

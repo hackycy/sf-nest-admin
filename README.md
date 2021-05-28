@@ -2,13 +2,14 @@
 
 ![](https://img.shields.io/github/commit-activity/m/hackycy/sf-nest-admin) ![](https://img.shields.io/github/license/hackycy/sf-nest-admin) ![](https://img.shields.io/github/repo-size/hackycy/sf-nest-admin) ![](https://img.shields.io/github/languages/top/hackycy/sf-nest-admin)
 
-**基于MidwayJs + TypeScript + TypeORM + Redis + MySql + Vue + Element-UI编写的一款简单高效的前后端分离的权限管理系统。希望这个项目在全栈的路上能够帮助到你。**
+**基于NestJs + TypeScript + TypeORM + Redis + MySql + Vue + Element-UI编写的一款简单高效的前后端分离的权限管理系统。希望这个项目在全栈的路上能够帮助到你。**
 
 前端项目地址：[传送门](https://github.com/hackycy/sf-vue-admin)
 
 ### 演示地址
 
 - [http://opensource.admin.si-yee.com](http://opensource.admin.si-yee.com/)
+- [Swagger Api文档](http://opensource.admin.si-yee.com/api/doc/admin/swagger-api/static/index.html)
 
 演示环境账号密码：
 
@@ -51,7 +52,7 @@
 
 - 前后端请求参数校验
 - JWT 认证
-- 基于 MidwayJs 框架，内置了基础的中间件支持（用户认证、访问日志、请求追踪等）
+- 基于 NestJs 框架，内置了基础的中间件支持（用户认证、访问日志、请求追踪等）
 - 用户权限动态刷新
 - 代码简单，结构清晰
 
@@ -59,7 +60,7 @@
 
 #### 后端
 
-- MidwayJs + TypeScript
+- NestJs + TypeScript
 - TypeORM（MYSQL）
 - ioredis（Redis）
 - bull（队列）
