@@ -114,57 +114,6 @@ $ npm run dev
 
 ![](https://raw.githubusercontent.com/hackycy/sf-nest-admin/master/docs/screenshot/5.png)
 
-### 项目部署
-
-#### 执行
-
-```
-$ npm run build
-$ npm run start
-```
-
-#### 反向代理配置示例
-
-```conf
-server
-{
-    # ... 省略
-
-	# 请添加以下配置
-    location / {
-      try_files $uri $uri/ /index.html;
-    }
-
-    location /api/
-    {
-        proxy_pass http://127.0.0.1:7001/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header REMOTE-HOST $remote_addr;
-
-        #缓存相关配置
-        #proxy_cache cache_one;
-        #proxy_cache_key $host$request_uri$is_args$args;
-        #proxy_cache_valid 200 304 301 302 1h;
-
-        #持久化连接相关配置
-        proxy_connect_timeout 3000s;
-        proxy_read_timeout 86400s;
-        proxy_send_timeout 3000s;
-        #proxy_http_version 1.1;
-        #proxy_set_header Upgrade $http_upgrade;
-        #proxy_set_header Connection "upgrade";
-
-        add_header X-Cache $upstream_cache_status;
-
-        #expires 12h;
-    }
-
-    # ... 省略
-}
-```
-
 ### 环境要求
 
 - Node.js 12.x+
