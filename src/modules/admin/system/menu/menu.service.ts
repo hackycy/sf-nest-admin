@@ -1,21 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Redis } from 'ioredis';
 import { concat, includes, isEmpty, uniq } from 'lodash';
 import { ROOT_ROLE_ID } from 'src/modules/admin/admin.constants';
-import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysMenu from 'src/entities/admin/sys-menu.entity';
 import { IsNull, Not, Repository } from 'typeorm';
 import { SysRoleService } from '../role/role.service';
 import { MenuItemAndParentInfoResult } from './menu.class';
 import { CreateMenuDto } from './menu.dto';
+import { RedisService } from 'src/shared/services/redis.service';
 
 @Injectable()
 export class SysMenuService {
   constructor(
     @InjectRepository(SysMenu) private menuRepository: Repository<SysMenu>,
-    @Inject(REDIS_INSTANCE) private redis: Redis,
+    private redisService: RedisService,
     @Inject(ROOT_ROLE_ID) private rootRoleId: number,
     private roleService: SysRoleService,
   ) {}
@@ -178,10 +177,12 @@ export class SysMenuService {
    */
   async refreshPerms(uid: number): Promise<void> {
     const perms = await this.getPerms(uid);
-    const online = await this.redis.get(`admin:token:${uid}`);
+    const online = await this.redisService.getRedis().get(`admin:token:${uid}`);
     if (online) {
       // 判断是否在线
-      await this.redis.set(`admin:perms:${uid}`, JSON.stringify(perms));
+      await this.redisService
+        .getRedis()
+        .set(`admin:perms:${uid}`, JSON.stringify(perms));
     }
   }
 
@@ -189,12 +190,16 @@ export class SysMenuService {
    * 刷新所有在线用户的权限
    */
   async refreshOnlineUserPerms(): Promise<void> {
-    const onlineUserIds: string[] = await this.redis.keys('admin:token:*');
+    const onlineUserIds: string[] = await this.redisService
+      .getRedis()
+      .keys('admin:token:*');
     if (onlineUserIds && onlineUserIds.length > 0) {
       for (let i = 0; i < onlineUserIds.length; i++) {
         const uid = onlineUserIds[i].split('admin:token:')[1];
         const perms = await this.getPerms(parseInt(uid));
-        await this.redis.set(`admin:perms:${uid}`, JSON.stringify(perms));
+        await this.redisService
+          .getRedis()
+          .set(`admin:perms:${uid}`, JSON.stringify(perms));
       }
     }
   }

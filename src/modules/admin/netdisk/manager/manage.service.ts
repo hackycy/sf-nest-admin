@@ -24,13 +24,12 @@ import {
   SFileList,
   TaskExecStatusInfo,
 } from './manage.class';
-import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
-import { Redis } from 'ioredis';
 import { OnEvent } from '@nestjs/event-emitter';
 import { SysUserService } from '../../system/user/user.service';
 import { AccountInfo } from '../../system/user/user.class';
 import { extname, basename } from 'path';
 import { FileOpItem } from './manage.dto';
+import { RedisService } from 'src/shared/services/redis.service';
 
 @Injectable()
 export class NetDiskManageService {
@@ -40,7 +39,7 @@ export class NetDiskManageService {
 
   constructor(
     @Inject(QINIU_CONFIG) private qiniuConfig: IQiniuConfig,
-    @Inject(REDIS_INSTANCE) private redis: Redis,
+    private redisService: RedisService,
     private userService: SysUserService,
     private util: UtilService,
   ) {
@@ -450,9 +449,9 @@ export class NetDiskManageService {
   ): Promise<void> {
     const redisKey = `${NETDISK_TASK_PREFIX}${action}:${taskId}`;
     if (status === ActionStatus.SUCCESS) {
-      await this.redis.del(redisKey);
+      await this.redisService.getRedis().del(redisKey);
     } else {
-      await this.redis.set(
+      await this.redisService.getRedis().set(
         redisKey,
         JSON.stringify({
           status,
@@ -480,7 +479,7 @@ export class NetDiskManageService {
     taskId: string,
   ): Promise<TaskExecStatusInfo> {
     const redisKey = `${NETDISK_TASK_PREFIX}${action}:${taskId}`;
-    const str = await this.redis.get(redisKey);
+    const str = await this.redisService.getRedis().get(redisKey);
     if (isEmpty(str)) {
       return {
         status: 1,
@@ -488,7 +487,7 @@ export class NetDiskManageService {
     } else {
       const obj: TaskExecStatusInfo = JSON.parse(str);
       if (obj.status === 2) {
-        await this.redis.del(redisKey);
+        await this.redisService.getRedis().del(redisKey);
       }
       return obj;
     }

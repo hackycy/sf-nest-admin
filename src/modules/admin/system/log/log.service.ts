@@ -1,10 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-import { Redis } from 'ioredis';
-import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
 import SysLoginLog from 'src/entities/admin/sys-login-log.entity';
 import SysReqLog from 'src/entities/admin/sys-req-log.entity';
 import SysTaskLog from 'src/entities/admin/sys-task-log.entity';
+import { RedisService } from 'src/shared/services/redis.service';
 import { EntityManager, Repository } from 'typeorm';
 import { UAParser } from 'ua-parser-js';
 import { SysUserService } from '../user/user.service';
@@ -19,7 +18,7 @@ export class SysLogService {
     private reqLogRepository: Repository<SysReqLog>,
     @InjectRepository(SysTaskLog)
     private taskLogRepository: Repository<SysTaskLog>,
-    @Inject(REDIS_INSTANCE) private redis: Redis,
+    private redisService: RedisService,
     @InjectEntityManager() private entityManager: EntityManager,
     private userService: SysUserService,
   ) {}
@@ -137,7 +136,9 @@ export class SysLogService {
   // ---- online
 
   async listOnlineUser(currentUid: number): Promise<OnlineUserInfo[]> {
-    const onlineUserIds: string[] = await this.redis.keys('admin:token:*');
+    const onlineUserIds: string[] = await this.redisService
+      .getRedis()
+      .keys('admin:token:*');
     const formatNumberIds: number[] = onlineUserIds.map((e) => {
       const uid = e.split('admin:token:')[1];
       return parseInt(uid);

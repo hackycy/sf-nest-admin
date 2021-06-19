@@ -1,7 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Redis } from 'ioredis';
+import { Injectable } from '@nestjs/common';
 import * as svgCaptcha from 'svg-captcha';
-import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
 import { ImageCaptcha, PermMenuInfo } from './login.class';
 import { isEmpty } from 'lodash';
 import { ImageCaptchaDto } from './login.dto';
@@ -11,11 +9,12 @@ import { SysMenuService } from '../system/menu/menu.service';
 import { SysUserService } from '../system/user/user.service';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import { SysLogService } from '../system/log/log.service';
+import { RedisService } from 'src/shared/services/redis.service';
 
 @Injectable()
 export class LoginService {
   constructor(
-    @Inject(REDIS_INSTANCE) private redis: Redis,
+    private redisService: RedisService,
     private menuService: SysMenuService,
     private userService: SysUserService,
     private logService: SysLogService,
@@ -44,12 +43,9 @@ export class LoginService {
       id: this.util.generateUUID(), // this.utils.generateUUID()
     };
     // 10分钟过期时间
-    await this.redis.set(
-      `admin:captcha:img:${result.id}`,
-      svg.text,
-      'EX',
-      60 * 5,
-    );
+    await this.redisService
+      .getRedis()
+      .set(`admin:captcha:img:${result.id}`, svg.text, 'EX', 60 * 5);
     return result;
   }
 
@@ -57,12 +53,14 @@ export class LoginService {
    * 校验验证码
    */
   async checkImgCaptcha(id: string, code: string): Promise<void> {
-    const result = await this.redis.get(`admin:captcha:img:${id}`);
+    const result = await this.redisService
+      .getRedis()
+      .get(`admin:captcha:img:${id}`);
     if (isEmpty(result) || code.toLowerCase() !== result.toLowerCase()) {
       throw new ApiException(10002);
     }
     // 校验成功后移除验证码
-    await this.redis.del(`admin:captcha:img:${id}`);
+    await this.redisService.getRedis().del(`admin:captcha:img:${id}`);
   }
 
   /**
@@ -93,9 +91,13 @@ export class LoginService {
         expiresIn: '24h',
       },
     );
-    await this.redis.set(`admin:passwordVersion:${user.id}`, 1);
-    await this.redis.set(`admin:token:${user.id}`, jwtSign);
-    await this.redis.set(`admin:perms:${user.id}`, JSON.stringify(perms));
+    await this.redisService
+      .getRedis()
+      .set(`admin:passwordVersion:${user.id}`, 1);
+    await this.redisService.getRedis().set(`admin:token:${user.id}`, jwtSign);
+    await this.redisService
+      .getRedis()
+      .set(`admin:perms:${user.id}`, JSON.stringify(perms));
     await this.logService.saveLoginLog(user.id, ip, ua);
     return jwtSign;
   }
@@ -117,14 +119,14 @@ export class LoginService {
   }
 
   async getRedisPasswordVersionById(id: number): Promise<string> {
-    return this.redis.get(`admin:passwordVersion:${id}`);
+    return this.redisService.getRedis().get(`admin:passwordVersion:${id}`);
   }
 
   async getRedisTokenById(id: number): Promise<string> {
-    return this.redis.get(`admin:token:${id}`);
+    return this.redisService.getRedis().get(`admin:token:${id}`);
   }
 
   async getRedisPermsById(id: number): Promise<string> {
-    return this.redis.get(`admin:perms:${id}`);
+    return this.redisService.getRedis().get(`admin:perms:${id}`);
   }
 }

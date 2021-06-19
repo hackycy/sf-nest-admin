@@ -1,12 +1,12 @@
 import { Global, HttpModule, CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import * as redisStore from 'cache-manager-ioredis';
-import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
-import { redisProvider } from 'src/common/providers/redis.provider';
+import { RedisModule } from './redis/redis.module';
+import { RedisService } from './services/redis.service';
 import { UtilService } from './services/util.service';
 
-const providers = [UtilService];
+// common provider list
+const providers = [UtilService, RedisService];
 
 /**
  * 全局共享模块
@@ -16,18 +16,7 @@ const providers = [UtilService];
   imports: [
     HttpModule,
     // redis cache
-    CacheModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        store: redisStore,
-        host: configService.get<string>('redis.host'),
-        port: configService.get<number>('redis.port'),
-        password: configService.get<string>('redis.password'),
-        db: configService.get<number>('redis.db'),
-        ttl: configService.get<number>('redis.ttl'),
-      }),
-      inject: [ConfigService],
-    }),
+    CacheModule.register(),
     // jwt
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -36,8 +25,18 @@ const providers = [UtilService];
       }),
       inject: [ConfigService],
     }),
+    RedisModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        host: configService.get<string>('redis.host'),
+        port: configService.get<number>('redis.port'),
+        password: configService.get<string>('redis.password'),
+        db: configService.get<number>('redis.db'),
+      }),
+      inject: [ConfigService],
+    }),
   ],
-  providers: [...providers, redisProvider()],
-  exports: [HttpModule, CacheModule, JwtModule, REDIS_INSTANCE, ...providers],
+  providers: [...providers],
+  exports: [HttpModule, CacheModule, JwtModule, ...providers],
 })
 export class SharedModule {}

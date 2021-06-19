@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { FastifyReply } from 'fastify';
 import { map } from 'rxjs/operators';
-import { TRANSFORM_KEEP_KEY_METADATA } from '../contants/common.contants';
+import { TRANSFORM_KEEP_KEY_METADATA } from '../contants/keep.contants';
 import { ResOp } from '../class/res.class';
 
 /**
