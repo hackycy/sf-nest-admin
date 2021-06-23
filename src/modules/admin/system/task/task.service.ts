@@ -232,15 +232,19 @@ export class SysTaskService implements OnModuleInit {
    * 检测service是否有注解定义
    * @param serviceName service
    */
-  async checkHasMissionMeta(serviceName): Promise<void | never> {
-    const arr = serviceName.split('.');
-    if (arr.length < 1) {
-      throw new Error('serviceName define error');
-    }
+  async checkHasMissionMeta(
+    nameOrInstance: string | unknown,
+    exec: string,
+  ): Promise<void | never> {
     try {
-      const service = await this.moduleRef.get(arr[0], { strict: false });
+      let service: any;
+      if (typeof nameOrInstance === 'string') {
+        service = await this.moduleRef.get(nameOrInstance, { strict: false });
+      } else {
+        service = nameOrInstance;
+      }
       // 所执行的任务不存在
-      if (!service || !(arr[1] in service)) {
+      if (!service || !(exec in service)) {
         throw new ApiException(10102);
       }
       // 检测是否有Mission注解
@@ -273,11 +277,13 @@ export class SysTaskService implements OnModuleInit {
       if (arr.length < 1) {
         throw new Error('serviceName define error');
       }
+      const methodName = arr[1];
       const service = await this.moduleRef.get(arr[0], { strict: false });
+      await this.checkHasMissionMeta(service, methodName);
       if (isEmpty(args)) {
-        service[arr[1]]();
+        await service[methodName]();
       } else {
-        service[arr[1]](JSON.parse(args));
+        await service[methodName](JSON.parse(args));
       }
     }
   }
