@@ -1,4 +1,10 @@
-import { Get } from '@nestjs/common';
+import {
+  CacheInterceptor,
+  CacheKey,
+  CacheTTL,
+  Get,
+  UseInterceptors,
+} from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -17,6 +23,9 @@ import { NetDiskOverviewService } from './overview.service';
 export class NetDiskOverviewController {
   constructor(private overviewService: NetDiskOverviewService) {}
 
+  @CacheKey('netdisk_overview_desc')
+  @CacheTTL(3600)
+  @UseInterceptors(CacheInterceptor)
   @ApiOperation({ summary: '获取网盘空间数据统计' })
   @ApiOkResponse({ type: OverviewSpaceInfo })
   @PermissionOptional()
