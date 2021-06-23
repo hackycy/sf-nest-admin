@@ -3,6 +3,7 @@ import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import SysLoginLog from 'src/entities/admin/sys-login-log.entity';
 import SysReqLog from 'src/entities/admin/sys-req-log.entity';
 import SysTaskLog from 'src/entities/admin/sys-task-log.entity';
+import { Mission } from 'src/mission/mission.decorator';
 import { RedisService } from 'src/shared/services/redis.service';
 import { EntityManager, Repository } from 'typeorm';
 import { UAParser } from 'ua-parser-js';
@@ -10,6 +11,7 @@ import { SysUserService } from '../user/user.service';
 import { LoginLogInfo, OnlineUserInfo, TaskLogInfo } from './log.class';
 
 @Injectable()
+@Mission()
 export class SysLogService {
   constructor(
     @InjectRepository(SysLoginLog)

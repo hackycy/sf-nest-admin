@@ -40,12 +40,14 @@ export class SysTaskController {
   @ApiOperation({ summary: '添加任务' })
   @Post('add')
   async add(@Body() dto: CreateTaskDto): Promise<void> {
+    await this.taskService.checkHasMissionMeta(dto.service);
     await this.taskService.addOrUpdate(dto);
   }
 
   @ApiOperation({ summary: '更新任务' })
   @Post('update')
   async update(@Body() dto: UpdateTaskDto): Promise<void> {
+    await this.taskService.checkHasMissionMeta(dto.service);
     await this.taskService.addOrUpdate(dto);
   }
 
