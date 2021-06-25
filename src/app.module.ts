@@ -9,6 +9,7 @@ import Configuration from './config/configuration';
 import { AdminModule } from './modules/admin/admin.module';
 import { SharedModule } from './shared/shared.module';
 import { MissionModule } from './mission/mission.module';
+import { WSModule } from './modules/ws/ws.module';
 
 @Module({
   imports: [
@@ -39,6 +40,8 @@ import { MissionModule } from './mission/mission.module';
     MissionModule,
     // application modules import
     AdminModule,
+    // websocket module
+    WSModule,
   ],
 })
 export class AppModule {}

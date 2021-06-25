@@ -8,6 +8,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { WsAdapter } from '@nestjs/platform-ws';
 import { ValidationError } from 'class-validator';
 import { flatten } from 'lodash';
 import { AppModule } from './app.module';
@@ -42,6 +43,8 @@ async function bootstrap() {
   app.useGlobalFilters(new ApiExecptionFilter());
   // api interceptor
   app.useGlobalInterceptors(new ApiTransformInterceptor(new Reflector()));
+  // websocket
+  app.useWebSocketAdapter(new WsAdapter());
   // swagger
   setupSwagger(app);
   // start
