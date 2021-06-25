@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
 /**
  * WebSokcet网关
  */
-@WebSocketGateway(parseInt(process.env.WS_PORT || '8080'), {
+@WebSocketGateway(parseInt(process.env.WS_PORT || '7002'), {
   path: '/ws',
 })
 export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
