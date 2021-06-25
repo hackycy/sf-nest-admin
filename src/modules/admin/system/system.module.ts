@@ -82,6 +82,12 @@ import { SysTaskConsumer } from './task/task.processor';
     SysTaskService,
     SysTaskConsumer,
   ],
-  exports: [ROOT_ROLE_ID, SysUserService, SysMenuService, SysLogService],
+  exports: [
+    ROOT_ROLE_ID,
+    TypeOrmModule,
+    SysUserService,
+    SysMenuService,
+    SysLogService,
+  ],
 })
 export class SystemModule {}

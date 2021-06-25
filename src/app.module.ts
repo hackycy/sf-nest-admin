@@ -35,9 +35,10 @@ import { MissionModule } from './mission/mission.module';
     BullModule.forRoot({}),
     // custom module
     SharedModule,
+    // mission module
     MissionModule,
     // application modules import
-    AdminModule.register(),
+    AdminModule,
   ],
 })
 export class AppModule {}
