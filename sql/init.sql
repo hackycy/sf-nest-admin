@@ -224,9 +224,9 @@ CREATE TABLE `sys_task` (
 -- Records of sys_task
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_task` VALUES ('2020-10-19 08:53:44.732338', '2020-10-26 09:28:23.000000', 1, '定时清空请求追踪日志', 'adminSysReqLogService.clear', 0, 1, NULL, NULL, 0, '0 0 3 ? * 1', 1000, '', '{\"count\":1,\"cron\":\"0 0 3 ? * 1\",\"jobId\":1}', '');
-INSERT INTO `sys_task` VALUES ('2020-10-19 08:54:42.760785', '2020-10-26 09:28:23.000000', 2, '定时清空登录日志', 'adminSysLoginLogService.clear', 0, 1, NULL, NULL, 0, '0 0 3 ? * 1', 0, '', '{\"count\":1,\"cron\":\"0 0 3 ? * 1\",\"jobId\":2}', '');
-INSERT INTO `sys_task` VALUES ('2020-10-19 08:55:06.050711', '2020-10-26 09:28:23.000000', 3, '定时清空任务日志', 'adminSysTaskLogService.clear', 0, 1, NULL, NULL, 0, '0 0 3 ? * 1', 0, '', '{\"count\":1,\"cron\":\"0 0 3 ? * 1\",\"jobId\":3}', '');
+INSERT INTO `sys_task` VALUES ('2020-10-19 08:53:44.732338', '2020-10-26 09:28:23.000000', 1, '定时清空请求追踪日志', 'SysLogClearMissionService.clearReqLog', 0, 1, NULL, NULL, 0, '0 0 3 ? * 1', 1000, '', '{\"count\":1,\"cron\":\"0 0 3 ? * 1\",\"jobId\":1}', '');
+INSERT INTO `sys_task` VALUES ('2020-10-19 08:54:42.760785', '2020-10-26 09:28:23.000000', 2, '定时清空登录日志', 'SysLogClearMissionService.clearLoginLog', 0, 1, NULL, NULL, 0, '0 0 3 ? * 1', 0, '', '{\"count\":1,\"cron\":\"0 0 3 ? * 1\",\"jobId\":2}', '');
+INSERT INTO `sys_task` VALUES ('2020-10-19 08:55:06.050711', '2020-10-26 09:28:23.000000', 3, '定时清空任务日志', 'SysLogClearMissionService.clearTaskLog', 0, 1, NULL, NULL, 0, '0 0 3 ? * 1', 0, '', '{\"count\":1,\"cron\":\"0 0 3 ? * 1\",\"jobId\":3}', '');
 COMMIT;
 
 -- ----------------------------
