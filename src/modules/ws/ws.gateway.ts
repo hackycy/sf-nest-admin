@@ -1,6 +1,7 @@
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -16,9 +17,14 @@ import { map } from 'rxjs/operators';
 @WebSocketGateway(parseInt(process.env.WS_PORT || '7002'), {
   path: '/ws',
 })
-export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class WSGateway
+  implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
   @WebSocketServer()
-  server: Server;
+  private wss: Server;
+
+  get socketServer(): Server {
+    return this.wss;
+  }
 
   @SubscribeMessage('events')
   onEvent(): Observable<WsResponse<number>> {
@@ -27,10 +33,25 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
   }
 
-  handleDisconnect() {
+  /**
+   * OnGatewayInit
+   * @param server Server
+   */
+  afterInit() {
     // TODO
   }
+
+  /**
+   * OnGatewayConnection
+   */
   handleConnection() {
+    // TODO
+  }
+
+  /**
+   * OnGatewayDisconnect
+   */
+  handleDisconnect() {
     // TODO
   }
 }
