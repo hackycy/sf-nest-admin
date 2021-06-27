@@ -1,5 +1,5 @@
 import { ModuleMetadata } from '@nestjs/common';
-import { Redis, RedisOptions } from 'ioredis';
+import { Redis, RedisOptions, ClusterNode, ClusterOptions } from 'ioredis';
 
 export interface RedisModuleOptions extends RedisOptions {
   /**
@@ -11,6 +11,21 @@ export interface RedisModuleOptions extends RedisOptions {
    * support url
    */
   url?: string;
+
+  /**
+   * is cluster
+   */
+  cluster?: boolean;
+
+  /**
+   * cluster node, using cluster is true
+   */
+  nodes?: ClusterNode[];
+
+  /**
+   * cluster options, using cluster is true
+   */
+  clusterOptions?: ClusterOptions;
 
   /**
    * callback

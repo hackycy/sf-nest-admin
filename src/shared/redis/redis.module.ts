@@ -4,7 +4,7 @@ import {
   OnModuleDestroy,
   Provider,
 } from '@nestjs/common';
-import IORedis, { Redis } from 'ioredis';
+import IORedis, { Redis, Cluster } from 'ioredis';
 import { isEmpty } from 'lodash';
 import {
   REDIS_CLIENT,
@@ -51,8 +51,8 @@ export class RedisModule implements OnModuleDestroy {
       provide: REDIS_CLIENT,
       useFactory: (
         options: RedisModuleOptions | RedisModuleOptions[],
-      ): Map<string, Redis> => {
-        const clients = new Map<string, Redis>();
+      ): Map<string, Redis | Cluster> => {
+        const clients = new Map<string, Redis | Cluster>();
         if (Array.isArray(options)) {
           options.forEach((op) => {
             const name = op.name ?? REDIS_DEFAULT_CLIENT_KEY;
@@ -74,9 +74,25 @@ export class RedisModule implements OnModuleDestroy {
   /**
    * 创建IORedis实例
    */
-  private static createClient(options: RedisModuleOptions): Redis {
-    const { onClientReady, url, ...opts } = options;
-    const client = !isEmpty(url) ? new IORedis(url) : new IORedis(opts);
+  private static createClient(options: RedisModuleOptions): Redis | Cluster {
+    const {
+      onClientReady,
+      url,
+      cluster,
+      clusterOptions,
+      nodes,
+      ...opts
+    } = options;
+    let client = null;
+    // check url
+    if (!isEmpty(url)) {
+      client = new IORedis(url);
+    } else if (cluster) {
+      // check cluster
+      client = new IORedis.Cluster(nodes, clusterOptions);
+    } else {
+      client = new IORedis(opts);
+    }
     if (onClientReady) {
       onClientReady(client);
     }

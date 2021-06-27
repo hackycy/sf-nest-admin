@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Cluster } from 'cluster';
 import { Redis } from 'ioredis';
 import {
   REDIS_CLIENT,
@@ -8,7 +9,8 @@ import {
 @Injectable()
 export class RedisService {
   constructor(
-    @Inject(REDIS_CLIENT) private readonly clients: Map<string, Redis>,
+    @Inject(REDIS_CLIENT)
+    private readonly clients: Map<string, Redis | Cluster>,
   ) {}
 
   /**
@@ -20,6 +22,6 @@ export class RedisService {
     if (!this.clients.has(name)) {
       throw new Error(`redis client ${name} does not exist`);
     }
-    return this.clients.get(name);
+    return this.clients.get(name) as Redis;
   }
 }
