@@ -7,7 +7,7 @@ import {
   WebSocketServer,
   WsResponse,
 } from '@nestjs/websockets';
-import { Server } from 'ws';
+import { Server } from 'socket.io';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 

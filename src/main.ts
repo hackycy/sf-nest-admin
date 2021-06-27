@@ -8,7 +8,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { WsAdapter } from '@nestjs/platform-ws';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import { ValidationError } from 'class-validator';
 import { flatten } from 'lodash';
 import { AppModule } from './app.module';
@@ -44,7 +44,7 @@ async function bootstrap() {
   // api interceptor
   app.useGlobalInterceptors(new ApiTransformInterceptor(new Reflector()));
   // websocket
-  app.useWebSocketAdapter(new WsAdapter());
+  app.useWebSocketAdapter(new IoAdapter());
   // swagger
   setupSwagger(app);
   // start
