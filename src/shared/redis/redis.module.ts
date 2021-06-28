@@ -75,8 +75,14 @@ export class RedisModule implements OnModuleDestroy {
    * 创建IORedis实例
    */
   private static createClient(options: RedisModuleOptions): Redis | Cluster {
-    const { onClientReady, url, cluster, clusterOptions, nodes, ...opts } =
-      options;
+    const {
+      onClientReady,
+      url,
+      cluster,
+      clusterOptions,
+      nodes,
+      ...opts
+    } = options;
     let client = null;
     // check url
     if (!isEmpty(url)) {
