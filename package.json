@@ -48,6 +48,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6",
+    "socket.io-redis": "^5.4.0",
     "svg-captcha": "^1.4.0",
     "typeorm": "^0.2.32",
     "ua-parser-js": "^0.7.28"
