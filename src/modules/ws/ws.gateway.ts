@@ -18,7 +18,8 @@ import { map } from 'rxjs/operators';
   path: '/ws',
 })
 export class WSGateway
-  implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
+  implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
+{
   @WebSocketServer()
   private wss: Server;
 
