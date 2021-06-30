@@ -16,6 +16,7 @@ import { map } from 'rxjs/operators';
  */
 @WebSocketGateway(parseInt(process.env.WS_PORT || '7002'), {
   path: '/ws',
+  namespace: '/admin',
 })
 export class WSGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
