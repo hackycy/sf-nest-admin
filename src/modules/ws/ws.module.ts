@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { WSGateway } from './ws.gateway';
+import { AdminGateway } from './admin.gateway';
 
-const providers = [WSGateway];
+const providers = [AdminGateway];
 
 /**
  * WebSocket Module

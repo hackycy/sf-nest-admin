@@ -12,13 +12,13 @@ import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 /**
- * WebSokcet网关
+ * Admin WebSokcet网关
  */
 @WebSocketGateway(parseInt(process.env.WS_PORT || '7002'), {
   path: '/ws',
   namespace: '/admin',
 })
-export class WSGateway
+export class AdminGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
   @WebSocketServer()
