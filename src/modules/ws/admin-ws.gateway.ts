@@ -18,7 +18,7 @@ import { map } from 'rxjs/operators';
   path: '/ws',
   namespace: '/admin',
 })
-export class AdminGateway
+export class AdminWSGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
   @WebSocketServer()
