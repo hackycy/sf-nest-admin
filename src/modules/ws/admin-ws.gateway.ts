@@ -2,14 +2,10 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
-  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Server, Socket } from 'socket.io';
 
 /**
  * Admin WebSokcet网关
@@ -28,13 +24,6 @@ export class AdminWSGateway
     return this.wss;
   }
 
-  @SubscribeMessage('events')
-  onEvent(): Observable<WsResponse<number>> {
-    return from([1, 2, 3]).pipe(
-      map((item) => ({ event: 'events', data: item })),
-    );
-  }
-
   /**
    * OnGatewayInit
    * @param server Server
@@ -46,8 +35,9 @@ export class AdminWSGateway
   /**
    * OnGatewayConnection
    */
-  handleConnection() {
+  handleConnection(client: Socket) {
     // TODO
+    console.log('handleConnection：' + client.id);
   }
 
   /**
@@ -55,5 +45,6 @@ export class AdminWSGateway
    */
   handleDisconnect() {
     // TODO
+    console.log('handleDisconnect');
   }
 }
