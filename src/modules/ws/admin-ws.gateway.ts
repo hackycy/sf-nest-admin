@@ -6,6 +6,8 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { AuthService } from './auth.service';
+import { EVENT_ONLINE } from './ws.event';
 
 /**
  * Admin WebSokcet网关
@@ -24,6 +26,8 @@ export class AdminWSGateway
     return this.wss;
   }
 
+  constructor(private authService: AuthService) {}
+
   /**
    * OnGatewayInit
    * @param server Server
@@ -35,16 +39,26 @@ export class AdminWSGateway
   /**
    * OnGatewayConnection
    */
-  handleConnection(client: Socket) {
-    // TODO
-    console.log('handleConnection：' + client.id);
+  async handleConnection(client: Socket): Promise<void> {
+    let checked = false;
+    try {
+      checked = this.authService.checkAdminAuthToken(
+        client.handshake?.query?.token,
+      );
+    } catch (e) {
+      // no auth
+      client.disconnect();
+    }
+    // pass token
+    if (checked) {
+      client.emit(EVENT_ONLINE);
+    }
   }
 
   /**
    * OnGatewayDisconnect
    */
-  handleDisconnect() {
+  async handleDisconnect(): Promise<void> {
     // TODO
-    console.log('handleDisconnect');
   }
 }
