@@ -8,6 +8,7 @@ import {
 import { isEmpty } from 'lodash';
 import { Server, Socket } from 'socket.io';
 import { IAdminUser } from '../admin/admin.interface';
+import { SysUserService } from '../admin/system/user/user.service';
 import { AuthService } from './auth.service';
 import { EVENT_ONLINE } from './ws.event';
 
@@ -28,7 +29,10 @@ export class AdminWSGateway
     return this.wss;
   }
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private sysUserService: SysUserService,
+  ) {}
 
   /**
    * OnGatewayInit
@@ -53,7 +57,8 @@ export class AdminWSGateway
     }
     // pass token
     if (!isEmpty(user)) {
-      client.emit(EVENT_ONLINE);
+      const account = await this.sysUserService.getAccountInfo(user.uid);
+      client.emit(EVENT_ONLINE, { data: account });
     }
   }
 
