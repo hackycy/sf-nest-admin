@@ -1,4 +1,4 @@
-import { Global, HttpModule, CacheModule, Module } from '@nestjs/common';
+import { Global, CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { RedisModule } from './redis/redis.module';
@@ -14,7 +14,6 @@ const providers = [UtilService, RedisService];
 @Global()
 @Module({
   imports: [
-    HttpModule,
     // redis cache
     CacheModule.register(),
     // jwt
@@ -37,6 +36,6 @@ const providers = [UtilService, RedisService];
     }),
   ],
   providers: [...providers],
-  exports: [HttpModule, CacheModule, JwtModule, ...providers],
+  exports: [CacheModule, JwtModule, ...providers],
 })
 export class SharedModule {}
