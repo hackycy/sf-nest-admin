@@ -5,7 +5,9 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { isEmpty } from 'lodash';
 import { Server, Socket } from 'socket.io';
+import { IAdminUser } from '../admin/admin.interface';
 import { AuthService } from './auth.service';
 import { EVENT_ONLINE } from './ws.event';
 
@@ -40,9 +42,9 @@ export class AdminWSGateway
    * OnGatewayConnection
    */
   async handleConnection(client: Socket): Promise<void> {
-    let checked = false;
+    let user: IAdminUser | null = null;
     try {
-      checked = this.authService.checkAdminAuthToken(
+      user = this.authService.checkAdminAuthToken(
         client.handshake?.query?.token,
       );
     } catch (e) {
@@ -50,7 +52,7 @@ export class AdminWSGateway
       client.disconnect();
     }
     // pass token
-    if (checked) {
+    if (!isEmpty(user)) {
       client.emit(EVENT_ONLINE);
     }
   }

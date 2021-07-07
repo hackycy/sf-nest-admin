@@ -15,7 +15,8 @@ export class AdminWsGuard implements CanActivate {
     const token = client?.handshake?.query?.token;
     try {
       // 挂载对象到当前请求上
-      return this.authService.checkAdminAuthToken(token);
+      this.authService.checkAdminAuthToken(token);
+      return true;
     } catch (e) {
       // close
       client.disconnect();
