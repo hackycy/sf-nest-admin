@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Global, CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -14,6 +15,10 @@ const providers = [UtilService, RedisService];
 @Global()
 @Module({
   imports: [
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
+    }),
     // redis cache
     CacheModule.register(),
     // jwt
@@ -36,6 +41,6 @@ const providers = [UtilService, RedisService];
     }),
   ],
   providers: [...providers],
-  exports: [CacheModule, JwtModule, ...providers],
+  exports: [HttpModule, CacheModule, JwtModule, ...providers],
 })
 export class SharedModule {}
