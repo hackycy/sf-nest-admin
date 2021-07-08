@@ -1,11 +1,10 @@
-import { Body, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageResult } from 'src/common/class/res.class';
 import { PageOptionsDto } from 'src/common/dto/page.dto';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysReqLog from 'src/entities/admin/sys-req-log.entity';
 import { IAdminUser } from '../../admin.interface';
-import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { AdminUser } from '../../core/decorators/admin-user.decorator';
 import { LogDisabled } from '../../core/decorators/log-disabled.decorator';
 import { SysUserService } from '../user/user.service';
@@ -14,7 +13,7 @@ import { KickDto } from './log.dto';
 import { SysLogService } from './log.service';
 
 @ApiTags('日志模块')
-@AdminController('sys')
+@Controller('sys')
 export class SysLogController {
   constructor(
     private logService: SysLogService,

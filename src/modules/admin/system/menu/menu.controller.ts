@@ -1,4 +1,4 @@
-import { Body, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -13,7 +13,6 @@ import {
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysMenu from 'src/entities/admin/sys-menu.entity';
 import { IAdminUser } from '../../admin.interface';
-import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { AdminUser } from '../../core/decorators/admin-user.decorator';
 import { MenuItemAndParentInfoResult } from './menu.class';
 import {
@@ -26,7 +25,7 @@ import { SysMenuService } from './menu.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('菜单权限模块')
-@AdminController('sys/menu')
+@Controller('sys/menu')
 export class SysMenuController {
   constructor(private menuService: SysMenuService) {}
 

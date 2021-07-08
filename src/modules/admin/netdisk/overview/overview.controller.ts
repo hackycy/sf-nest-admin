@@ -2,6 +2,7 @@ import {
   CacheInterceptor,
   CacheKey,
   CacheTTL,
+  Controller,
   Get,
   UseInterceptors,
 } from '@nestjs/common';
@@ -12,14 +13,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ADMIN_PREFIX } from '../../admin.constants';
-import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { PermissionOptional } from '../../core/decorators/permission-optional.decorator';
 import { OverviewSpaceInfo } from './overview.class';
 import { NetDiskOverviewService } from './overview.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('网盘概览模块')
-@AdminController('netdisk/overview')
+@Controller('netdisk/overview')
 export class NetDiskOverviewController {
   constructor(private overviewService: NetDiskOverviewService) {}
 
