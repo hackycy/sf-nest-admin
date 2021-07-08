@@ -7,6 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { isEmpty } from 'lodash';
 import { Server, Socket } from 'socket.io';
+import { ResOp } from 'src/common/class/res.class';
 import { IAdminUser } from '../admin/admin.interface';
 import { SysUserService } from '../admin/system/user/user.service';
 import { AuthService } from './auth.service';
@@ -58,7 +59,11 @@ export class AdminWSGateway
     // pass token
     if (!isEmpty(user)) {
       const account = await this.sysUserService.getAccountInfo(user.uid);
-      client.emit(EVENT_ONLINE, { data: account });
+      // 广播该管理员上线通知
+      client.broadcast.emit(
+        EVENT_ONLINE,
+        ResOp.success({ account: account.name }),
+      );
     }
   }
 
