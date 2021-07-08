@@ -22,7 +22,7 @@ import { SysDeptService } from './dept.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('部门模块')
-@Controller('sys/dept')
+@Controller('dept')
 export class SysDeptController {
   constructor(private deptService: SysDeptService) {}
 

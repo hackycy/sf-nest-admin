@@ -25,7 +25,7 @@ import { SysMenuService } from './menu.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('菜单权限模块')
-@Controller('sys/menu')
+@Controller('menu')
 export class SysMenuController {
   constructor(private menuService: SysMenuService) {}
 

@@ -24,7 +24,7 @@ import { SysMenuService } from '../menu/menu.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('角色模块')
-@Controller('sys/role')
+@Controller('role')
 export class SysRoleController {
   constructor(
     private roleService: SysRoleService,

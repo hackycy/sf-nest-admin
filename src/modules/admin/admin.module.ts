@@ -7,8 +7,6 @@ import { LoginModule } from './login/login.module';
 import { NetdiskModule } from './netdisk/netdisk.module';
 import { SystemModule } from './system/system.module';
 
-const MODULES = [LoginModule, SystemModule, AccountModule, NetdiskModule];
-
 /**
  * Admin模块，所有API都需要加入/admin前缀
  */
@@ -18,10 +16,19 @@ const MODULES = [LoginModule, SystemModule, AccountModule, NetdiskModule];
     RouterModule.register([
       {
         path: 'admin',
-        children: MODULES,
+        children: [
+          { path: '', module: LoginModule },
+          { path: 'netdisk', module: NetdiskModule },
+          { path: 'account', module: AccountModule },
+          { path: 'sys', module: SystemModule },
+        ],
       },
     ]),
-    ...MODULES,
+    // component module
+    LoginModule,
+    SystemModule,
+    AccountModule,
+    NetdiskModule,
   ],
   providers: [
     {

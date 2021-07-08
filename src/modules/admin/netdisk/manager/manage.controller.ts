@@ -37,7 +37,7 @@ import { IAdminUser } from '../../admin.interface';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('网盘管理模块')
-@Controller('netdisk/manage')
+@Controller('manage')
 export class NetDiskManageController {
   constructor(
     private manageService: NetDiskManageService,

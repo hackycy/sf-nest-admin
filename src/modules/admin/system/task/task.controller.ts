@@ -16,7 +16,7 @@ import { SysTaskService } from './task.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('任务调度模块')
-@Controller('sys/task')
+@Controller('task')
 export class SysTaskController {
   constructor(private taskService: SysTaskService) {}
 

@@ -23,7 +23,7 @@ import { SysMenuService } from '../menu/menu.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('管理员模块')
-@Controller('sys/user')
+@Controller('user')
 export class SysUserController {
   constructor(
     private userService: SysUserService,

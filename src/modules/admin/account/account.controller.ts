@@ -18,7 +18,7 @@ import { UpdatePersonInfoDto } from './account.dto';
 
 @ApiTags('账户模块')
 @ApiSecurity(ADMIN_PREFIX)
-@Controller('account')
+@Controller()
 export class AccountController {
   constructor(
     private userService: SysUserService,

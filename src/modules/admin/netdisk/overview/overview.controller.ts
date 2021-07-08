@@ -19,7 +19,7 @@ import { NetDiskOverviewService } from './overview.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('网盘概览模块')
-@Controller('netdisk/overview')
+@Controller('overview')
 export class NetDiskOverviewController {
   constructor(private overviewService: NetDiskOverviewService) {}
 
