@@ -8,6 +8,10 @@ export class ResOp {
     this.data = data;
     this.message = message;
   }
+
+  static success(data?: any) {
+    return new ResOp(200, data);
+  }
 }
 
 export class Pagination {
