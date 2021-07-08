@@ -31,12 +31,13 @@ export class ApiExecptionFilter implements ExceptionFilter {
       exception instanceof ApiException
         ? (exception as ApiException).getErrorCode()
         : status;
-    const message =
-      status < 500
-        ? `${exception}`.replace('Error: ', '')
-        : isDev()
-        ? `${exception}`
-        : '服务器异常，请稍后再试';
+    let message = '服务器异常，请稍后再试';
+    if (isDev() || status < 500) {
+      message =
+        exception instanceof HttpException
+          ? `${exception.getResponse()}`
+          : `${exception}`;
+    }
     const result = new ResOp(code, null, message);
     response.status(status).send(result);
   }
