@@ -4,8 +4,6 @@
   "description": "sf admin",
   "author": "hackycy",
   "private": true,
-  "license": "MIT",
-  "homepage": "https://github.com/hackycy/sf-nest-admin",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
