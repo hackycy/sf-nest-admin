@@ -14,7 +14,7 @@ import { ResOp } from '../class/res.class';
  * 异常接管，统一异常返回数据
  */
 @Catch()
-export class ApiExecptionFilter implements ExceptionFilter {
+export class ApiExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<FastifyReply>();
