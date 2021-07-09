@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { RedisService } from 'src/shared/services/redis.service';
+import { AdminWSGateway } from 'src/modules/ws/admin-ws.gateway';
 import { EntityManager } from 'typeorm';
 import { UAParser } from 'ua-parser-js';
 import { SysUserService } from '../user/user.service';
@@ -9,20 +10,25 @@ import { OnlineUserInfo } from './online.class';
 @Injectable()
 export class SysOnlineService {
   constructor(
-    private redisService: RedisService,
     @InjectEntityManager() private entityManager: EntityManager,
     private userService: SysUserService,
+    private adminWsGateWay: AdminWSGateway,
+    private jwtService: JwtService,
   ) {}
 
+  /**
+   * 罗列在线用户列表
+   */
   async listOnlineUser(currentUid: number): Promise<OnlineUserInfo[]> {
-    const onlineUserIds: string[] = await this.redisService
-      .getRedis()
-      .keys('admin:token:*');
-    const formatNumberIds: number[] = onlineUserIds.map((e) => {
-      const uid = e.split('admin:token:')[1];
-      return parseInt(uid);
+    const onlineSockets = await this.adminWsGateWay.socketServer.fetchSockets();
+    if (!onlineSockets || onlineSockets.length <= 0) {
+      return [];
+    }
+    const onlineIds = onlineSockets.map((socket) => {
+      const token = socket.handshake.query?.token as string;
+      return this.jwtService.verify(token).uid;
     });
-    return await this.findLastLoginInfoList(formatNumberIds, currentUid);
+    return await this.findLastLoginInfoList(onlineIds, currentUid);
   }
 
   /**

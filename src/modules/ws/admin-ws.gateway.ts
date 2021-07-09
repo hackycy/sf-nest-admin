@@ -5,16 +5,11 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { isEmpty } from 'lodash';
 import { Server, Socket } from 'socket.io';
-import { ResOp } from 'src/common/class/res.class';
-import { IAdminUser } from '../admin/admin.interface';
-import { SysUserService } from '../admin/system/user/user.service';
 import { AuthService } from './auth.service';
-import { EVENT_ONLINE } from './ws.event';
 
 /**
- * Admin WebSokcet网关
+ * Admin WebSokcet网关，不含权限校验，Socket端只做通知相关操作
  */
 @WebSocketGateway(parseInt(process.env.WS_PORT || '7002'), {
   path: '/ws',
@@ -30,10 +25,7 @@ export class AdminWSGateway
     return this.wss;
   }
 
-  constructor(
-    private authService: AuthService,
-    private sysUserService: SysUserService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   /**
    * OnGatewayInit
@@ -47,23 +39,11 @@ export class AdminWSGateway
    * OnGatewayConnection
    */
   async handleConnection(client: Socket): Promise<void> {
-    let user: IAdminUser | null = null;
     try {
-      user = this.authService.checkAdminAuthToken(
-        client.handshake?.query?.token,
-      );
+      this.authService.checkAdminAuthToken(client.handshake?.query?.token);
     } catch (e) {
       // no auth
       client.disconnect();
-    }
-    // pass token
-    if (!isEmpty(user)) {
-      const account = await this.sysUserService.getAccountInfo(user.uid);
-      // 广播该管理员上线通知
-      client.broadcast.emit(
-        EVENT_ONLINE,
-        ResOp.success({ account: account.name }),
-      );
     }
   }
 

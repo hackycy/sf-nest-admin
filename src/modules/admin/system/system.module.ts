@@ -34,6 +34,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SysTaskConsumer } from './task/task.processor';
 import { SysOnlineController } from './online/online.controller';
 import { SysOnlineService } from './online/online.service';
+import { WSModule } from 'src/modules/ws/ws.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { SysOnlineService } from './online/online.service';
       }),
       inject: [ConfigService],
     }),
+    WSModule,
   ],
   controllers: [
     SysUserController,
@@ -92,6 +94,7 @@ import { SysOnlineService } from './online/online.service';
     SysUserService,
     SysMenuService,
     SysLogService,
+    SysOnlineService,
   ],
 })
 export class SystemModule {}

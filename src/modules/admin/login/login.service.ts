@@ -42,7 +42,7 @@ export class LoginService {
       )}`,
       id: this.util.generateUUID(), // this.utils.generateUUID()
     };
-    // 10分钟过期时间
+    // 5分钟过期时间
     await this.redisService
       .getRedis()
       .set(`admin:captcha:img:${result.id}`, svg.text, 'EX', 60 * 5);
