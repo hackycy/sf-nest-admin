@@ -7,6 +7,8 @@ import { LoginModule } from './login/login.module';
 import { NetdiskModule } from './netdisk/netdisk.module';
 import { SystemModule } from './system/system.module';
 
+const ADMIN_PREFIX = 'admin';
+
 /**
  * Admin模块，所有API都需要加入/admin前缀
  */
@@ -15,13 +17,17 @@ import { SystemModule } from './system/system.module';
     // register prefix
     RouterModule.register([
       {
-        path: 'admin',
+        path: ADMIN_PREFIX,
         children: [
-          { path: '', module: LoginModule },
           { path: 'netdisk', module: NetdiskModule },
           { path: 'account', module: AccountModule },
           { path: 'sys', module: SystemModule },
         ],
+      },
+      // like this url /admin/captcha/img
+      {
+        path: ADMIN_PREFIX,
+        module: LoginModule,
       },
     ]),
     // component module
