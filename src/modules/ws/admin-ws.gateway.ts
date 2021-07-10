@@ -7,6 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from './auth.service';
+import { EVENT_ONLINE } from './ws.event';
 
 /**
  * Admin WebSokcet网关，不含权限校验，Socket端只做通知相关操作
@@ -44,7 +45,11 @@ export class AdminWSGateway
     } catch (e) {
       // no auth
       client.disconnect();
+      return;
     }
+
+    // broadcast online
+    client.broadcast.emit(EVENT_ONLINE);
   }
 
   /**
