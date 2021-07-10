@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from './auth.service';
-import { EVENT_ONLINE } from './ws.event';
+import { EVENT_OFFLINE, EVENT_ONLINE } from './ws.event';
 
 /**
  * Admin WebSokcet网关，不含权限校验，Socket端只做通知相关操作
@@ -55,7 +55,8 @@ export class AdminWSGateway
   /**
    * OnGatewayDisconnect
    */
-  async handleDisconnect(): Promise<void> {
+  async handleDisconnect(client: Socket): Promise<void> {
     // TODO
+    client.broadcast.emit(EVENT_OFFLINE);
   }
 }
