@@ -41,15 +41,11 @@ export class SysOnlineService {
     const rootUserId = await this.userService.findRootUserId();
     const result = await this.entityManager.query(
       `
-    SELECT n.*, u.username
-      FROM sys_login_log n
-      INNER JOIN (
-        SELECT user_id, MAX(createTime) AS createTime
-        FROM sys_login_log GROUP BY user_id
-      ) AS max USING (user_id, createTime)
-      INNER JOIN sys_user u ON n.user_id = u.id
-      WHERE n.user_id IN (?)
-    `,
+      SELECT sys_login_log.createTime, sys_login_log.ip, sys_login_log.ua, sys_user.id, sys_user.username, sys_user.name
+      FROM sys_login_log 
+      INNER JOIN sys_user ON sys_login_log.user_id = sys_user.id 
+      WHERE sys_login_log.createTime IN (SELECT MAX(createTime) as createTime FROM sys_login_log GROUP BY user_id)
+      `,
       [ids],
     );
     if (result) {
@@ -57,15 +53,14 @@ export class SysOnlineService {
       return result.map((e) => {
         const u = parser.setUA(e.ua).getResult();
         return {
-          id: e.user_id,
+          id: e.id,
           ip: e.ip,
-          username: e.username,
-          isCurrent: currentUid === e.user_id,
+          username: `${e.name}（${e.username}）`,
+          isCurrent: currentUid === e.id,
           time: e.createTime,
-          status: 1,
           os: `${u.os.name} ${u.os.version}`,
           browser: `${u.browser.name} ${u.browser.version}`,
-          disable: currentUid === e.user_id || e.user_id === rootUserId,
+          disable: currentUid === e.id || e.id === rootUserId,
         };
       });
     }

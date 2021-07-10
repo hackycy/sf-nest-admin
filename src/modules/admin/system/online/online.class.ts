@@ -16,9 +16,6 @@ export class OnlineUserInfo {
   @ApiProperty({ description: '登陆时间' })
   time: string;
 
-  @ApiProperty({ description: '状态' })
-  status: number;
-
   @ApiProperty({ description: '系统' })
   os: string;
 
