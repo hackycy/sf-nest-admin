@@ -42,9 +42,10 @@ export class SysOnlineService {
     const result = await this.entityManager.query(
       `
       SELECT sys_login_log.createTime, sys_login_log.ip, sys_login_log.ua, sys_user.id, sys_user.username, sys_user.name
-      FROM sys_login_log 
-      INNER JOIN sys_user ON sys_login_log.user_id = sys_user.id 
-      WHERE sys_login_log.createTime IN (SELECT MAX(createTime) as createTime FROM sys_login_log GROUP BY user_id)
+        FROM sys_login_log 
+        INNER JOIN sys_user ON sys_login_log.user_id = sys_user.id 
+        WHERE sys_login_log.createTime IN (SELECT MAX(createTime) as createTime FROM sys_login_log GROUP BY user_id)
+          AND sys_user.id IN (?)
       `,
       [ids],
     );
