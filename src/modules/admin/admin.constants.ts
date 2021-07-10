@@ -1,4 +1,3 @@
-export const ADMIN_API_PREFIX = 'admin';
 export const ADMIN_USER = 'adminUser';
 export const AUTHORIZE_KEY_METADATA = 'admin_module:authorize';
 export const PERMISSION_OPTIONAL_KEY_METADATA =
