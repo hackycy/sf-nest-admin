@@ -4,7 +4,6 @@ import { ApiException } from 'src/common/exceptions/api.exception';
 import { IAdminUser } from '../../admin.interface';
 import { AdminUser } from '../../core/decorators/admin-user.decorator';
 import { LogDisabled } from '../../core/decorators/log-disabled.decorator';
-import { SysUserService } from '../user/user.service';
 import { OnlineUserInfo } from './online.class';
 import { KickDto } from './online.dto';
 import { SysOnlineService } from './online.service';
@@ -12,10 +11,7 @@ import { SysOnlineService } from './online.service';
 @ApiTags('在线用户模块')
 @Controller('online')
 export class SysOnlineController {
-  constructor(
-    private userService: SysUserService,
-    private onlineService: SysOnlineService,
-  ) {}
+  constructor(private onlineService: SysOnlineService) {}
 
   @ApiOperation({ summary: '查询当前在线用户' })
   @ApiOkResponse({ type: [OnlineUserInfo] })
@@ -34,10 +30,6 @@ export class SysOnlineController {
     if (dto.id === user.uid) {
       throw new ApiException(10012);
     }
-    const rootUserId = await this.userService.findRootUserId();
-    if (dto.id === rootUserId) {
-      throw new ApiException(10013);
-    }
-    await this.userService.forbidden(dto.id);
+    await this.onlineService.kickUser(dto.id, user.uid);
   }
 }
