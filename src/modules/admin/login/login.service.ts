@@ -87,9 +87,9 @@ export class LoginService {
         uid: parseInt(user.id.toString()),
         pv: 1,
       },
-      {
-        expiresIn: '24h',
-      },
+      // {
+      //   expiresIn: '24h',
+      // },
     );
     await this.redisService
       .getRedis()
