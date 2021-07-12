@@ -1,4 +1,4 @@
-import { Body, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -8,7 +8,6 @@ import {
 import { ADMIN_PREFIX } from 'src/modules/admin/admin.constants';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysDepartment from 'src/entities/admin/sys-department.entity';
-import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { AdminUser } from '../../core/decorators/admin-user.decorator';
 import { DeptDetailInfo } from './dept.class';
 import {
@@ -23,7 +22,7 @@ import { SysDeptService } from './dept.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('部门模块')
-@AdminController('sys/dept')
+@Controller('dept')
 export class SysDeptController {
   constructor(private deptService: SysDeptService) {}
 

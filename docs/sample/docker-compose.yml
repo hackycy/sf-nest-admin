@@ -56,7 +56,7 @@ services:
       QINIU_ACCESS_TYPE: public # or private
 
   sfvue:
-    image: qa894178522/sfvueadmin:rc
+    image: qa894178522/sfvueadmin:nest
     restart: always
     environment:
       TZ: Asia/Shanghai

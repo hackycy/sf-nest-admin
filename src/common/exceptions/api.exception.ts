@@ -6,7 +6,7 @@ import { ErrorCodeMap } from '../contants/error-code.contants';
  */
 export class ApiException extends HttpException {
   /**
-   * 业务类型错误代码，非Http返回类型
+   * 业务类型错误代码，非Http code
    */
   private errorCode: number;
 

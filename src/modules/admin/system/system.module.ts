@@ -32,6 +32,9 @@ import { SysTaskController } from './task/task.controller';
 import { SysTaskService } from './task/task.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SysTaskConsumer } from './task/task.processor';
+import { SysOnlineController } from './online/online.controller';
+import { SysOnlineService } from './online/online.service';
+import { WSModule } from 'src/modules/ws/ws.module';
 
 @Module({
   imports: [
@@ -63,6 +66,7 @@ import { SysTaskConsumer } from './task/task.processor';
       }),
       inject: [ConfigService],
     }),
+    WSModule,
   ],
   controllers: [
     SysUserController,
@@ -71,6 +75,7 @@ import { SysTaskConsumer } from './task/task.processor';
     SysDeptController,
     SysLogController,
     SysTaskController,
+    SysOnlineController,
   ],
   providers: [
     rootRoleIdProvider(),
@@ -81,7 +86,15 @@ import { SysTaskConsumer } from './task/task.processor';
     SysLogService,
     SysTaskService,
     SysTaskConsumer,
+    SysOnlineService,
   ],
-  exports: [ROOT_ROLE_ID, SysUserService, SysMenuService, SysLogService],
+  exports: [
+    ROOT_ROLE_ID,
+    TypeOrmModule,
+    SysUserService,
+    SysMenuService,
+    SysLogService,
+    SysOnlineService,
+  ],
 })
 export class SystemModule {}

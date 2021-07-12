@@ -19,7 +19,9 @@ RUN npm run build
 RUN rm -rf node_modules && rm package-lock.json
 RUN npm install --production
 
-# bootstrap set port
+# httpserver set port
 EXPOSE 7001
+# websokcet set port
+EXPOSE 7002
 
 CMD ["npm", "run", "start:prod"]

@@ -1,8 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-import { Redis } from 'ioredis';
 import { findIndex, isEmpty } from 'lodash';
-import { REDIS_INSTANCE } from 'src/common/contants/common.contants';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysDepartment from 'src/entities/admin/sys-department.entity';
 import SysUserRole from 'src/entities/admin/sys-user-role.entity';
@@ -17,6 +15,7 @@ import {
 } from './user.dto';
 import { AccountInfo, PageSearchUserInfo } from './user.class';
 import { ROOT_ROLE_ID } from 'src/modules/admin/admin.constants';
+import { RedisService } from 'src/shared/services/redis.service';
 
 @Injectable()
 export class SysUserService {
@@ -26,7 +25,7 @@ export class SysUserService {
     private departmentRepository: Repository<SysDepartment>,
     @InjectRepository(SysUserRole)
     private userRoleRepository: Repository<SysUserRole>,
-    @Inject(REDIS_INSTANCE) private redis: Redis,
+    private redisService: RedisService,
     @InjectEntityManager() private entityManager: EntityManager,
     @Inject(ROOT_ROLE_ID) private rootRoleId: number,
     private util: UtilService,
@@ -310,9 +309,9 @@ export class SysUserService {
    * 禁用用户
    */
   async forbidden(uid: number): Promise<void> {
-    await this.redis.del(`admin:passwordVersion:${uid}`);
-    await this.redis.del(`admin:token:${uid}`);
-    await this.redis.del(`admin:perms:${uid}`);
+    await this.redisService.getRedis().del(`admin:passwordVersion:${uid}`);
+    await this.redisService.getRedis().del(`admin:token:${uid}`);
+    await this.redisService.getRedis().del(`admin:perms:${uid}`);
   }
 
   /**
@@ -328,9 +327,9 @@ export class SysUserService {
         ts.push(`admin:token:${e}`);
         ps.push(`admin:perms:${e}`);
       });
-      await this.redis.del(pvs);
-      await this.redis.del(ts);
-      await this.redis.del(ps);
+      await this.redisService.getRedis().del(pvs);
+      await this.redisService.getRedis().del(ts);
+      await this.redisService.getRedis().del(ps);
     }
   }
 
@@ -339,9 +338,13 @@ export class SysUserService {
    */
   async upgradePasswordV(id: number): Promise<void> {
     // admin:passwordVersion:${param.id}
-    const v = await this.redis.get(`admin:passwordVersion:${id}`);
+    const v = await this.redisService
+      .getRedis()
+      .get(`admin:passwordVersion:${id}`);
     if (!isEmpty(v)) {
-      await this.redis.set(`admin:passwordVersion:${id}`, parseInt(v) + 1);
+      await this.redisService
+        .getRedis()
+        .set(`admin:passwordVersion:${id}`, parseInt(v) + 1);
     }
   }
 }

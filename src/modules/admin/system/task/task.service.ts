@@ -1,8 +1,12 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
+import { ModuleRef, Reflector } from '@nestjs/core';
+import { UnknownElementException } from '@nestjs/core/errors/exceptions/unknown-element.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
+import { isEmpty } from 'lodash';
+import { MISSION_KEY_METADATA } from 'src/common/contants/decorator.contants';
+import { ApiException } from 'src/common/exceptions/api.exception';
 import SysTask from 'src/entities/admin/sys-task.entity';
 import { Repository } from 'typeorm';
 import { SYS_TASK_QUEUE_NAME } from '../../admin.constants';
@@ -14,6 +18,7 @@ export class SysTaskService implements OnModuleInit {
     @InjectRepository(SysTask) private taskRepository: Repository<SysTask>,
     @InjectQueue(SYS_TASK_QUEUE_NAME) private taskQueue: Queue,
     private moduleRef: ModuleRef,
+    private reflector: Reflector,
   ) {}
 
   /**
@@ -224,7 +229,47 @@ export class SysTaskService implements OnModuleInit {
   }
 
   /**
-   * 根据serviceName调用service
+   * 检测service是否有注解定义
+   * @param serviceName service
+   */
+  async checkHasMissionMeta(
+    nameOrInstance: string | unknown,
+    exec: string,
+  ): Promise<void | never> {
+    try {
+      let service: any;
+      if (typeof nameOrInstance === 'string') {
+        service = await this.moduleRef.get(nameOrInstance, { strict: false });
+      } else {
+        service = nameOrInstance;
+      }
+      // 所执行的任务不存在
+      if (!service || !(exec in service)) {
+        throw new ApiException(10102);
+      }
+      // 检测是否有Mission注解
+      const hasMission = this.reflector.get<boolean>(
+        MISSION_KEY_METADATA,
+        // https://github.com/nestjs/nest/blob/e5f0815da52ce22e5077c461fe881e89c4b5d640/packages/core/helpers/context-utils.ts#L90
+        service.constructor,
+      );
+      // 如果没有，则抛出错误
+      if (!hasMission) {
+        throw new ApiException(10101);
+      }
+    } catch (e) {
+      if (e instanceof UnknownElementException) {
+        // 任务不存在
+        throw new ApiException(10102);
+      } else {
+        // 其余错误则不处理，继续抛出
+        throw e;
+      }
+    }
+  }
+
+  /**
+   * 根据serviceName调用service，例如 SysLogService.clearReqLog
    */
   async callService(serviceName: string, args: string): Promise<void> {
     if (serviceName) {
@@ -232,17 +277,13 @@ export class SysTaskService implements OnModuleInit {
       if (arr.length < 1) {
         throw new Error('serviceName define error');
       }
-      let serviceTmp = await this.moduleRef.get(arr[0], { strict: false });
-      for (let i = 1; i < arr.length; i++) {
-        if (i === arr.length - 1) {
-          if (args) {
-            await serviceTmp[arr[arr.length - 1]](JSON.parse(args));
-          } else {
-            await serviceTmp[arr[arr.length - 1]]();
-          }
-        } else {
-          serviceTmp = serviceTmp[arr[i]];
-        }
+      const methodName = arr[1];
+      const service = await this.moduleRef.get(arr[0], { strict: false });
+      await this.checkHasMissionMeta(service, methodName);
+      if (isEmpty(args)) {
+        await service[methodName]();
+      } else {
+        await service[methodName](JSON.parse(args));
       }
     }
   }

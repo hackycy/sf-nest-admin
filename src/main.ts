@@ -8,10 +8,11 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import { ValidationError } from 'class-validator';
 import { flatten } from 'lodash';
 import { AppModule } from './app.module';
-import { ApiExecptionFilter } from './common/filters/api-execption.filter';
+import { ApiExceptionFilter } from './common/filters/api-exception.filter';
 import { ApiTransformInterceptor } from './common/interceptors/api-transform.interceptor';
 import { setupSwagger } from './setup-swagger';
 
@@ -39,9 +40,11 @@ async function bootstrap() {
     }),
   );
   // execption
-  app.useGlobalFilters(new ApiExecptionFilter());
+  app.useGlobalFilters(new ApiExceptionFilter());
   // api interceptor
   app.useGlobalInterceptors(new ApiTransformInterceptor(new Reflector()));
+  // websocket
+  app.useWebSocketAdapter(new IoAdapter());
   // swagger
   setupSwagger(app);
   // start

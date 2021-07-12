@@ -51,7 +51,6 @@ export default {
     port: parseInt(process.env.REDIS_PORT) || 6379, // default value
     password: process.env.REDIS_PASSWORD || '123456',
     db: 0,
-    ttl: 60,
   },
   // qiniu config
   qiniu: {

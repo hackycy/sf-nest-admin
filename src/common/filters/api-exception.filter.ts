@@ -14,7 +14,7 @@ import { ResOp } from '../class/res.class';
  * 异常接管，统一异常返回数据
  */
 @Catch()
-export class ApiExecptionFilter implements ExceptionFilter {
+export class ApiExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<FastifyReply>();
@@ -31,12 +31,12 @@ export class ApiExecptionFilter implements ExceptionFilter {
       exception instanceof ApiException
         ? (exception as ApiException).getErrorCode()
         : status;
-    const message =
-      status < 500
-        ? `${exception}`.replace('Error: ', '')
-        : isDev()
-        ? `${exception}`
-        : '服务器异常，请稍后再试';
+    let message = '服务器异常，请稍后再试';
+    // 开发模式下提示500类型错误，生产模式下屏蔽500内部错误提示
+    if (isDev() || status < 500) {
+      message =
+        exception instanceof HttpException ? exception.message : `${exception}`;
+    }
     const result = new ResOp(code, null, message);
     response.status(status).send(result);
   }

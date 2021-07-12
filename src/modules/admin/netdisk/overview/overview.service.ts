@@ -1,4 +1,4 @@
-import { HttpService, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { QINIU_API, QINIU_CONFIG } from '../../admin.constants';
 import { IQiniuConfig } from '../../admin.interface';
 import * as qiniu from 'qiniu';
@@ -11,6 +11,7 @@ import {
   parseISO,
 } from 'date-fns';
 import { CountInfo, FlowInfo, HitInfo, SpaceInfo } from './overview.class';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class NetDiskOverviewService {

@@ -1,4 +1,4 @@
-import { Body, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
   ApiOperation,
   ApiOkResponse,
@@ -9,7 +9,6 @@ import { ADMIN_PREFIX } from 'src/modules/admin/admin.constants';
 import { PageOptionsDto } from 'src/common/dto/page.dto';
 import { PageResult } from 'src/common/class/res.class';
 import SysRole from 'src/entities/admin/sys-role.entity';
-import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { SysRoleService } from './role.service';
 import {
   CreateRoleDto,
@@ -25,7 +24,7 @@ import { SysMenuService } from '../menu/menu.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('角色模块')
-@AdminController('sys/role')
+@Controller('role')
 export class SysRoleController {
   constructor(
     private roleService: SysRoleService,

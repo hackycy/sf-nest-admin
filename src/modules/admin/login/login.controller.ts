@@ -1,7 +1,14 @@
-import { Body, Get, Headers, Post, Query, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AdminController } from '../core/decorators/admin-controller.decorator';
 import { Authorize } from '../core/decorators/authorize.decorator';
 import { ImageCaptchaDto, LoginInfoDto } from './login.dto';
 import { ImageCaptcha, LoginToken } from './login.class';
@@ -10,7 +17,7 @@ import { LogDisabled } from '../core/decorators/log-disabled.decorator';
 import { UtilService } from 'src/shared/services/util.service';
 
 @ApiTags('登录模块')
-@AdminController('public')
+@Controller()
 export class LoginController {
   constructor(private loginService: LoginService, private utils: UtilService) {}
 

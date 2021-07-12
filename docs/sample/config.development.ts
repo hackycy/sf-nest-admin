@@ -36,7 +36,6 @@ export default {
     port: 6379, // default value
     password: '123456',
     db: 0,
-    ttl: 60,
   },
   // qiniu config
   qiniu: {

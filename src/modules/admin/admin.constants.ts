@@ -10,6 +10,8 @@ export const QINIU_CONFIG = 'admin_module:qiniu_config';
 export const SYS_TASK_QUEUE_NAME = 'admin_module:sys-task';
 export const SYS_TASK_QUEUE_PREFIX = 'admin:sys:task';
 
+export const FORBIDDEN_OP_MENU_ID_INDEX = 84;
+
 export const ADMIN_PREFIX = 'admin';
 export const QINIU_API = 'http://api.qiniu.com';
 
@@ -18,6 +20,7 @@ export const NETDISK_EVENT_DELETE = 'NetDiskAction.Delete';
 export const NETDISK_EVENT_COPY = 'NetDiskAction.Copy';
 export const NETDISK_EVENT_CUT = 'NetDiskAction.Cut';
 export const NETDISK_TASK_PREFIX = 'admin:netdisk:';
+
 // 目录分隔符
 export const NETDISK_DELIMITER = '/';
 export const NETDISK_LIMIT = 100;

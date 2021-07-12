@@ -1,4 +1,4 @@
-import { Body, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -7,7 +7,6 @@ import {
 } from '@nestjs/swagger';
 import { ADMIN_PREFIX } from 'src/modules/admin/admin.constants';
 import { IAdminUser } from '../admin.interface';
-import { AdminController } from '../core/decorators/admin-controller.decorator';
 import { AdminUser } from '../core/decorators/admin-user.decorator';
 import { PermissionOptional } from '../core/decorators/permission-optional.decorator';
 import { PermMenuInfo } from '../login/login.class';
@@ -19,7 +18,7 @@ import { UpdatePersonInfoDto } from './account.dto';
 
 @ApiTags('账户模块')
 @ApiSecurity(ADMIN_PREFIX)
-@AdminController('account')
+@Controller()
 export class AccountController {
   constructor(
     private userService: SysUserService,

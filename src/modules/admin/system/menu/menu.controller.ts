@@ -1,4 +1,4 @@
-import { Body, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -6,11 +6,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { flattenDeep } from 'lodash';
-import { ADMIN_PREFIX } from 'src/modules/admin/admin.constants';
+import {
+  ADMIN_PREFIX,
+  FORBIDDEN_OP_MENU_ID_INDEX,
+} from 'src/modules/admin/admin.constants';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysMenu from 'src/entities/admin/sys-menu.entity';
 import { IAdminUser } from '../../admin.interface';
-import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { AdminUser } from '../../core/decorators/admin-user.decorator';
 import { MenuItemAndParentInfoResult } from './menu.class';
 import {
@@ -23,7 +25,7 @@ import { SysMenuService } from './menu.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('菜单权限模块')
-@AdminController('sys/menu')
+@Controller('menu')
 export class SysMenuController {
   constructor(private menuService: SysMenuService) {}
 
@@ -52,6 +54,10 @@ export class SysMenuController {
   @ApiOperation({ summary: '新增菜单或权限' })
   @Post('update')
   async update(@Body() dto: UpdateMenuDto): Promise<void> {
+    if (dto.menuId <= FORBIDDEN_OP_MENU_ID_INDEX) {
+      // 系统内置功能不提供删除
+      throw new ApiException(10016);
+    }
     // check
     await this.menuService.check(dto);
     if (dto.parentId === -1) {
@@ -72,7 +78,7 @@ export class SysMenuController {
   @Post('delete')
   async delete(@Body() dto: DeleteMenuDto): Promise<void> {
     // 68为内置init.sql中插入最后的索引编号
-    if (dto.menuId <= 68) {
+    if (dto.menuId <= FORBIDDEN_OP_MENU_ID_INDEX) {
       // 系统内置功能不提供删除
       throw new ApiException(10016);
     }

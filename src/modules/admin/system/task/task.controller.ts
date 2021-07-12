@@ -1,4 +1,4 @@
-import { Body, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -11,13 +11,12 @@ import { PageOptionsDto } from 'src/common/dto/page.dto';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysTask from 'src/entities/admin/sys-task.entity';
 import { ADMIN_PREFIX } from '../../admin.constants';
-import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { CheckIdTaskDto, CreateTaskDto, UpdateTaskDto } from './task.dto';
 import { SysTaskService } from './task.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('任务调度模块')
-@AdminController('sys/task')
+@Controller('task')
 export class SysTaskController {
   constructor(private taskService: SysTaskService) {}
 
@@ -40,12 +39,16 @@ export class SysTaskController {
   @ApiOperation({ summary: '添加任务' })
   @Post('add')
   async add(@Body() dto: CreateTaskDto): Promise<void> {
+    const serviceCall = dto.service.split('.');
+    await this.taskService.checkHasMissionMeta(serviceCall[0], serviceCall[1]);
     await this.taskService.addOrUpdate(dto);
   }
 
   @ApiOperation({ summary: '更新任务' })
   @Post('update')
   async update(@Body() dto: UpdateTaskDto): Promise<void> {
+    const serviceCall = dto.service.split('.');
+    await this.taskService.checkHasMissionMeta(serviceCall[0], serviceCall[1]);
     await this.taskService.addOrUpdate(dto);
   }
 

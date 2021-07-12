@@ -12,9 +12,8 @@ import {
   NETDISK_EVENT_RENAME,
 } from '../../admin.constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { NetDiskManageService } from './manage.service';
-import { Body, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
   CheckStatusDto,
   DeleteDto,
@@ -38,7 +37,7 @@ import { IAdminUser } from '../../admin.interface';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('网盘管理模块')
-@AdminController('netdisk/manage')
+@Controller('manage')
 export class NetDiskManageController {
   constructor(
     private manageService: NetDiskManageService,

@@ -1,4 +1,4 @@
-import { Body, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -8,7 +8,6 @@ import {
 import { PageResult } from 'src/common/class/res.class';
 import { ADMIN_PREFIX } from '../../admin.constants';
 import { IAdminUser } from '../../admin.interface';
-import { AdminController } from '../../core/decorators/admin-controller.decorator';
 import { AdminUser } from '../../core/decorators/admin-user.decorator';
 import {
   CreateUserDto,
@@ -24,7 +23,7 @@ import { SysMenuService } from '../menu/menu.service';
 
 @ApiSecurity(ADMIN_PREFIX)
 @ApiTags('管理员模块')
-@AdminController('sys/user')
+@Controller('user')
 export class SysUserController {
   constructor(
     private userService: SysUserService,
