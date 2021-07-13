@@ -1,10 +1,30 @@
-import { Global, Module } from '@nestjs/common';
+import { ExistingProvider, Global, Module } from '@nestjs/common';
 import { AdminModule } from 'src/modules/admin/admin.module';
 import { SysLogService } from 'src/modules/admin/system/log/log.service';
-import { SysLogClearMissionService } from './services/sys-log-clear.service';
-import { WeatherMissionService } from './services/weather.service';
+import { SysLogClearJob } from './jobs/sys-log-clear.job';
 
-const providers = [WeatherMissionService, SysLogClearMissionService];
+const providers = [SysLogClearJob];
+
+/**
+ * auto create alias
+ * {
+ *    provide: 'SysLogClearMissionService',
+ *    useExisting: SysLogClearMissionService,
+ *  }
+ */
+function createAliasProviders(): ExistingProvider[] {
+  const aliasProviders: ExistingProvider[] = [];
+  for (const p of providers) {
+    aliasProviders.push({
+      provide: p.name,
+      useExisting: p,
+    });
+  }
+  return aliasProviders;
+}
+
+// 使用Alias定义别名，使得可以通过字符串类型获取定义的Service，否则无法获取
+const aliasProviders = createAliasProviders();
 
 /**
  * 所有需要执行的定时任务都需要在这里注册
@@ -12,7 +32,7 @@ const providers = [WeatherMissionService, SysLogClearMissionService];
 @Global()
 @Module({
   imports: [AdminModule],
-  providers: [...providers, SysLogService],
-  exports: providers,
+  providers: [...providers, ...aliasProviders, SysLogService],
+  exports: aliasProviders,
 })
 export class MissionModule {}

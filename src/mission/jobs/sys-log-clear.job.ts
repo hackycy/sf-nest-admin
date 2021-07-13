@@ -7,7 +7,7 @@ import { Mission } from '../mission.decorator';
  */
 @Injectable()
 @Mission()
-export class SysLogClearMissionService {
+export class SysLogClearJob {
   constructor(private sysLogService: SysLogService) {}
 
   async clearReqLog(): Promise<void> {
