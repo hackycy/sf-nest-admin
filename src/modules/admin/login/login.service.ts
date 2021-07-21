@@ -94,7 +94,10 @@ export class LoginService {
     await this.redisService
       .getRedis()
       .set(`admin:passwordVersion:${user.id}`, 1);
-    await this.redisService.getRedis().set(`admin:token:${user.id}`, jwtSign);
+    // Token设置过期时间 24小时
+    await this.redisService
+      .getRedis()
+      .set(`admin:token:${user.id}`, jwtSign, 'EX', 60 * 60 * 24);
     await this.redisService
       .getRedis()
       .set(`admin:perms:${user.id}`, JSON.stringify(perms));

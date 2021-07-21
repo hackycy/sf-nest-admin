@@ -91,7 +91,7 @@ docker-compose -f "docker-compose.yml" up -d --build
 
 修改数据库配置信息，在`src/config/config.${env}.ts`目录下更改对应模式下的配置
 
-内置`swagger`文档，启动运行项目后访问：`http://127.0.0.1:7001/swagger-ui/index.html`即可
+内置`swagger`文档，启动运行项目后访问：`http://127.0.0.1:7001/doc/admin/swagger-api`即可
 
 **参考对应配置请参考：[config.development.ts](https://github.com/hackycy/sf-nest-admin/tree/main/docs/sample)**
 
