@@ -4,6 +4,7 @@
   "description": "sf admin",
   "author": "hackycy",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
