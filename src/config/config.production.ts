@@ -1,4 +1,5 @@
 import * as qiniu from 'qiniu';
+import { defineConfig } from './defineConfig';
 
 const parseZone = (zone: string) => {
   switch (zone) {
@@ -15,8 +16,7 @@ const parseZone = (zone: string) => {
   }
 };
 
-export default {
-  rootRoleId: parseInt(process.env.ROOT_ROLE_ID || '1'),
+export default defineConfig({
   // nodemailer config
   mailer: {
     host: process.env.MAILER_HOST || '',
@@ -61,4 +61,4 @@ export default {
     zone: parseZone(process.env.QINIU_ZONE || 'Zone_z2'),
     access: (process.env.QINIU_ACCESS_TYPE as any) || 'public',
   },
-};
+});

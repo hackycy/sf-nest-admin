@@ -13,7 +13,6 @@ COPY package.json /sf-nest-admin/package.json
 RUN npm install
 # build
 COPY ./ /sf-nest-admin
-RUN echo 'export default {};' > /sf-nest-admin/src/config/config.development.ts
 RUN npm run build
 # clean dev dep
 RUN rm -rf node_modules && rm package-lock.json
