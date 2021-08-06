@@ -39,13 +39,6 @@
 
 ![](https://raw.githubusercontent.com/hackycy/sf-nest-admin/master/docs/screenshot/5.png)
 
-### 环境要求
-
-- Node.js 12.x+
-- Typescript 2.8+
-- MYSQL 5.7+
-- Redis 5.0+
-
 ### 欢迎Star && PR
 
 **如果项目有帮助到你可以点个Star支持下。有更好的实现欢迎PR。**
@@ -53,3 +46,7 @@
 ### 致谢
 
 - [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
+
+### LICENSE
+
+[MIT](LICENSE)
