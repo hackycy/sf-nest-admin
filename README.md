@@ -5,6 +5,7 @@
 **基于NestJs + TypeScript + TypeORM + Redis + MySql + Vue + Element-UI编写的一款简单高效的前后端分离的权限管理系统。希望这个项目在全栈的路上能够帮助到你。**
 
 前端项目地址：[传送门](https://github.com/hackycy/sf-vue-admin)
+使用文档：[传送门](https://blog.si-yee.com/sf-admin-cli/)
 
 ### 演示地址
 
@@ -25,84 +26,6 @@
 |   账号    |  密码  |    权限    |
 | :-------: | :----: | :--------: |
 | rootadmin | 123456 | 超级管理员 |
-
-### 模块列表
-
-#### 系统
-
-```bash
-├─系统管理
-│  ├─用户管理
-│  ├─角色管理
-│  ├─菜单管理
-├─系统监控
-│  ├─在线用户
-│  ├─登录日志
-│  ├─请求追踪
-├─任务调度
-│  ├─定时任务
-│  └─任务日志
-```
-
-#### 网盘空间
-
-```bash
-├─空间管理
-├─空间概览
-```
-
-### 系统特点
-
-- 前后端请求参数校验
-- JWT 认证
-- 基于 NestJs 框架，内置了基础的中间件支持（用户认证、访问日志、请求追踪等）
-- 用户权限动态刷新
-- 代码简单，结构清晰
-
-### 技术选型
-
-#### 后端
-
-- NestJs + TypeScript
-- TypeORM（MYSQL）
-- ioredis（Redis）
-- bull（队列）
-
-#### 前端
-
-- Vue、Vue-Router、VueX
-- Element-UI
-
-### 使用Docker快速体验项目
-
-``` sh
-git clone https://github.com/hackycy/sf-nest-admin.git
-cd sf-nest-admin/docs/sample/
-docker-compose -f "docker-compose.yml" up -d --build
-```
-
-> 等待执行完成后，浏览器打开`http://localhost:7002/`即可体验
-
-### 本地开发
-
-#### 初始化数据库，以及服务启动
-
-新建数据库并导入数据库脚本，文件位于 `sql/init.sql`，确保`MySql版本>=5.7`
-
-修改数据库配置信息，在`src/config/config.${env}.ts`目录下更改对应模式下的配置
-
-内置`swagger`文档，启动运行项目后访问：`http://127.0.0.1:7001/doc/admin/swagger-api`即可
-
-**参考对应配置请参考：[config.development.ts](https://github.com/hackycy/sf-nest-admin/tree/main/docs/sample)**
-
-#### 运行项目
-
-``` bash
-$ git clone https://github.com/hackycy/sf-nest-admin.git
-$ cd sf-nest-admin
-$ npm i
-$ npm run dev
-```
 
 ### 系统截图
 
