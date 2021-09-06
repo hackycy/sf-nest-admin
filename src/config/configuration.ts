@@ -1,5 +1,4 @@
 import { conf } from 'qiniu';
-import { Logger } from '@nestjs/common';
 import { merge } from 'lodash';
 import DefaultConfig from './config.default';
 
@@ -20,8 +19,7 @@ export default () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     envConfig = require(`./config.${process.env.NODE_ENV}`).default;
   } catch (e) {
-    const logger = new Logger('ConfigModule');
-    logger.error(e);
+    // 无效配置则自动忽略
   }
   // 合并配置
   return merge(DefaultConfig, envConfig);
