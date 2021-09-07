@@ -17,20 +17,6 @@ const parseZone = (zone: string) => {
 };
 
 export default defineConfig({
-  // nodemailer config
-  mailer: {
-    host: process.env.MAILER_HOST || '',
-    port: parseInt(process.env.MAILER_PORT) || 80,
-    auth: {
-      user: process.env.MAILER_USER || '',
-      pass: process.env.MAILER_PASS || '',
-    },
-    secure: false,
-  },
-  // amap config
-  amap: {
-    key: process.env.AMAP_KEY || '',
-  },
   jwt: {
     secret: process.env.JWT_SECRET || '123456',
   },
