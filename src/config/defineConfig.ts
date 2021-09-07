@@ -104,4 +104,14 @@ export interface LoggerConfigOptions {
    * 应用相关日志，供应用开发者使用的日志。我们在绝大数情况下都在使用它，默认文件名为 web.log
    */
   appLogName?: string;
+
+  /**
+   * TypeORM Sql日志，默认文件名为sql.log
+   */
+  sqlLogName?: string;
+
+  /**
+   * 定时任务日志，默认文件名为task.log
+   */
+  taskLogName?: string;
 }
