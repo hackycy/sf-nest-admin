@@ -2,20 +2,6 @@ import * as qiniu from 'qiniu';
 
 export default {
   rootRoleId: 1,
-  // nodemailer config
-  mailer: {
-    host: 'xxx',
-    port: 80,
-    auth: {
-      user: 'xxx',
-      pass: 'xxx',
-    },
-    secure: false, // or true using 443
-  },
-  // amap config
-  amap: {
-    key: 'xxx',
-  },
   // jwt sign secret
   jwt: {
     secret: process.env.JWT_SECRET || '123456',
