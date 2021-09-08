@@ -91,9 +91,25 @@ export interface LoggerConfigOptions {
   consoleLevel?: LogLevel[] | false;
 
   /**
-   * 生产环境打印 debug 日志
+   * 如果启用，将打印当前和上一个日志消息之间的时间戳（时差）
    */
-  allowDebugAtProd?: boolean;
+  timestamp?: boolean;
+
+  /**
+   * 生产环境下，默认会关闭终端日志输出，如有需要，可以设置为 false
+   */
+  disableConsoleAtProd?: boolean;
+
+  /**
+   * If using the units, add 'k', 'm', or 'g' as the suffix. The units need to directly follow the number.
+   * https://github.com/winstonjs/winston-daily-rotate-file
+   */
+  maxSize?: string;
+  /**
+   * Maximum number of logs to keep.
+   * If not set, no logs will be removed. This can be a number of files or number of days. If using days, add 'd' as the suffix. (default: null)
+   */
+  maxFiles?: string;
 
   /**
    * 开发环境下日志产出的目录，绝对路径
@@ -102,27 +118,14 @@ export interface LoggerConfigOptions {
   dir?: string;
 
   /**
-   * 接口访问日志，默认文件名为 access.log
-   */
-  accessLogName?: string;
-
-  /**
-   * 任何 logger 的 .error() 调用输出的日志都会重定向到这里，重点通过查看此日志定位异常，默认文件名为 common-error.log
+   * 任何 logger 的 .error() 调用输出的日志都会重定向到这里，重点通过查看此日志定位异常，默认文件名为 common-error.%DATE%.log
+   * 注意：此文件名可以包含%DATE%占位符
    */
   errorLogName?: string;
 
   /**
-   * 应用相关日志，供应用开发者使用的日志。我们在绝大数情况下都在使用它，默认文件名为 web.log
+   * 应用相关日志，供应用开发者使用的日志。我们在绝大数情况下都在使用它，默认文件名为 web.%DATE%.log
+   * 注意：此文件名可以包含%DATE%占位符
    */
   appLogName?: string;
-
-  /**
-   * TypeORM Sql日志，默认文件名为sql.log
-   */
-  sqlLogName?: string;
-
-  /**
-   * 定时任务日志，默认文件名为task.log
-   */
-  taskLogName?: string;
 }
