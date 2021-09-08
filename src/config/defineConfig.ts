@@ -1,3 +1,4 @@
+import { LogLevel } from '@nestjs/common';
 import { conf } from 'qiniu';
 
 /**
@@ -11,6 +12,10 @@ export function defineConfig(config: IConfig): IConfig {
  * sf-admin 配置
  */
 export interface IConfig {
+  /**
+   * 应用名称
+   */
+  appName?: string;
   /**
    * 管理员角色ID，一旦分配，该角色下分配的管理员都为超级管理员
    */
@@ -70,9 +75,20 @@ export interface DataBaseConfigOptions {
  */
 export interface LoggerConfigOptions {
   /**
-   * 默认只会输出 INFO 及以上（WARN 和 ERROR）的日志到文件中
+   * 日志文件输出
+   * 默认只会输出 log 及以上（warn 和 error）的日志到文件中，等级级别如下
    */
-  level?: string;
+  level?: LogLevel | false;
+
+  /**
+   * 控制台输出等级，同Nest配置
+   * debug: 0,
+   * verbose: 1,
+   * log: 2,
+   * warn: 3,
+   * error: 4,
+   */
+  consoleLevel?: LogLevel[] | false;
 
   /**
    * 生产环境打印 debug 日志
@@ -84,11 +100,6 @@ export interface LoggerConfigOptions {
    * 开发环境下为了避免冲突以及集中管理，日志会打印在项目目录下的 logs 目录
    */
   dir?: string;
-
-  /**
-   * 日志编码，默认为 utf-8
-   */
-  encoding?: string;
 
   /**
    * 接口访问日志，默认文件名为 access.log

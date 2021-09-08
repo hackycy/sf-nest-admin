@@ -1,5 +1,5 @@
-import path from 'path';
-import fs from 'fs';
+import { parse, resolve, join } from 'path';
+import { existsSync } from 'fs';
 
 /**
  * 获取应用根目录
@@ -8,17 +8,17 @@ import fs from 'fs';
 export function getAppRootPath(): string {
   // Check for environmental variable
   if (process.env.APP_ROOT_PATH) {
-    return path.resolve(process.env.APP_ROOT_PATH);
+    return resolve(process.env.APP_ROOT_PATH);
   }
   // 逐级查找 node_modules 目录
   let cur = __dirname;
-  const root = path.parse(cur).root;
+  const root = parse(cur).root;
 
   let appRootPath = '';
   while (true) {
     if (
-      fs.existsSync(path.join(cur, 'node_modules')) &&
-      fs.existsSync(path.join(cur, 'package.json'))
+      existsSync(join(cur, 'node_modules')) &&
+      existsSync(join(cur, 'package.json'))
     ) {
       // 如果存在node_modules、package.json
       appRootPath = cur;
@@ -29,7 +29,7 @@ export function getAppRootPath(): string {
     }
 
     // 继续向上查找
-    cur = path.resolve(cur, '..');
+    cur = resolve(cur, '..');
   }
 
   if (appRootPath) {

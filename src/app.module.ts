@@ -10,6 +10,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { SharedModule } from './shared/shared.module';
 import { MissionModule } from './mission/mission.module';
 import { WSModule } from './modules/ws/ws.module';
+import { LoggerModule } from './shared/logger/logger.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { WSModule } from './modules/ws/ws.module';
     AdminModule,
     // websocket module
     WSModule,
+    LoggerModule.register({}),
   ],
 })
 export class AppModule {}
