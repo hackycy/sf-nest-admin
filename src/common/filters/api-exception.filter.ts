@@ -9,12 +9,15 @@ import { FastifyReply } from 'fastify';
 import { isDev } from 'src/config/env';
 import { ApiException } from '../exceptions/api.exception';
 import { ResOp } from '../class/res.class';
+import { LoggerService } from 'src/shared/logger/logger.service';
 
 /**
  * 异常接管，统一异常返回数据
  */
 @Catch()
 export class ApiExceptionFilter implements ExceptionFilter {
+  constructor(private logger: LoggerService) {}
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<FastifyReply>();
@@ -36,6 +39,14 @@ export class ApiExceptionFilter implements ExceptionFilter {
     if (isDev() || status < 500) {
       message =
         exception instanceof HttpException ? exception.message : `${exception}`;
+    }
+    // 记录 500 日志
+    if (status >= 500 && exception instanceof Error) {
+      this.logger.error(
+        exception.message,
+        exception.stack,
+        ApiExceptionFilter.name,
+      );
     }
     const result = new ResOp(code, null, message);
     response.status(status).send(result);
