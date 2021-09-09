@@ -8,9 +8,12 @@ import { LoggerService } from './logger.service';
 
 @Module({})
 export class LoggerModule {
-  static forRoot(options: LoggerModuleOptions): DynamicModule {
+  static forRoot(
+    options: LoggerModuleOptions,
+    isGlobal = false,
+  ): DynamicModule {
     return {
-      global: options.isGlobal,
+      global: isGlobal,
       module: LoggerModule,
       providers: [
         LoggerService,
@@ -23,8 +26,12 @@ export class LoggerModule {
     };
   }
 
-  static forRootAsync(options: LoggerModuleAsyncOptions): DynamicModule {
+  static forRootAsync(
+    options: LoggerModuleAsyncOptions,
+    isGlobal = false,
+  ): DynamicModule {
     return {
+      global: isGlobal,
       module: LoggerModule,
       imports: options.imports,
       providers: [

@@ -37,28 +37,31 @@ import { WinstonLogLevel } from './shared/logger/logger.interface';
     EventEmitterModule.forRoot({}),
     BullModule.forRoot({}),
     // custom logger
-    LoggerModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => {
-        return {
-          isGlobal: true,
-          level: configService.get<WinstonLogLevel>('logger.level'),
-          consoleLevel: configService.get<WinstonLogLevel>(
-            'logger.consoleLevel',
-          ),
-          timestamp: configService.get<boolean>('logger.timestamp'),
-          maxFiles: configService.get<string>('logger.maxFiles'),
-          maxSize: configService.get<string>('logger.maxSize'),
-          disableConsoleAtProd: configService.get<boolean>(
-            'logger.disableConsoleAtProd',
-          ),
-          dir: configService.get<string>('logger.dir'),
-          errorLogName: configService.get<string>('logger.errorLogName'),
-          appLogName: configService.get<string>('logger.appLogName'),
-        };
+    LoggerModule.forRootAsync(
+      {
+        imports: [ConfigModule],
+        useFactory: (configService: ConfigService) => {
+          return {
+            level: configService.get<WinstonLogLevel>('logger.level'),
+            consoleLevel: configService.get<WinstonLogLevel>(
+              'logger.consoleLevel',
+            ),
+            timestamp: configService.get<boolean>('logger.timestamp'),
+            maxFiles: configService.get<string>('logger.maxFiles'),
+            maxSize: configService.get<string>('logger.maxSize'),
+            disableConsoleAtProd: configService.get<boolean>(
+              'logger.disableConsoleAtProd',
+            ),
+            dir: configService.get<string>('logger.dir'),
+            errorLogName: configService.get<string>('logger.errorLogName'),
+            appLogName: configService.get<string>('logger.appLogName'),
+          };
+        },
+        inject: [ConfigService],
       },
-      inject: [ConfigService],
-    }),
+      // global module
+      true,
+    ),
     // custom module
     SharedModule,
     // mission module
