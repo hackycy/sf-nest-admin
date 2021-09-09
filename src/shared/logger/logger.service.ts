@@ -13,7 +13,6 @@ import {
 } from './logger.constants';
 import { LoggerModuleOptions, WinstonLogLevel } from './logger.interface';
 import { getAppRootPath } from './utils/app-root-path.util';
-import { getHomedir } from './utils/home-dir';
 import { createLogger, Logger as WinstonLogger, format } from 'winston';
 import { join } from 'path';
 import * as WinstonDailyRotateFile from 'winston-daily-rotate-file';
@@ -21,9 +20,10 @@ import { isDev } from 'src/config/env';
 import { isPlainObject } from 'lodash';
 
 /**
- * 默认输入的日志等级
+ * 默认输出的日志等级
  */
-const DEFAULT_LOG_LEVELS: WinstonLogLevel = isDev() ? 'info' : 'error';
+const DEFAULT_LOG_CONSOLE_LEVELS: WinstonLogLevel = isDev() ? 'info' : 'error';
+const DEFAULT_LOG_WINSTON_LEVELS: WinstonLogLevel = 'error';
 
 /**
  * 日志输出等级，基于Nest配置扩展，与winston配合，由于log等级与winston定义冲突，需要转为info
@@ -39,7 +39,6 @@ const LOG_LEVEL_VALUES: Record<WinstonLogLevel, number> = {
 
 @Injectable()
 export class LoggerService implements NestLoggerService {
-  private originalContext?: string;
   private static lastTimestampAt?: number;
   /**
    * 日志文件存放文件夹路径
@@ -69,13 +68,11 @@ export class LoggerService implements NestLoggerService {
    */
   private initWinston() {
     // 配置日志输出目录
-    if (isDev()) {
-      this.logDir = join(getAppRootPath(), PROJECT_LOG_DIR_NAME);
-    } else if (this.options.dir) {
+    if (this.options.dir) {
       this.logDir = this.options.dir;
     } else {
-      // 如果为空，则使用 用户主目录 + 应用名称 路径进行保存
-      this.logDir = join(getHomedir(), this.options.logDirName);
+      // 如果不指定，则使用 使用 当前项目目录 + logs 路径进行保存
+      this.logDir = join(getAppRootPath(), PROJECT_LOG_DIR_NAME);
     }
     // 多路日志
     const webTransport = new WinstonDailyRotateFile({
@@ -91,7 +88,9 @@ export class LoggerService implements NestLoggerService {
     // 初始化winston
     this.winstonLogger = createLogger({
       level: this.options.level,
-      format: format.json(),
+      format: format.json({
+        space: 0,
+      }),
       levels: LOG_LEVEL_VALUES,
       transports: [webTransport, errorTransport],
     });
@@ -112,21 +111,6 @@ export class LoggerService implements NestLoggerService {
   }
 
   /**
-   * 获取当前日志最小的等级
-   */
-  public getMinLogLevel(): number {
-    const levels = Object.keys(this.winstonLogger.levels);
-    let minLevel = LOG_LEVEL_VALUES['error'];
-    levels.forEach((levelName) => {
-      const levelNumber = this.winstonLogger.levels[levelName];
-      if (minLevel < levelNumber) {
-        minLevel = levelNumber;
-      }
-    });
-    return minLevel;
-  }
-
-  /**
    * 初始化默认配置
    */
   public initDefaultConfig() {
@@ -135,10 +119,10 @@ export class LoggerService implements NestLoggerService {
       this.options.timestamp = true;
     }
     if (!this.options.level) {
-      this.options.level = DEFAULT_LOG_LEVELS;
+      this.options.level = DEFAULT_LOG_WINSTON_LEVELS;
     }
     if (!this.options.consoleLevel) {
-      this.options.consoleLevel = DEFAULT_LOG_LEVELS;
+      this.options.consoleLevel = DEFAULT_LOG_CONSOLE_LEVELS;
     }
     // 默认输出文件名
     if (!this.options.appLogName) {
@@ -156,13 +140,19 @@ export class LoggerService implements NestLoggerService {
   log(message: any, context?: string): void;
   log(message: any, ...optionalParams: [...any, string?]): void;
   log(message: any, ...optionalParams: any[]) {
-    if (this.isLevelEnabled('info')) {
-      const { messages, context } = this.getContextAndMessagesToPrint([
-        message,
-        ...optionalParams,
-      ]);
+    const { messages, context } = this.getContextAndMessagesToPrint([
+      message,
+      ...optionalParams,
+    ]);
+    const consoleEnable = this.isConsoleLevelEnabled('info');
+    const winstonEnable = this.isWinstonLevelEnabled('info');
+    if (!consoleEnable && !winstonEnable) {
+      return;
+    }
+    if (consoleEnable) {
       this.printMessages(messages, context, 'info');
     }
+    this.recordMessages(messages, context, 'info');
   }
 
   /**
@@ -172,13 +162,18 @@ export class LoggerService implements NestLoggerService {
   error(message: any, stack?: string, context?: string): void;
   error(message: any, ...optionalParams: [...any, string?, string?]): void;
   error(message: any, ...optionalParams: any[]) {
-    if (this.isLevelEnabled('error')) {
-      const { messages, context, stack } =
-        this.getContextAndStackAndMessagesToPrint([message, ...optionalParams]);
-
+    const consoleEnable = this.isConsoleLevelEnabled('error');
+    const winstonEnable = this.isWinstonLevelEnabled('error');
+    if (!consoleEnable && !winstonEnable) {
+      return;
+    }
+    const { messages, context, stack } =
+      this.getContextAndStackAndMessagesToPrint([message, ...optionalParams]);
+    if (consoleEnable) {
       this.printMessages(messages, context, 'error', 'stderr');
       this.printStackTrace(stack);
     }
+    this.recordMessages(messages, context, 'error', stack);
   }
 
   /**
@@ -188,13 +183,19 @@ export class LoggerService implements NestLoggerService {
   warn(message: any, context?: string): void;
   warn(message: any, ...optionalParams: [...any, string?]): void;
   warn(message: any, ...optionalParams: any[]) {
-    if (this.isLevelEnabled('warn')) {
-      const { messages, context } = this.getContextAndMessagesToPrint([
-        message,
-        ...optionalParams,
-      ]);
+    const { messages, context } = this.getContextAndMessagesToPrint([
+      message,
+      ...optionalParams,
+    ]);
+    const consoleEnable = this.isConsoleLevelEnabled('warn');
+    const winstonEnable = this.isWinstonLevelEnabled('warn');
+    if (!consoleEnable && !winstonEnable) {
+      return;
+    }
+    if (consoleEnable) {
       this.printMessages(messages, context, 'warn');
     }
+    this.recordMessages(messages, context, 'warn');
   }
 
   /**
@@ -204,13 +205,19 @@ export class LoggerService implements NestLoggerService {
   debug(message: any, context?: string): void;
   debug(message: any, ...optionalParams: [...any, string?]): void;
   debug(message: any, ...optionalParams: any[]) {
-    if (this.isLevelEnabled('debug')) {
-      const { messages, context } = this.getContextAndMessagesToPrint([
-        message,
-        ...optionalParams,
-      ]);
+    const { messages, context } = this.getContextAndMessagesToPrint([
+      message,
+      ...optionalParams,
+    ]);
+    const consoleEnable = this.isConsoleLevelEnabled('debug');
+    const winstonEnable = this.isWinstonLevelEnabled('debug');
+    if (!consoleEnable && !winstonEnable) {
+      return;
+    }
+    if (consoleEnable) {
       this.printMessages(messages, context, 'debug');
     }
+    this.recordMessages(messages, context, 'debug');
   }
 
   /**
@@ -220,36 +227,35 @@ export class LoggerService implements NestLoggerService {
   verbose(message: any, context?: string): void;
   verbose(message: any, ...optionalParams: [...any, string?]): void;
   verbose(message: any, ...optionalParams: any[]) {
-    if (this.isLevelEnabled('verbose')) {
-      const { messages, context } = this.getContextAndMessagesToPrint([
-        message,
-        ...optionalParams,
-      ]);
+    const { messages, context } = this.getContextAndMessagesToPrint([
+      message,
+      ...optionalParams,
+    ]);
+    const consoleEnable = this.isConsoleLevelEnabled('verbose');
+    const winstonEnable = this.isWinstonLevelEnabled('verbose');
+    if (!consoleEnable && !winstonEnable) {
+      return;
+    }
+    if (consoleEnable) {
       this.printMessages(messages, context, 'verbose');
     }
+    this.recordMessages(messages, context, 'verbose');
   }
 
-  /**
-   * Set logger context
-   * @param context context
-   */
-  setContext(context: string) {
-    this.context = context;
-  }
-
-  /**
-   * Resets the logger context to the value that was passed in the constructor.
-   */
-  resetContext() {
-    this.context = this.originalContext;
-  }
-
-  isLevelEnabled(level: WinstonLogLevel): boolean {
+  isConsoleLevelEnabled(level: WinstonLogLevel): boolean {
     // 默认禁止生产模式控制台日志输出
     if (!isDev() && !this.options.disableConsoleAtProd) {
       return false;
     }
     if (this.options.consoleLevel === 'none') {
+      return false;
+    }
+    return LOG_LEVEL_VALUES[level] <= LOG_LEVEL_VALUES[level];
+  }
+
+  isWinstonLevelEnabled(level: WinstonLogLevel): boolean {
+    // 默认禁止生产模式控制台日志输出
+    if (this.options.level === 'none') {
       return false;
     }
     return LOG_LEVEL_VALUES[level] <= LOG_LEVEL_VALUES[level];
@@ -271,6 +277,30 @@ export class LoggerService implements NestLoggerService {
     );
   }
 
+  protected recordMessages(
+    messages: unknown[],
+    context = '',
+    logLevel: WinstonLogLevel = 'info',
+    stack?: string,
+  ) {
+    const msg = isPlainObject(messages[0])
+      ? JSON.stringify(
+          messages[0],
+          (_, value) => (typeof value === 'bigint' ? value.toString() : value),
+          0,
+        )
+      : (messages[0] as string);
+    let optionalParams: unknown;
+    if (messages.length > 1) {
+      optionalParams = messages.slice(1, messages.length - 1);
+    }
+    this.winstonLogger.log(logLevel, msg, {
+      context,
+      stack,
+      optionalParams,
+    });
+  }
+
   protected printMessages(
     messages: unknown[],
     context = '',
@@ -282,7 +312,7 @@ export class LoggerService implements NestLoggerService {
       const output = isPlainObject(message)
         ? `${color('Object:')}\n${JSON.stringify(
             message,
-            (key, value) =>
+            (_, value) =>
               typeof value === 'bigint' ? value.toString() : value,
             2,
           )}\n`

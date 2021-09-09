@@ -46,7 +46,7 @@ async function bootstrap() {
     }),
   );
   // execption
-  app.useGlobalFilters(new ApiExceptionFilter());
+  app.useGlobalFilters(new ApiExceptionFilter(app.get(LoggerService)));
   // api interceptor
   app.useGlobalInterceptors(new ApiTransformInterceptor(new Reflector()));
   // websocket
