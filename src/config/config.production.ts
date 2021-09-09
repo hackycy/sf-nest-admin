@@ -47,4 +47,13 @@ export default defineConfig({
     zone: parseZone(process.env.QINIU_ZONE || 'Zone_z2'),
     access: (process.env.QINIU_ACCESS_TYPE as any) || 'public',
   },
+  // logger config
+  logger: {
+    timestamp: false,
+    dir: process.env.LOGGER_DIR,
+    maxSize: process.env.LOGGER_MAX_SIZE,
+    maxFiles: process.env.LOGGER_MAX_FILES,
+    errorLogName: process.env.LOGGER_ERROR_FILENAME,
+    appLogName: process.env.LOGGER_APP_FILENAME,
+  },
 });
