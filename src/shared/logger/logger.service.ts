@@ -159,7 +159,7 @@ export class LoggerService implements NestLoggerService {
    * Write an 'error' level log, if the configured level allows for it.
    * Prints to `stderr` with newline.
    */
-  error(message: any, stack?: string, context?: string): void;
+  error(message: any, context?: string, stack?: string): void;
   error(message: any, ...optionalParams: [...any, string?, string?]): void;
   error(message: any, ...optionalParams: any[]) {
     const consoleEnable = this.isConsoleLevelEnabled('error');
@@ -363,7 +363,16 @@ export class LoggerService implements NestLoggerService {
   private getContextAndStackAndMessagesToPrint(args: unknown[]) {
     const { messages, context } = this.getContextAndMessagesToPrint(args);
     if (messages?.length <= 1) {
-      return { messages, context };
+      if (messages.length === 1 && messages[0] instanceof Error) {
+        // if first element is error
+        return {
+          messages: [messages[0].message],
+          context,
+          stack: messages[0].stack,
+        };
+      } else {
+        return { messages, context };
+      }
     }
     const lastElement = messages[messages.length - 1];
     const isStack = typeof lastElement === 'string';
