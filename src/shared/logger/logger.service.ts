@@ -112,6 +112,21 @@ export class LoggerService implements NestLoggerService {
   }
 
   /**
+   * 获取当前日志最小的等级
+   */
+  public getMinLogLevel(): number {
+    const levels = Object.keys(this.winstonLogger.levels);
+    let minLevel = LOG_LEVEL_VALUES['error'];
+    levels.forEach((levelName) => {
+      const levelNumber = this.winstonLogger.levels[levelName];
+      if (minLevel < levelNumber) {
+        minLevel = levelNumber;
+      }
+    });
+    return minLevel;
+  }
+
+  /**
    * 初始化默认配置
    */
   public initDefaultConfig() {
