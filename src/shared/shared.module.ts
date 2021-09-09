@@ -2,14 +2,12 @@ import { HttpModule } from '@nestjs/axios';
 import { Global, CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { LoggerModule } from './logger/logger.module';
-import { LoggerService } from './logger/logger.service';
 import { RedisModule } from './redis/redis.module';
 import { RedisService } from './services/redis.service';
 import { UtilService } from './services/util.service';
 
 // common provider list
-const providers = [UtilService, RedisService, LoggerService];
+const providers = [UtilService, RedisService];
 
 /**
  * 全局共享模块
@@ -41,7 +39,6 @@ const providers = [UtilService, RedisService, LoggerService];
       }),
       inject: [ConfigService],
     }),
-    LoggerModule.register({}),
   ],
   providers: [...providers],
   exports: [HttpModule, CacheModule, JwtModule, ...providers],

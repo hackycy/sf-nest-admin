@@ -1,5 +1,5 @@
-import { LogLevel } from '@nestjs/common';
 import { conf } from 'qiniu';
+import { WinstonLogLevel } from 'src/shared/logger/logger.interface';
 
 /**
  * 用于智能提示
@@ -78,17 +78,12 @@ export interface LoggerConfigOptions {
    * 日志文件输出
    * 默认只会输出 log 及以上（warn 和 error）的日志到文件中，等级级别如下
    */
-  level?: LogLevel | false;
+  level?: WinstonLogLevel | 'none';
 
   /**
-   * 控制台输出等级，同Nest配置
-   * debug: 0,
-   * verbose: 1,
-   * log: 2,
-   * warn: 3,
-   * error: 4,
+   * 控制台输出等级
    */
-  consoleLevel?: LogLevel[] | false;
+  consoleLevel?: WinstonLogLevel | 'none';
 
   /**
    * 如果启用，将打印当前和上一个日志消息之间的时间戳（时差）

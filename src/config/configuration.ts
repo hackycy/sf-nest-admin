@@ -3,14 +3,6 @@ import DefaultConfig from './config.default';
 import { IConfig } from './defineConfig';
 
 /**
- * check dev env
- * @returns boolean true is dev
- */
-export function isDev(): boolean {
-  return process.env.NODE_ENV === 'development';
-}
-
-/**
  * 根据环境变量判断使用配置
  */
 export default () => {
