@@ -7,6 +7,8 @@ import {
 import { clc, yellow } from '@nestjs/common/utils/cli-colors.util';
 import {
   DEFAULT_ERROR_LOG_NAME,
+  DEFAULT_MAX_FILES,
+  DEFAULT_MAX_SIZE,
   DEFAULT_WEB_LOG_NAME,
   LOGGER_MODULE_OPTIONS,
   PROJECT_LOG_DIR_NAME,
@@ -78,11 +80,15 @@ export class LoggerService implements NestLoggerService {
     const webTransport = new WinstonDailyRotateFile({
       dirname: this.logDir,
       filename: this.options.appLogName,
+      maxSize: this.options.maxSize,
+      maxFiles: this.options.maxFiles,
     });
     // 所有error级别都记录在该文件下
     const errorTransport = new WinstonDailyRotateFile({
       dirname: this.logDir,
       filename: this.options.errorLogName,
+      maxSize: this.options.maxSize,
+      maxFiles: this.options.maxFiles,
       level: 'error',
     });
     // 初始化winston
@@ -123,6 +129,12 @@ export class LoggerService implements NestLoggerService {
     }
     if (!this.options.consoleLevel) {
       this.options.consoleLevel = DEFAULT_LOG_CONSOLE_LEVELS;
+    }
+    if (!this.options.maxSize) {
+      this.options.maxSize = DEFAULT_MAX_SIZE;
+    }
+    if (!this.options.maxFiles) {
+      this.options.maxFiles = DEFAULT_MAX_FILES;
     }
     // 默认输出文件名
     if (!this.options.appLogName) {

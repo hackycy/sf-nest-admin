@@ -8,3 +8,4 @@ export const DEFAULT_SQL_ERROR_LOG_NAME = 'sql-error.%DATE%.log';
 export const DEFAULT_TASK_LOG_NAME = 'task.%DATE%.log';
 // 默认日志存储天数
 export const DEFAULT_MAX_FILES = '15d';
+export const DEFAULT_MAX_SIZE = '2m';

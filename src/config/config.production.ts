@@ -29,7 +29,9 @@ export default defineConfig({
     password: process.env.MYSQL_PASSWORD || '123456',
     database: process.env.MYSQL_DATABASE || 'sf-admin',
     synchronize: false,
-    logging: false,
+    maxSize: process.env.MYSQL_LOG_MAXSIZE,
+    maxFiles: process.env.MYSQL_LOG_MAXFILES,
+    logging: ['error'],
   },
   // redis cache config
   redis: {

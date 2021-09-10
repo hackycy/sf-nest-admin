@@ -1,9 +1,14 @@
 import { ModuleMetadata } from '@nestjs/common';
+import { LoggerOptions } from 'typeorm';
 
 /**
  * 日志等级
  */
 export type WinstonLogLevel = 'info' | 'error' | 'warn' | 'debug' | 'verbose';
+
+export interface TypeORMLoggerOptions {
+  options?: LoggerOptions;
+}
 
 /**
  * 日志配置

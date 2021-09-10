@@ -32,7 +32,12 @@ import { TypeORMLoggerService } from './shared/logger/typeorm-logger.service';
         database: configService.get<string>('database.database'),
         synchronize: configService.get<boolean>('database.synchronize'),
         logging: configService.get('database.logging'),
-        logger: new TypeORMLoggerService(configService.get('database.logging')),
+        // 自定义日志
+        logger: new TypeORMLoggerService(
+          configService.get('database.logging'),
+          configService.get('database.maxSize'),
+          configService.get('database.maxFiles'),
+        ),
       }),
       inject: [ConfigService],
     }),

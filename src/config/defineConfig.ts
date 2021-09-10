@@ -1,5 +1,6 @@
 import { conf } from 'qiniu';
 import { LoggerModuleOptions as LoggerConfigOptions } from 'src/shared/logger/logger.interface';
+import { LoggerOptions } from 'typeorm';
 
 /**
  * 用于智能提示
@@ -67,5 +68,7 @@ export interface DataBaseConfigOptions {
   password?: string;
   database?: string;
   synchronize?: boolean;
-  logging?: any;
+  logging?: LoggerOptions;
+  maxSize?: string;
+  maxFiles?: string;
 }

@@ -16,13 +16,19 @@ export class TypeORMLoggerService implements Logger {
    */
   private logger: LoggerService;
 
-  constructor(private options: LoggerOptions) {
+  constructor(
+    private options: LoggerOptions,
+    maxSize?: string,
+    maxFiles?: string,
+  ) {
     this.logger = new LoggerService(TypeORMLoggerService.name, {
       level: 'warn',
       consoleLevel: 'verbose',
       appLogName: DEFAULT_SQL_SLOW_LOG_NAME,
       errorLogName: DEFAULT_SQL_ERROR_LOG_NAME,
       timestamp: true,
+      maxSize,
+      maxFiles,
     });
   }
 
