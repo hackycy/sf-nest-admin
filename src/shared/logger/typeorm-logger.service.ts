@@ -6,6 +6,9 @@ import {
 } from './logger.constants';
 import { LoggerService } from './logger.service';
 
+/**
+ * 自定义TypeORM日志，sqlSlow日志及error日志会自动记录至日志文件
+ */
 @Injectable()
 export class TypeORMLoggerService implements Logger {
   /**
