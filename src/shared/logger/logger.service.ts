@@ -140,15 +140,15 @@ export class LoggerService implements NestLoggerService {
   log(message: any, context?: string): void;
   log(message: any, ...optionalParams: [...any, string?]): void;
   log(message: any, ...optionalParams: any[]) {
-    const { messages, context } = this.getContextAndMessagesToPrint([
-      message,
-      ...optionalParams,
-    ]);
     const consoleEnable = this.isConsoleLevelEnabled('info');
     const winstonEnable = this.isWinstonLevelEnabled('info');
     if (!consoleEnable && !winstonEnable) {
       return;
     }
+    const { messages, context } = this.getContextAndMessagesToPrint([
+      message,
+      ...optionalParams,
+    ]);
     if (consoleEnable) {
       this.printMessages(messages, context, 'info');
     }
@@ -159,7 +159,8 @@ export class LoggerService implements NestLoggerService {
    * Write an 'error' level log, if the configured level allows for it.
    * Prints to `stderr` with newline.
    */
-  error(message: any, context?: string, stack?: string): void;
+  error(message: any, context?: string): void;
+  error(message: any, stack?: string, context?: string): void;
   error(message: any, ...optionalParams: [...any, string?, string?]): void;
   error(message: any, ...optionalParams: any[]) {
     const consoleEnable = this.isConsoleLevelEnabled('error');
@@ -183,15 +184,15 @@ export class LoggerService implements NestLoggerService {
   warn(message: any, context?: string): void;
   warn(message: any, ...optionalParams: [...any, string?]): void;
   warn(message: any, ...optionalParams: any[]) {
-    const { messages, context } = this.getContextAndMessagesToPrint([
-      message,
-      ...optionalParams,
-    ]);
     const consoleEnable = this.isConsoleLevelEnabled('warn');
     const winstonEnable = this.isWinstonLevelEnabled('warn');
     if (!consoleEnable && !winstonEnable) {
       return;
     }
+    const { messages, context } = this.getContextAndMessagesToPrint([
+      message,
+      ...optionalParams,
+    ]);
     if (consoleEnable) {
       this.printMessages(messages, context, 'warn');
     }
@@ -205,15 +206,15 @@ export class LoggerService implements NestLoggerService {
   debug(message: any, context?: string): void;
   debug(message: any, ...optionalParams: [...any, string?]): void;
   debug(message: any, ...optionalParams: any[]) {
-    const { messages, context } = this.getContextAndMessagesToPrint([
-      message,
-      ...optionalParams,
-    ]);
     const consoleEnable = this.isConsoleLevelEnabled('debug');
     const winstonEnable = this.isWinstonLevelEnabled('debug');
     if (!consoleEnable && !winstonEnable) {
       return;
     }
+    const { messages, context } = this.getContextAndMessagesToPrint([
+      message,
+      ...optionalParams,
+    ]);
     if (consoleEnable) {
       this.printMessages(messages, context, 'debug');
     }
@@ -227,15 +228,15 @@ export class LoggerService implements NestLoggerService {
   verbose(message: any, context?: string): void;
   verbose(message: any, ...optionalParams: [...any, string?]): void;
   verbose(message: any, ...optionalParams: any[]) {
-    const { messages, context } = this.getContextAndMessagesToPrint([
-      message,
-      ...optionalParams,
-    ]);
     const consoleEnable = this.isConsoleLevelEnabled('verbose');
     const winstonEnable = this.isWinstonLevelEnabled('verbose');
     if (!consoleEnable && !winstonEnable) {
       return;
     }
+    const { messages, context } = this.getContextAndMessagesToPrint([
+      message,
+      ...optionalParams,
+    ]);
     if (consoleEnable) {
       this.printMessages(messages, context, 'verbose');
     }
@@ -283,21 +284,22 @@ export class LoggerService implements NestLoggerService {
     logLevel: WinstonLogLevel = 'info',
     stack?: string,
   ) {
-    const msg = isPlainObject(messages[0])
-      ? JSON.stringify(
-          messages[0],
-          (_, value) => (typeof value === 'bigint' ? value.toString() : value),
-          0,
-        )
-      : (messages[0] as string);
-    let optionalParams: unknown;
-    if (messages.length > 1) {
-      optionalParams = messages.slice(1, messages.length - 1);
-    }
-    this.winstonLogger.log(logLevel, msg, {
-      context,
-      stack,
-      optionalParams,
+    messages.forEach((message) => {
+      const output = isPlainObject(message)
+        ? JSON.stringify(
+            message,
+            (_, value) =>
+              typeof value === 'bigint' ? value.toString() : value,
+            0,
+          )
+        : (message as string);
+
+      this.winstonLogger.log(logLevel, output, {
+        context,
+        stack,
+        pid: process.pid,
+        timestamp: this.getTimestamp(),
+      });
     });
   }
 
@@ -363,16 +365,7 @@ export class LoggerService implements NestLoggerService {
   private getContextAndStackAndMessagesToPrint(args: unknown[]) {
     const { messages, context } = this.getContextAndMessagesToPrint(args);
     if (messages?.length <= 1) {
-      if (messages.length === 1 && messages[0] instanceof Error) {
-        // if first element is error
-        return {
-          messages: [messages[0].message],
-          context,
-          stack: messages[0].stack,
-        };
-      } else {
-        return { messages, context };
-      }
+      return { messages, context };
     }
     const lastElement = messages[messages.length - 1];
     const isStack = typeof lastElement === 'string';

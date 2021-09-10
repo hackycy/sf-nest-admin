@@ -12,6 +12,7 @@ import { MissionModule } from './mission/mission.module';
 import { WSModule } from './modules/ws/ws.module';
 import { LoggerModule } from './shared/logger/logger.module';
 import { WinstonLogLevel } from './shared/logger/logger.interface';
+import { TypeORMLoggerService } from './shared/logger/typeorm-logger.service';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { WinstonLogLevel } from './shared/logger/logger.interface';
         database: configService.get<string>('database.database'),
         synchronize: configService.get<boolean>('database.synchronize'),
         logging: configService.get('database.logging'),
+        logger: new TypeORMLoggerService(configService.get('database.logging')),
       }),
       inject: [ConfigService],
     }),
