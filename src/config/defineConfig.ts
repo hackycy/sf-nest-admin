@@ -25,6 +25,9 @@ export interface IConfig {
   database?: DataBaseConfigOptions;
   redis?: RedisConfigOptions;
   qiniu?: QiniuConfigOptions;
+  /**
+   * 应用级别日志配置
+   */
   logger?: LoggerConfigOptions;
 }
 
