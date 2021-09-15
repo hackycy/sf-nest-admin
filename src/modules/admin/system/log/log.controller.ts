@@ -2,7 +2,6 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageResult } from 'src/common/class/res.class';
 import { PageOptionsDto } from 'src/common/dto/page.dto';
-import SysReqLog from 'src/entities/admin/sys-req-log.entity';
 import { LogDisabled } from '../../core/decorators/log-disabled.decorator';
 import { LoginLogInfo, TaskLogInfo } from './log.class';
 import { SysLogService } from './log.service';
@@ -21,23 +20,6 @@ export class SysLogController {
   ): Promise<PageResult<LoginLogInfo>> {
     const list = await this.logService.pageGetLoginLog(dto.page - 1, dto.limit);
     const count = await this.logService.countLoginLog();
-    return {
-      list,
-      pagination: {
-        total: count,
-        size: dto.limit,
-        page: dto.page,
-      },
-    };
-  }
-
-  @ApiOperation({ summary: '分页查询请求追踪日志' })
-  @ApiOkResponse({ type: [SysReqLog] })
-  @LogDisabled()
-  @Get('req/page')
-  async reqPage(@Query() dto: PageOptionsDto): Promise<PageResult<SysReqLog>> {
-    const list = await this.logService.pageGetReqLog(dto.page - 1, dto.limit);
-    const count = await this.logService.countReqLog();
     return {
       list,
       pagination: {

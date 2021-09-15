@@ -8,7 +8,6 @@ import {
 import SysDepartment from 'src/entities/admin/sys-department.entity';
 import SysLoginLog from 'src/entities/admin/sys-login-log.entity';
 import SysMenu from 'src/entities/admin/sys-menu.entity';
-import SysReqLog from 'src/entities/admin/sys-req-log.entity';
 import SysRoleDepartment from 'src/entities/admin/sys-role-department.entity';
 import SysRoleMenu from 'src/entities/admin/sys-role-menu.entity';
 import SysRole from 'src/entities/admin/sys-role.entity';
@@ -48,7 +47,6 @@ import { WSModule } from 'src/modules/ws/ws.module';
       SysRoleDepartment,
       SysUserRole,
       SysLoginLog,
-      SysReqLog,
       SysTask,
       SysTaskLog,
     ]),
