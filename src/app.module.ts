@@ -4,7 +4,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import Configuration from './config/configuration';
 import { AdminModule } from './modules/admin/admin.module';
 import { SharedModule } from './shared/shared.module';
@@ -41,7 +40,6 @@ import { TypeORMLoggerService } from './shared/logger/typeorm-logger.service';
       }),
       inject: [ConfigService],
     }),
-    EventEmitterModule.forRoot({}),
     BullModule.forRoot({}),
     // custom logger
     LoggerModule.forRootAsync(

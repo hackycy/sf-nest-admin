@@ -15,7 +15,6 @@ import {
 } from 'class-validator';
 import { isEmpty } from 'lodash';
 import { NETDISK_HANDLE_MAX_ITEM } from '../../admin.constants';
-import { ActionType } from './manage.class';
 
 @ValidatorConstraint({ name: 'IsLegalNameExpression', async: false })
 export class IsLegalNameExpression implements ValidatorConstraintInterface {
@@ -128,17 +127,6 @@ export class DeleteDto {
   @ApiProperty({ description: '所在目录' })
   @IsString()
   path: string;
-}
-
-export class CheckStatusDto {
-  @ApiProperty({ description: '队列Action' })
-  @IsString()
-  @Matches(/(^rename$)|(^delete$)|(^cut$)|(^copy$)|(^zip$)/)
-  action: ActionType;
-
-  @ApiProperty({ description: '任务Id' })
-  @IsString()
-  taskId: string;
 }
 
 export class MarkFileDto {

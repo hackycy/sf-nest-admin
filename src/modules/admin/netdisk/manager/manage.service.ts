@@ -2,13 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   NETDISK_COPY_SUFFIX,
   NETDISK_DELIMITER,
-  NETDISK_EVENT_COPY,
-  NETDISK_EVENT_CUT,
-  NETDISK_EVENT_DELETE,
-  NETDISK_EVENT_RENAME,
   NETDISK_HANDLE_MAX_ITEM,
   NETDISK_LIMIT,
-  NETDISK_TASK_PREFIX,
   QINIU_CONFIG,
 } from '../../admin.constants';
 import { IQiniuConfig } from '../../admin.interface';
@@ -16,20 +11,11 @@ import * as qiniu from 'qiniu';
 import { rs, conf, auth } from 'qiniu';
 import { UtilService } from 'src/shared/services/util.service';
 import { isEmpty } from 'lodash';
-import {
-  ActionStatus,
-  ActionType,
-  SFileInfo,
-  SFileInfoDetail,
-  SFileList,
-  TaskExecStatusInfo,
-} from './manage.class';
-import { OnEvent } from '@nestjs/event-emitter';
+import { SFileInfo, SFileInfoDetail, SFileList } from './manage.class';
 import { SysUserService } from '../../system/user/user.service';
 import { AccountInfo } from '../../system/user/user.class';
 import { extname, basename } from 'path';
 import { FileOpItem } from './manage.dto';
-import { RedisService } from 'src/shared/services/redis.service';
 
 @Injectable()
 export class NetDiskManageService {
@@ -39,7 +25,6 @@ export class NetDiskManageService {
 
   constructor(
     @Inject(QINIU_CONFIG) private qiniuConfig: IQiniuConfig,
-    private redisService: RedisService,
     private userService: SysUserService,
     private util: UtilService,
   ) {
@@ -439,149 +424,77 @@ export class NetDiskManageService {
   }
 
   /**
-   * 设置队列任务状态
-   */
-  async setQiniuTaskStatus(
-    action: ActionType,
-    taskId: string,
-    status: ActionStatus,
-    err?: string,
-  ): Promise<void> {
-    const redisKey = `${NETDISK_TASK_PREFIX}${action}:${taskId}`;
-    if (status === ActionStatus.SUCCESS) {
-      await this.redisService.getRedis().del(redisKey);
-    } else {
-      await this.redisService.getRedis().set(
-        redisKey,
-        JSON.stringify({
-          status,
-          err,
-        }),
-        'EX',
-        60 * 30,
-      );
-    }
-  }
-
-  /**
-   * 创建后台任务编号
-   */
-  createQiniuBgTaskId(): string {
-    const taksId = this.util.generateRandomValue(10);
-    return taksId;
-  }
-
-  /**
-   * 获取队列任务状态
-   */
-  async getQiniuTaskStatus(
-    action: ActionType,
-    taskId: string,
-  ): Promise<TaskExecStatusInfo> {
-    const redisKey = `${NETDISK_TASK_PREFIX}${action}:${taskId}`;
-    const str = await this.redisService.getRedis().get(redisKey);
-    if (isEmpty(str)) {
-      return {
-        status: 1,
-      };
-    } else {
-      const obj: TaskExecStatusInfo = JSON.parse(str);
-      if (obj.status === 2) {
-        await this.redisService.getRedis().del(redisKey);
-      }
-      return obj;
-    }
-  }
-
-  /**
    * 重命名文件夹
    */
-  @OnEvent(NETDISK_EVENT_RENAME)
-  async renameDir(
-    path: string,
-    name: string,
-    toName: string,
-    taskId: string,
-  ): Promise<void> {
-    try {
-      await this.setQiniuTaskStatus('rename', taskId, ActionStatus.RUNNING);
-      const dirName = `${path}${name}`;
-      const toDirName = `${path}${toName}`;
-      let hasFile = true;
-      let marker = '';
-      const op = {
-        force: true,
-      };
-      const bucketName = this.qiniuConfig.bucket;
-      while (hasFile) {
-        await new Promise<void>((resolve, reject) => {
-          // 列举当前目录下的所有文件
-          this.bucketManager.listPrefix(
-            this.qiniuConfig.bucket,
-            {
-              prefix: dirName,
-              limit: NETDISK_HANDLE_MAX_ITEM,
-              marker,
-            },
-            (err, respBody, respInfo) => {
-              if (err) {
-                reject(err);
-                return;
-              }
-              if (respInfo.statusCode === 200) {
-                const moveOperations = respBody.items.map((item) => {
-                  const { key } = item;
-                  const destKey = key.replace(dirName, toDirName);
-                  return qiniu.rs.moveOp(
-                    bucketName,
-                    key,
-                    bucketName,
-                    destKey,
-                    op,
-                  );
-                });
-                this.bucketManager.batch(
-                  moveOperations,
-                  (err2, respBody2, respInfo2) => {
-                    if (err2) {
-                      reject(err2);
-                      return;
-                    }
-                    if (respInfo2.statusCode === 200) {
-                      if (isEmpty(respBody.marker)) {
-                        hasFile = false;
-                      } else {
-                        marker = respBody.marker;
-                      }
-                      resolve();
+  async renameDir(path: string, name: string, toName: string): Promise<void> {
+    const dirName = `${path}${name}`;
+    const toDirName = `${path}${toName}`;
+    let hasFile = true;
+    let marker = '';
+    const op = {
+      force: true,
+    };
+    const bucketName = this.qiniuConfig.bucket;
+    while (hasFile) {
+      await new Promise<void>((resolve, reject) => {
+        // 列举当前目录下的所有文件
+        this.bucketManager.listPrefix(
+          this.qiniuConfig.bucket,
+          {
+            prefix: dirName,
+            limit: NETDISK_HANDLE_MAX_ITEM,
+            marker,
+          },
+          (err, respBody, respInfo) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            if (respInfo.statusCode === 200) {
+              const moveOperations = respBody.items.map((item) => {
+                const { key } = item;
+                const destKey = key.replace(dirName, toDirName);
+                return qiniu.rs.moveOp(
+                  bucketName,
+                  key,
+                  bucketName,
+                  destKey,
+                  op,
+                );
+              });
+              this.bucketManager.batch(
+                moveOperations,
+                (err2, respBody2, respInfo2) => {
+                  if (err2) {
+                    reject(err2);
+                    return;
+                  }
+                  if (respInfo2.statusCode === 200) {
+                    if (isEmpty(respBody.marker)) {
+                      hasFile = false;
                     } else {
-                      reject(
-                        new Error(
-                          `Qiniu Error Code: ${respInfo2.statusCode}, Info: ${respInfo2.statusMessage}`,
-                        ),
-                      );
+                      marker = respBody.marker;
                     }
-                  },
-                );
-              } else {
-                reject(
-                  new Error(
-                    `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
-                  ),
-                );
-              }
-            },
-          );
-        });
-      }
-      await this.setQiniuTaskStatus('rename', taskId, ActionStatus.SUCCESS);
-    } catch (err) {
-      await this.setQiniuTaskStatus(
-        'rename',
-        taskId,
-        ActionStatus.FAIL,
-        `${err}`,
-      );
+                    resolve();
+                  } else {
+                    reject(
+                      new Error(
+                        `Qiniu Error Code: ${respInfo2.statusCode}, Info: ${respInfo2.statusMessage}`,
+                      ),
+                    );
+                  }
+                },
+              );
+            } else {
+              reject(
+                new Error(
+                  `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
+                ),
+              );
+            }
+          },
+        );
+      });
     }
   }
 
@@ -637,388 +550,345 @@ export class NetDiskManageService {
    * @param dir 文件夹所在的上级目录
    * @param name 文件目录名称
    */
-  @OnEvent(NETDISK_EVENT_DELETE)
   async deleteMultiFileOrDir(
     fileList: FileOpItem[],
     dir: string,
-    taskId: string,
   ): Promise<void> {
-    try {
-      await this.setQiniuTaskStatus('delete', taskId, ActionStatus.RUNNING);
-      const files = fileList.filter((item) => item.type === 'file');
-      if (files.length > 0) {
-        // 批处理文件
-        const copyOperations = files.map((item) => {
-          const fileName = `${dir}${item.name}`;
-          return qiniu.rs.deleteOp(this.qiniuConfig.bucket, fileName);
-        });
-        await new Promise<void>((resolve, reject) => {
-          this.bucketManager.batch(
-            copyOperations,
-            (err, respBody, respInfo) => {
-              if (err) {
-                reject(err);
-                return;
-              }
-              if (respInfo.statusCode === 200) {
-                resolve();
-              } else if (respInfo.statusCode === 298) {
-                reject(new Error('操作异常，但部分文件夹删除成功'));
-              } else {
-                reject(
-                  new Error(
-                    `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
-                  ),
-                );
-              }
-            },
-          );
-        });
-      }
-      // 处理文件夹
-      const dirs = fileList.filter((item) => item.type === 'dir');
-      if (dirs.length > 0) {
-        // 处理文件夹的复制
-        for (let i = 0; i < dirs.length; i++) {
-          const dirName = `${dir}${dirs[i].name}/`;
-          let hasFile = true;
-          let marker = '';
-          while (hasFile) {
-            await new Promise<void>((resolve, reject) => {
-              // 列举当前目录下的所有文件
-              this.bucketManager.listPrefix(
-                this.qiniuConfig.bucket,
-                {
-                  prefix: dirName,
-                  limit: NETDISK_HANDLE_MAX_ITEM,
-                  marker,
-                },
-                (err, respBody, respInfo) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  if (respInfo.statusCode === 200) {
-                    const moveOperations = respBody.items.map((item) => {
-                      const { key } = item;
-                      return qiniu.rs.deleteOp(this.qiniuConfig.bucket, key);
-                    });
-                    this.bucketManager.batch(
-                      moveOperations,
-                      (err2, respBody2, respInfo2) => {
-                        if (err2) {
-                          reject(err2);
-                          return;
-                        }
-                        if (respInfo2.statusCode === 200) {
-                          if (isEmpty(respBody.marker)) {
-                            hasFile = false;
-                          } else {
-                            marker = respBody.marker;
-                          }
-                          resolve();
-                        } else {
-                          reject(
-                            new Error(
-                              `Qiniu Error Code: ${respInfo2.statusCode}, Info: ${respInfo2.statusMessage}`,
-                            ),
-                          );
-                        }
-                      },
-                    );
-                  } else {
-                    reject(
-                      new Error(
-                        `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
-                      ),
-                    );
-                  }
-                },
-              );
-            });
+    const files = fileList.filter((item) => item.type === 'file');
+    if (files.length > 0) {
+      // 批处理文件
+      const copyOperations = files.map((item) => {
+        const fileName = `${dir}${item.name}`;
+        return qiniu.rs.deleteOp(this.qiniuConfig.bucket, fileName);
+      });
+      await new Promise<void>((resolve, reject) => {
+        this.bucketManager.batch(copyOperations, (err, respBody, respInfo) => {
+          if (err) {
+            reject(err);
+            return;
           }
+          if (respInfo.statusCode === 200) {
+            resolve();
+          } else if (respInfo.statusCode === 298) {
+            reject(new Error('操作异常，但部分文件夹删除成功'));
+          } else {
+            reject(
+              new Error(
+                `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
+              ),
+            );
+          }
+        });
+      });
+    }
+    // 处理文件夹
+    const dirs = fileList.filter((item) => item.type === 'dir');
+    if (dirs.length > 0) {
+      // 处理文件夹的复制
+      for (let i = 0; i < dirs.length; i++) {
+        const dirName = `${dir}${dirs[i].name}/`;
+        let hasFile = true;
+        let marker = '';
+        while (hasFile) {
+          await new Promise<void>((resolve, reject) => {
+            // 列举当前目录下的所有文件
+            this.bucketManager.listPrefix(
+              this.qiniuConfig.bucket,
+              {
+                prefix: dirName,
+                limit: NETDISK_HANDLE_MAX_ITEM,
+                marker,
+              },
+              (err, respBody, respInfo) => {
+                if (err) {
+                  reject(err);
+                  return;
+                }
+                if (respInfo.statusCode === 200) {
+                  const moveOperations = respBody.items.map((item) => {
+                    const { key } = item;
+                    return qiniu.rs.deleteOp(this.qiniuConfig.bucket, key);
+                  });
+                  this.bucketManager.batch(
+                    moveOperations,
+                    (err2, respBody2, respInfo2) => {
+                      if (err2) {
+                        reject(err2);
+                        return;
+                      }
+                      if (respInfo2.statusCode === 200) {
+                        if (isEmpty(respBody.marker)) {
+                          hasFile = false;
+                        } else {
+                          marker = respBody.marker;
+                        }
+                        resolve();
+                      } else {
+                        reject(
+                          new Error(
+                            `Qiniu Error Code: ${respInfo2.statusCode}, Info: ${respInfo2.statusMessage}`,
+                          ),
+                        );
+                      }
+                    },
+                  );
+                } else {
+                  reject(
+                    new Error(
+                      `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
+                    ),
+                  );
+                }
+              },
+            );
+          });
         }
       }
-      await this.setQiniuTaskStatus('delete', taskId, ActionStatus.SUCCESS);
-    } catch (err) {
-      await this.setQiniuTaskStatus(
-        'delete',
-        taskId,
-        ActionStatus.FAIL,
-        `${err}`,
-      );
     }
   }
 
   /**
    * 复制文件，含文件夹
    */
-  @OnEvent(NETDISK_EVENT_COPY)
   async copyMultiFileOrDir(
     fileList: FileOpItem[],
     dir: string,
     toDir: string,
-    taskId: string,
   ): Promise<void> {
-    try {
-      await this.setQiniuTaskStatus('copy', taskId, ActionStatus.RUNNING);
-      const files = fileList.filter((item) => item.type === 'file');
-      const op = {
-        force: true,
-      };
-      if (files.length > 0) {
-        // 批处理文件
-        const copyOperations = files.map((item) => {
-          const fileName = `${dir}${item.name}`;
-          // 拼接文件名
-          const ext = extname(item.name);
-          const bn = basename(item.name, ext);
-          const toFileName = `${toDir}${bn}${NETDISK_COPY_SUFFIX}${ext}`;
-          return qiniu.rs.copyOp(
-            this.qiniuConfig.bucket,
-            fileName,
-            this.qiniuConfig.bucket,
-            toFileName,
-            op,
-          );
-        });
-        await new Promise<void>((resolve, reject) => {
-          this.bucketManager.batch(
-            copyOperations,
-            (err, respBody, respInfo) => {
-              if (err) {
-                reject(err);
-                return;
-              }
-              if (respInfo.statusCode === 200) {
-                resolve();
-              } else if (respInfo.statusCode === 298) {
-                reject(new Error('操作异常，但部分文件夹删除成功'));
-              } else {
-                reject(
-                  new Error(
-                    `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
-                  ),
-                );
-              }
-            },
-          );
-        });
-      }
-      // 处理文件夹
-      const dirs = fileList.filter((item) => item.type === 'dir');
-      if (dirs.length > 0) {
-        // 处理文件夹的复制
-        for (let i = 0; i < dirs.length; i++) {
-          const dirName = `${dir}${dirs[i].name}/`;
-          const copyDirName = `${toDir}${dirs[i].name}${NETDISK_COPY_SUFFIX}/`;
-          let hasFile = true;
-          let marker = '';
-          while (hasFile) {
-            await new Promise<void>((resolve, reject) => {
-              // 列举当前目录下的所有文件
-              this.bucketManager.listPrefix(
-                this.qiniuConfig.bucket,
-                {
-                  prefix: dirName,
-                  limit: NETDISK_HANDLE_MAX_ITEM,
-                  marker,
-                },
-                (err, respBody, respInfo) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  if (respInfo.statusCode === 200) {
-                    const moveOperations = respBody.items.map((item) => {
-                      const { key } = item;
-                      const destKey = key.replace(dirName, copyDirName);
-                      return qiniu.rs.copyOp(
-                        this.qiniuConfig.bucket,
-                        key,
-                        this.qiniuConfig.bucket,
-                        destKey,
-                        op,
-                      );
-                    });
-                    this.bucketManager.batch(
-                      moveOperations,
-                      (err2, respBody2, respInfo2) => {
-                        if (err2) {
-                          reject(err2);
-                          return;
-                        }
-                        if (respInfo2.statusCode === 200) {
-                          if (isEmpty(respBody.marker)) {
-                            hasFile = false;
-                          } else {
-                            marker = respBody.marker;
-                          }
-                          resolve();
-                        } else {
-                          reject(
-                            new Error(
-                              `Qiniu Error Code: ${respInfo2.statusCode}, Info: ${respInfo2.statusMessage}`,
-                            ),
-                          );
-                        }
-                      },
-                    );
-                  } else {
-                    reject(
-                      new Error(
-                        `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
-                      ),
-                    );
-                  }
-                },
-              );
-            });
+    const files = fileList.filter((item) => item.type === 'file');
+    const op = {
+      force: true,
+    };
+    if (files.length > 0) {
+      // 批处理文件
+      const copyOperations = files.map((item) => {
+        const fileName = `${dir}${item.name}`;
+        // 拼接文件名
+        const ext = extname(item.name);
+        const bn = basename(item.name, ext);
+        const toFileName = `${toDir}${bn}${NETDISK_COPY_SUFFIX}${ext}`;
+        return qiniu.rs.copyOp(
+          this.qiniuConfig.bucket,
+          fileName,
+          this.qiniuConfig.bucket,
+          toFileName,
+          op,
+        );
+      });
+      await new Promise<void>((resolve, reject) => {
+        this.bucketManager.batch(copyOperations, (err, respBody, respInfo) => {
+          if (err) {
+            reject(err);
+            return;
           }
+          if (respInfo.statusCode === 200) {
+            resolve();
+          } else if (respInfo.statusCode === 298) {
+            reject(new Error('操作异常，但部分文件夹删除成功'));
+          } else {
+            reject(
+              new Error(
+                `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
+              ),
+            );
+          }
+        });
+      });
+    }
+    // 处理文件夹
+    const dirs = fileList.filter((item) => item.type === 'dir');
+    if (dirs.length > 0) {
+      // 处理文件夹的复制
+      for (let i = 0; i < dirs.length; i++) {
+        const dirName = `${dir}${dirs[i].name}/`;
+        const copyDirName = `${toDir}${dirs[i].name}${NETDISK_COPY_SUFFIX}/`;
+        let hasFile = true;
+        let marker = '';
+        while (hasFile) {
+          await new Promise<void>((resolve, reject) => {
+            // 列举当前目录下的所有文件
+            this.bucketManager.listPrefix(
+              this.qiniuConfig.bucket,
+              {
+                prefix: dirName,
+                limit: NETDISK_HANDLE_MAX_ITEM,
+                marker,
+              },
+              (err, respBody, respInfo) => {
+                if (err) {
+                  reject(err);
+                  return;
+                }
+                if (respInfo.statusCode === 200) {
+                  const moveOperations = respBody.items.map((item) => {
+                    const { key } = item;
+                    const destKey = key.replace(dirName, copyDirName);
+                    return qiniu.rs.copyOp(
+                      this.qiniuConfig.bucket,
+                      key,
+                      this.qiniuConfig.bucket,
+                      destKey,
+                      op,
+                    );
+                  });
+                  this.bucketManager.batch(
+                    moveOperations,
+                    (err2, respBody2, respInfo2) => {
+                      if (err2) {
+                        reject(err2);
+                        return;
+                      }
+                      if (respInfo2.statusCode === 200) {
+                        if (isEmpty(respBody.marker)) {
+                          hasFile = false;
+                        } else {
+                          marker = respBody.marker;
+                        }
+                        resolve();
+                      } else {
+                        reject(
+                          new Error(
+                            `Qiniu Error Code: ${respInfo2.statusCode}, Info: ${respInfo2.statusMessage}`,
+                          ),
+                        );
+                      }
+                    },
+                  );
+                } else {
+                  reject(
+                    new Error(
+                      `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
+                    ),
+                  );
+                }
+              },
+            );
+          });
         }
       }
-      await this.setQiniuTaskStatus('copy', taskId, ActionStatus.SUCCESS);
-    } catch (err) {
-      await this.setQiniuTaskStatus(
-        'copy',
-        taskId,
-        ActionStatus.FAIL,
-        `${err}`,
-      );
     }
   }
 
   /**
    * 移动文件，含文件夹
    */
-  @OnEvent(NETDISK_EVENT_CUT)
   async moveMultiFileOrDir(
     fileList: FileOpItem[],
     dir: string,
     toDir: string,
-    taskId: string,
   ): Promise<void> {
-    try {
-      await this.setQiniuTaskStatus('cut', taskId, ActionStatus.RUNNING);
-      const files = fileList.filter((item) => item.type === 'file');
-      const op = {
-        force: true,
-      };
-      if (files.length > 0) {
-        // 批处理文件
-        const copyOperations = files.map((item) => {
-          const fileName = `${dir}${item.name}`;
-          const toFileName = `${toDir}${item.name}`;
-          return qiniu.rs.moveOp(
-            this.qiniuConfig.bucket,
-            fileName,
-            this.qiniuConfig.bucket,
-            toFileName,
-            op,
-          );
-        });
-        await new Promise<void>((resolve, reject) => {
-          this.bucketManager.batch(
-            copyOperations,
-            (err, respBody, respInfo) => {
-              if (err) {
-                reject(err);
-                return;
-              }
-              if (respInfo.statusCode === 200) {
-                resolve();
-              } else if (respInfo.statusCode === 298) {
-                reject(new Error('操作异常，但部分文件夹删除成功'));
-              } else {
-                reject(
-                  new Error(
-                    `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
-                  ),
-                );
-              }
-            },
-          );
-        });
-      }
-      // 处理文件夹
-      const dirs = fileList.filter((item) => item.type === 'dir');
-      if (dirs.length > 0) {
-        // 处理文件夹的复制
-        for (let i = 0; i < dirs.length; i++) {
-          const dirName = `${dir}${dirs[i].name}/`;
-          const toDirName = `${toDir}${dirs[i].name}/`;
-          // 移动的目录不是是自己
-          if (toDirName.startsWith(dirName)) {
-            continue;
+    const files = fileList.filter((item) => item.type === 'file');
+    const op = {
+      force: true,
+    };
+    if (files.length > 0) {
+      // 批处理文件
+      const copyOperations = files.map((item) => {
+        const fileName = `${dir}${item.name}`;
+        const toFileName = `${toDir}${item.name}`;
+        return qiniu.rs.moveOp(
+          this.qiniuConfig.bucket,
+          fileName,
+          this.qiniuConfig.bucket,
+          toFileName,
+          op,
+        );
+      });
+      await new Promise<void>((resolve, reject) => {
+        this.bucketManager.batch(copyOperations, (err, respBody, respInfo) => {
+          if (err) {
+            reject(err);
+            return;
           }
-          let hasFile = true;
-          let marker = '';
-          while (hasFile) {
-            await new Promise<void>((resolve, reject) => {
-              // 列举当前目录下的所有文件
-              this.bucketManager.listPrefix(
-                this.qiniuConfig.bucket,
-                {
-                  prefix: dirName,
-                  limit: NETDISK_HANDLE_MAX_ITEM,
-                  marker,
-                },
-                (err, respBody, respInfo) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  if (respInfo.statusCode === 200) {
-                    const moveOperations = respBody.items.map((item) => {
-                      const { key } = item;
-                      const destKey = key.replace(dirName, toDirName);
-                      return qiniu.rs.moveOp(
-                        this.qiniuConfig.bucket,
-                        key,
-                        this.qiniuConfig.bucket,
-                        destKey,
-                        op,
-                      );
-                    });
-                    this.bucketManager.batch(
-                      moveOperations,
-                      (err2, respBody2, respInfo2) => {
-                        if (err2) {
-                          reject(err2);
-                          return;
-                        }
-                        if (respInfo2.statusCode === 200) {
-                          if (isEmpty(respBody.marker)) {
-                            hasFile = false;
-                          } else {
-                            marker = respBody.marker;
-                          }
-                          resolve();
+          if (respInfo.statusCode === 200) {
+            resolve();
+          } else if (respInfo.statusCode === 298) {
+            reject(new Error('操作异常，但部分文件夹删除成功'));
+          } else {
+            reject(
+              new Error(
+                `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
+              ),
+            );
+          }
+        });
+      });
+    }
+    // 处理文件夹
+    const dirs = fileList.filter((item) => item.type === 'dir');
+    if (dirs.length > 0) {
+      // 处理文件夹的复制
+      for (let i = 0; i < dirs.length; i++) {
+        const dirName = `${dir}${dirs[i].name}/`;
+        const toDirName = `${toDir}${dirs[i].name}/`;
+        // 移动的目录不是是自己
+        if (toDirName.startsWith(dirName)) {
+          continue;
+        }
+        let hasFile = true;
+        let marker = '';
+        while (hasFile) {
+          await new Promise<void>((resolve, reject) => {
+            // 列举当前目录下的所有文件
+            this.bucketManager.listPrefix(
+              this.qiniuConfig.bucket,
+              {
+                prefix: dirName,
+                limit: NETDISK_HANDLE_MAX_ITEM,
+                marker,
+              },
+              (err, respBody, respInfo) => {
+                if (err) {
+                  reject(err);
+                  return;
+                }
+                if (respInfo.statusCode === 200) {
+                  const moveOperations = respBody.items.map((item) => {
+                    const { key } = item;
+                    const destKey = key.replace(dirName, toDirName);
+                    return qiniu.rs.moveOp(
+                      this.qiniuConfig.bucket,
+                      key,
+                      this.qiniuConfig.bucket,
+                      destKey,
+                      op,
+                    );
+                  });
+                  this.bucketManager.batch(
+                    moveOperations,
+                    (err2, respBody2, respInfo2) => {
+                      if (err2) {
+                        reject(err2);
+                        return;
+                      }
+                      if (respInfo2.statusCode === 200) {
+                        if (isEmpty(respBody.marker)) {
+                          hasFile = false;
                         } else {
-                          reject(
-                            new Error(
-                              `Qiniu Error Code: ${respInfo2.statusCode}, Info: ${respInfo2.statusMessage}`,
-                            ),
-                          );
+                          marker = respBody.marker;
                         }
-                      },
-                    );
-                  } else {
-                    reject(
-                      new Error(
-                        `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
-                      ),
-                    );
-                  }
-                },
-              );
-            });
-          }
+                        resolve();
+                      } else {
+                        reject(
+                          new Error(
+                            `Qiniu Error Code: ${respInfo2.statusCode}, Info: ${respInfo2.statusMessage}`,
+                          ),
+                        );
+                      }
+                    },
+                  );
+                } else {
+                  reject(
+                    new Error(
+                      `Qiniu Error Code: ${respInfo.statusCode}, Info: ${respInfo.statusMessage}`,
+                    ),
+                  );
+                }
+              },
+            );
+          });
         }
       }
-      await this.setQiniuTaskStatus('cut', taskId, ActionStatus.SUCCESS);
-    } catch (err) {
-      await this.setQiniuTaskStatus('cut', taskId, ActionStatus.FAIL, `${err}`);
     }
   }
 }
