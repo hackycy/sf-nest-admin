@@ -14,10 +14,6 @@ export function defineConfig(config: IConfig): IConfig {
  */
 export interface IConfig {
   /**
-   * 应用名称
-   */
-  appName?: string;
-  /**
    * 管理员角色ID，一旦分配，该角色下分配的管理员都为超级管理员
    */
   rootRoleId?: number;
