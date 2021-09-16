@@ -25,7 +25,7 @@ CREATE TABLE `sys_department` (
   `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parend_id` int(11) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `order_num` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
@@ -154,7 +154,7 @@ CREATE TABLE `sys_role` (
   `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` varchar(255) NOT NULL,
+  `user_id` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `label` varchar(50) NOT NULL,
   `remark` varchar(255) DEFAULT NULL,
