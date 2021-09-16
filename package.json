@@ -12,7 +12,7 @@
     "start": "cross-env NODE_ENV=development nest start",
     "dev": "cross-env NODE_ENV=development nest start --watch",
     "start:debug": "cross-env NODE_ENV=development nest start --debug --watch",
-    "start:prod": "pm2-runtime pm2.conf.json",
+    "start:prod": "cross-env NODE_ENV=production node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -51,7 +51,8 @@
     "typeorm": "^0.2.32",
     "ua-parser-js": "^0.7.28",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5"
+    "winston-daily-rotate-file": "^4.5.5",
+    "cross-env": "^7.0.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.1.1",
@@ -66,7 +67,6 @@
     "@types/ua-parser-js": "^0.7.35",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
-    "cross-env": "^7.0.3",
     "eslint": "^7.22.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",
