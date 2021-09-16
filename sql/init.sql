@@ -71,7 +71,7 @@ CREATE TABLE `sys_menu` (
   `order_num` int(11) DEFAULT '0',
   `view_path` varchar(255) DEFAULT NULL,
   `keepalive` tinyint(4) DEFAULT '1',
-  `isShow` tinyint(4) DEFAULT '1',
+  `is_show` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4;
 
