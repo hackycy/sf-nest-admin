@@ -11,7 +11,7 @@ export interface TypeORMLoggerOptions {
 }
 
 /**
- * 日志配置
+ * 日志配置，默认按天数进行切割
  */
 export interface LoggerModuleOptions {
   /**
@@ -36,13 +36,16 @@ export interface LoggerModuleOptions {
   disableConsoleAtProd?: boolean;
 
   /**
-   * If using the units, add 'k', 'm', or 'g' as the suffix. The units need to directly follow the number.
-   * https://github.com/winstonjs/winston-daily-rotate-file
+   * Maximum size of the file after which it will rotate. This can be a number of bytes, or units of kb, mb, and gb.
+   *  If using the units, add 'k', 'm', or 'g' as the suffix. The units need to directly follow the number.
+   *  default: 2m
    */
-  maxSize?: string;
+  maxFileSize?: string;
+
   /**
-   * Maximum number of logs to keep.
-   * If not set, no logs will be removed. This can be a number of files or number of days. If using days, add 'd' as the suffix. (default: null)
+   * Maximum number of logs to keep. If not set,
+   * no logs will be removed. This can be a number of files or number of days. If using days, add 'd' as the suffix.
+   * default: 15d
    */
   maxFiles?: string;
 

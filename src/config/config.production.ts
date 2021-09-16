@@ -29,7 +29,7 @@ export default defineConfig({
     password: process.env.MYSQL_PASSWORD || '123456',
     database: process.env.MYSQL_DATABASE || 'sf-admin',
     synchronize: false,
-    maxSize: process.env.MYSQL_LOG_MAXSIZE,
+    maxFileSize: process.env.MYSQL_LOG_MAXSIZE,
     maxFiles: process.env.MYSQL_LOG_MAXFILES,
     logging: ['error'],
   },
@@ -53,7 +53,7 @@ export default defineConfig({
   logger: {
     timestamp: false,
     dir: process.env.LOGGER_DIR,
-    maxSize: process.env.LOGGER_MAX_SIZE,
+    maxFileSize: process.env.LOGGER_MAX_SIZE,
     maxFiles: process.env.LOGGER_MAX_FILES,
     errorLogName: process.env.LOGGER_ERROR_FILENAME,
     appLogName: process.env.LOGGER_APP_FILENAME,

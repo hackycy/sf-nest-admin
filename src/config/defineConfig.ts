@@ -68,6 +68,6 @@ export interface DataBaseConfigOptions {
   database?: string;
   synchronize?: boolean;
   logging?: LoggerOptions;
-  maxSize?: string;
+  maxFileSize?: string;
   maxFiles?: string;
 }

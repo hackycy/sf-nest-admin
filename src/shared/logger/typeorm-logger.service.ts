@@ -18,7 +18,7 @@ export class TypeORMLoggerService implements Logger {
 
   constructor(
     private options: LoggerOptions,
-    maxSize?: string,
+    maxFileSize?: string,
     maxFiles?: string,
   ) {
     this.logger = new LoggerService(TypeORMLoggerService.name, {
@@ -27,8 +27,8 @@ export class TypeORMLoggerService implements Logger {
       appLogName: DEFAULT_SQL_SLOW_LOG_NAME,
       errorLogName: DEFAULT_SQL_ERROR_LOG_NAME,
       timestamp: true,
-      maxSize,
       maxFiles,
+      maxFileSize,
     });
   }
 

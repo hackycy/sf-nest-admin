@@ -34,7 +34,7 @@ import { TypeORMLoggerService } from './shared/logger/typeorm-logger.service';
         // 自定义日志
         logger: new TypeORMLoggerService(
           configService.get('database.logging'),
-          configService.get('database.maxSize'),
+          configService.get('database.maxFileSize'),
           configService.get('database.maxFiles'),
         ),
       }),
@@ -53,7 +53,7 @@ import { TypeORMLoggerService } from './shared/logger/typeorm-logger.service';
             ),
             timestamp: configService.get<boolean>('logger.timestamp'),
             maxFiles: configService.get<string>('logger.maxFiles'),
-            maxSize: configService.get<string>('logger.maxSize'),
+            maxFileSize: configService.get<string>('logger.maxFileSize'),
             disableConsoleAtProd: configService.get<boolean>(
               'logger.disableConsoleAtProd',
             ),

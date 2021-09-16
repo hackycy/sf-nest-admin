@@ -7,7 +7,6 @@ import {
 import { clc, yellow } from '@nestjs/common/utils/cli-colors.util';
 import {
   DEFAULT_ERROR_LOG_NAME,
-  DEFAULT_MAX_FILES,
   DEFAULT_MAX_SIZE,
   DEFAULT_WEB_LOG_NAME,
   LOGGER_MODULE_OPTIONS,
@@ -25,7 +24,7 @@ import { isPlainObject } from 'lodash';
  * 默认输出的日志等级
  */
 const DEFAULT_LOG_CONSOLE_LEVELS: WinstonLogLevel = isDev() ? 'info' : 'error';
-const DEFAULT_LOG_WINSTON_LEVELS: WinstonLogLevel = 'error';
+const DEFAULT_LOG_WINSTON_LEVELS: WinstonLogLevel = 'info';
 
 /**
  * 日志输出等级，基于Nest配置扩展，与winston配合，由于log等级与winston定义冲突，需要转为info
@@ -60,8 +59,22 @@ export class LoggerService implements NestLoggerService {
     @Inject(LOGGER_MODULE_OPTIONS)
     protected options: LoggerModuleOptions = {},
   ) {
-    // 初始化
-    this.initDefaultConfig();
+    // 默认配置
+    this.options.timestamp === undefined && (this.options.timestamp = true);
+    // 文件输出等级
+    !this.options.level && (this.options.level = DEFAULT_LOG_WINSTON_LEVELS);
+    // 控制台输出等级
+    !this.options.consoleLevel &&
+      (this.options.consoleLevel = DEFAULT_LOG_CONSOLE_LEVELS);
+    // 输出的文件大小
+    !this.options.maxFileSize && (this.options.maxFileSize = DEFAULT_MAX_SIZE);
+    // 默认输出文件名
+    !this.options.appLogName &&
+      (this.options.appLogName = DEFAULT_WEB_LOG_NAME);
+    !this.options.errorLogName &&
+      (this.options.errorLogName = DEFAULT_ERROR_LOG_NAME);
+
+    // 初始化 winston
     this.initWinston();
   }
 
@@ -76,20 +89,19 @@ export class LoggerService implements NestLoggerService {
       // 如果不指定，则使用 使用 当前项目目录 + logs 路径进行保存
       this.logDir = join(getAppRootPath(), PROJECT_LOG_DIR_NAME);
     }
+    const transportOptions: WinstonDailyRotateFile.DailyRotateFileTransportOptions =
+      {
+        dirname: this.logDir,
+        filename: this.options.appLogName,
+        maxSize: this.options.maxFileSize + 'k',
+        maxFiles: this.options.maxFiles,
+      };
     // 多路日志
-    const webTransport = new WinstonDailyRotateFile({
-      dirname: this.logDir,
-      filename: this.options.appLogName,
-      maxSize: this.options.maxSize,
-      maxFiles: this.options.maxFiles,
-    });
+    const webTransport = new WinstonDailyRotateFile(transportOptions);
     // 所有error级别都记录在该文件下
     const errorTransport = new WinstonDailyRotateFile({
-      dirname: this.logDir,
-      filename: this.options.errorLogName,
-      maxSize: this.options.maxSize,
-      maxFiles: this.options.maxFiles,
       level: 'error',
+      ...transportOptions,
     });
     // 初始化winston
     this.winstonLogger = createLogger({
@@ -114,35 +126,6 @@ export class LoggerService implements NestLoggerService {
    */
   public getWinstonLogger(): WinstonLogger {
     return this.winstonLogger;
-  }
-
-  /**
-   * 初始化默认配置
-   */
-  public initDefaultConfig() {
-    // 默认配置
-    if (this.options.timestamp === undefined) {
-      this.options.timestamp = true;
-    }
-    if (!this.options.level) {
-      this.options.level = DEFAULT_LOG_WINSTON_LEVELS;
-    }
-    if (!this.options.consoleLevel) {
-      this.options.consoleLevel = DEFAULT_LOG_CONSOLE_LEVELS;
-    }
-    if (!this.options.maxSize) {
-      this.options.maxSize = DEFAULT_MAX_SIZE;
-    }
-    if (!this.options.maxFiles) {
-      this.options.maxFiles = DEFAULT_MAX_FILES;
-    }
-    // 默认输出文件名
-    if (!this.options.appLogName) {
-      this.options.appLogName = DEFAULT_WEB_LOG_NAME;
-    }
-    if (!this.options.errorLogName) {
-      this.options.errorLogName = DEFAULT_ERROR_LOG_NAME;
-    }
   }
 
   /**
