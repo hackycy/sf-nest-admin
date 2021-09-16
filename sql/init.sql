@@ -22,8 +22,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_department`;
 CREATE TABLE `sys_department` (
-  `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
@@ -44,8 +44,8 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_login_log`;
 CREATE TABLE `sys_login_log` (
-  `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(20) DEFAULT NULL,
   `ip` varchar(255) DEFAULT NULL,
@@ -59,8 +59,8 @@ CREATE TABLE `sys_login_log` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu` (
-  `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
@@ -133,8 +133,8 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_req_log`;
 CREATE TABLE `sys_req_log` (
-  `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip` varchar(255) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
@@ -151,8 +151,8 @@ CREATE TABLE `sys_req_log` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role` (
-  `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -175,8 +175,8 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role_department`;
 CREATE TABLE `sys_role_department` (
-  `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `role_id` int(11) NOT NULL,
   `department_id` int(11) NOT NULL,
@@ -188,8 +188,8 @@ CREATE TABLE `sys_role_department` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role_menu`;
 CREATE TABLE `sys_role_menu` (
-  `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `role_id` int(11) NOT NULL,
   `menu_id` int(11) NOT NULL,
@@ -201,8 +201,8 @@ CREATE TABLE `sys_role_menu` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_task`;
 CREATE TABLE `sys_task` (
-  `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `service` varchar(255) NOT NULL,
@@ -234,8 +234,8 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_task_log`;
 CREATE TABLE `sys_task_log` (
-  `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `task_id` int(11) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '0',
@@ -249,8 +249,8 @@ CREATE TABLE `sys_task_log` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
-  `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `department_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -279,8 +279,8 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role` (
-  `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `role_id` int(11) NOT NULL,

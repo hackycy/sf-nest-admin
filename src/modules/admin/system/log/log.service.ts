@@ -47,7 +47,7 @@ export class SysLogService {
     const result = await this.loginLogRepository
       .createQueryBuilder('login_log')
       .innerJoinAndSelect('sys_user', 'user', 'login_log.user_id = user.id')
-      .orderBy('login_log.createTime', 'DESC')
+      .orderBy('login_log.created_at', 'DESC')
       .offset(page * count)
       .limit(count)
       .getRawMany();
@@ -59,7 +59,7 @@ export class SysLogService {
         ip: e.login_log_ip,
         os: `${u.os.name} ${u.os.version}`,
         browser: `${u.browser.name} ${u.browser.version}`,
-        time: e.login_log_createTime,
+        time: e.login_log_created_at,
         username: e.user_username,
       };
     });
@@ -121,7 +121,7 @@ export class SysLogService {
         id: e.task_log_id,
         taskId: e.task_id,
         name: e.task_name,
-        createTime: e.task_log_createTime,
+        createdAt: e.task_log_created_at,
         consumeTime: e.task_log_consume_time,
         detail: e.task_log_detail,
         status: e.task_log_status,

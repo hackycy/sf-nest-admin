@@ -282,7 +282,7 @@ export class SysUserService {
       if (index < 0) {
         // 当前元素不存在则插入
         dealResult.push({
-          createTime: e.user_createTime,
+          createdAt: e.user_created_at,
           departmentId: e.user_department_id,
           email: e.user_email,
           headImg: e.user_head_img,
@@ -292,7 +292,7 @@ export class SysUserService {
           phone: e.user_phone,
           remark: e.user_remark,
           status: e.user_status,
-          updateTime: e.user_updateTime,
+          updatedAt: e.user_updated_at,
           username: e.user_username,
           departmentName: e.dept_name,
           roleNames: [e.role_name],
