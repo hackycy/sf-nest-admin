@@ -4,6 +4,7 @@ import {
   DEFAULT_SQL_ERROR_LOG_NAME,
   DEFAULT_SQL_SLOW_LOG_NAME,
 } from './logger.constants';
+import { LoggerModuleOptions } from './logger.interface';
 import { LoggerService } from './logger.service';
 
 /**
@@ -18,17 +19,17 @@ export class TypeORMLoggerService implements Logger {
 
   constructor(
     private options: LoggerOptions,
-    maxFileSize?: string,
-    maxFiles?: string,
+    private config: LoggerModuleOptions,
   ) {
     this.logger = new LoggerService(TypeORMLoggerService.name, {
       level: 'warn',
       consoleLevel: 'verbose',
       appLogName: DEFAULT_SQL_SLOW_LOG_NAME,
       errorLogName: DEFAULT_SQL_ERROR_LOG_NAME,
-      timestamp: true,
-      maxFiles,
-      maxFileSize,
+      timestamp: this.config.timestamp,
+      dir: this.config.dir,
+      maxFileSize: this.config.maxFileSize,
+      maxFiles: this.config.maxFiles,
     });
   }
 

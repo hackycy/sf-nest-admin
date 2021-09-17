@@ -10,8 +10,12 @@ import { SharedModule } from './shared/shared.module';
 import { MissionModule } from './mission/mission.module';
 import { WSModule } from './modules/ws/ws.module';
 import { LoggerModule } from './shared/logger/logger.module';
-import { WinstonLogLevel } from './shared/logger/logger.interface';
+import {
+  LoggerModuleOptions,
+  WinstonLogLevel,
+} from './shared/logger/logger.interface';
 import { TypeORMLoggerService } from './shared/logger/typeorm-logger.service';
+import { LOGGER_MODULE_OPTIONS } from './shared/logger/logger.constants';
 
 @Module({
   imports: [
@@ -20,8 +24,11 @@ import { TypeORMLoggerService } from './shared/logger/typeorm-logger.service';
       load: [Configuration],
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
+      imports: [ConfigModule, LoggerModule],
+      useFactory: (
+        configService: ConfigService,
+        loggerOptions: LoggerModuleOptions,
+      ) => ({
         autoLoadEntities: true,
         type: configService.get<any>('database.type'),
         host: configService.get<string>('database.host'),
@@ -34,11 +41,10 @@ import { TypeORMLoggerService } from './shared/logger/typeorm-logger.service';
         // 自定义日志
         logger: new TypeORMLoggerService(
           configService.get('database.logging'),
-          configService.get('database.maxFileSize'),
-          configService.get('database.maxFiles'),
+          loggerOptions,
         ),
       }),
-      inject: [ConfigService],
+      inject: [ConfigService, LOGGER_MODULE_OPTIONS],
     }),
     BullModule.forRoot({}),
     // custom logger

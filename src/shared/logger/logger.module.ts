@@ -22,7 +22,7 @@ export class LoggerModule {
           useValue: options,
         },
       ],
-      exports: [LoggerService],
+      exports: [LoggerService, LOGGER_MODULE_OPTIONS],
     };
   }
 
@@ -42,7 +42,7 @@ export class LoggerModule {
           inject: options.inject,
         },
       ],
-      exports: [LoggerService],
+      exports: [LoggerService, LOGGER_MODULE_OPTIONS],
     };
   }
 }
