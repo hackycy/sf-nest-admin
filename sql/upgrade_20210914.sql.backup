@@ -13,9 +13,6 @@ ALTER TABLE `sys_menu` CHANGE createTime created_at datetime(6) DEFAULT CURRENT_
 ALTER TABLE `sys_menu` CHANGE updateTime updated_at datetime(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL;
 ALTER TABLE `sys_menu` CHANGE isShow is_show tinyint(4) DEFAULT '1';
 
-ALTER TABLE `sys_req_log` CHANGE createTime created_at datetime(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL;
-ALTER TABLE `sys_req_log` CHANGE updateTime updated_at datetime(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL;
-
 ALTER TABLE `sys_role` CHANGE createTime created_at datetime(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL;
 ALTER TABLE `sys_role` CHANGE updateTime updated_at datetime(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL;
 ALTER TABLE `sys_role` CHANGE userId user_id varchar(255) NOT NULL;
