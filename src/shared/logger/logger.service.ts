@@ -92,17 +92,20 @@ export class LoggerService implements NestLoggerService {
     const transportOptions: WinstonDailyRotateFile.DailyRotateFileTransportOptions =
       {
         dirname: this.logDir,
-        filename: this.options.appLogName,
-        maxSize: this.options.maxFileSize + 'k',
+        maxSize: this.options.maxFileSize,
         maxFiles: this.options.maxFiles,
       };
     // 多路日志
-    const webTransport = new WinstonDailyRotateFile(transportOptions);
+    const webTransport = new WinstonDailyRotateFile(
+      Object.assign(transportOptions, { filename: this.options.appLogName }),
+    );
     // 所有error级别都记录在该文件下
-    const errorTransport = new WinstonDailyRotateFile({
-      level: 'error',
-      ...transportOptions,
-    });
+    const errorTransport = new WinstonDailyRotateFile(
+      Object.assign(transportOptions, {
+        filename: this.options.errorLogName,
+        level: 'error',
+      }),
+    );
     // 初始化winston
     this.winstonLogger = createLogger({
       level: this.options.level,
