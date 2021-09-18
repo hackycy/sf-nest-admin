@@ -89,7 +89,6 @@ export class SysOnlineService {
       [ids],
     );
     if (result) {
-      console.log(result);
       const parser = new UAParser();
       return result.map((e) => {
         const u = parser.setUA(e.ua).getResult();
