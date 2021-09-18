@@ -89,6 +89,7 @@ export class SysOnlineService {
       [ids],
     );
     if (result) {
+      console.log(result);
       const parser = new UAParser();
       return result.map((e) => {
         const u = parser.setUA(e.ua).getResult();
@@ -97,7 +98,7 @@ export class SysOnlineService {
           ip: e.ip,
           username: `${e.name}（${e.username}）`,
           isCurrent: currentUid === e.id,
-          time: e.createdAt,
+          time: e.created_at,
           os: `${u.os.name} ${u.os.version}`,
           browser: `${u.browser.name} ${u.browser.version}`,
           disable: currentUid === e.id || e.id === rootUserId,
