@@ -17,20 +17,6 @@ const parseZone = (zone: string) => {
 };
 
 export default defineConfig({
-  // nodemailer config
-  mailer: {
-    host: process.env.MAILER_HOST || '',
-    port: parseInt(process.env.MAILER_PORT) || 80,
-    auth: {
-      user: process.env.MAILER_USER || '',
-      pass: process.env.MAILER_PASS || '',
-    },
-    secure: false,
-  },
-  // amap config
-  amap: {
-    key: process.env.AMAP_KEY || '',
-  },
   jwt: {
     secret: process.env.JWT_SECRET || '123456',
   },
@@ -43,7 +29,7 @@ export default defineConfig({
     password: process.env.MYSQL_PASSWORD || '123456',
     database: process.env.MYSQL_DATABASE || 'sf-admin',
     synchronize: false,
-    logging: false,
+    logging: ['error'],
   },
   // redis cache config
   redis: {
@@ -60,5 +46,14 @@ export default defineConfig({
     bucket: process.env.QINIU_BUCKET,
     zone: parseZone(process.env.QINIU_ZONE || 'Zone_z2'),
     access: (process.env.QINIU_ACCESS_TYPE as any) || 'public',
+  },
+  // logger config
+  logger: {
+    timestamp: false,
+    dir: process.env.LOGGER_DIR,
+    maxFileSize: process.env.LOGGER_MAX_SIZE,
+    maxFiles: process.env.LOGGER_MAX_FILES,
+    errorLogName: process.env.LOGGER_ERROR_FILENAME,
+    appLogName: process.env.LOGGER_APP_FILENAME,
   },
 });

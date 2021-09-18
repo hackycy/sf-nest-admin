@@ -10,10 +10,6 @@ import { Mission } from '../mission.decorator';
 export class SysLogClearJob {
   constructor(private sysLogService: SysLogService) {}
 
-  async clearReqLog(): Promise<void> {
-    await this.sysLogService.clearReqLog();
-  }
-
   async clearLoginLog(): Promise<void> {
     await this.sysLogService.clearLoginLog();
   }

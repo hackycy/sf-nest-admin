@@ -15,12 +15,18 @@ import { AppModule } from './app.module';
 import { ApiExceptionFilter } from './common/filters/api-exception.filter';
 import { ApiTransformInterceptor } from './common/interceptors/api-transform.interceptor';
 import { setupSwagger } from './setup-swagger';
+import { LoggerService } from './shared/logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
+    {
+      bufferLogs: true,
+    },
   );
+  // custom logger
+  app.useLogger(app.get(LoggerService));
   // validate
   app.useGlobalPipes(
     new ValidationPipe({
@@ -40,7 +46,7 @@ async function bootstrap() {
     }),
   );
   // execption
-  app.useGlobalFilters(new ApiExceptionFilter());
+  app.useGlobalFilters(new ApiExceptionFilter(app.get(LoggerService)));
   // api interceptor
   app.useGlobalInterceptors(new ApiTransformInterceptor(new Reflector()));
   // websocket

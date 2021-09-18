@@ -8,8 +8,13 @@ import { isEmpty } from 'lodash';
 import { MISSION_KEY_METADATA } from 'src/common/contants/decorator.contants';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import SysTask from 'src/entities/admin/sys-task.entity';
+import { LoggerService } from 'src/shared/logger/logger.service';
+import { RedisService } from 'src/shared/services/redis.service';
 import { Repository } from 'typeorm';
-import { SYS_TASK_QUEUE_NAME } from '../../admin.constants';
+import {
+  SYS_TASK_QUEUE_NAME,
+  SYS_TASK_QUEUE_PREFIX,
+} from '../../admin.constants';
 import { CreateTaskDto, UpdateTaskDto } from './task.dto';
 
 @Injectable()
@@ -19,6 +24,8 @@ export class SysTaskService implements OnModuleInit {
     @InjectQueue(SYS_TASK_QUEUE_NAME) private taskQueue: Queue,
     private moduleRef: ModuleRef,
     private reflector: Reflector,
+    private redisService: RedisService,
+    private logger: LoggerService,
   ) {}
 
   /**
@@ -32,6 +39,19 @@ export class SysTaskService implements OnModuleInit {
    * 初始化任务，系统启动前调用
    */
   async initTask(): Promise<void> {
+    const initKey = `${SYS_TASK_QUEUE_PREFIX}:init`;
+    // 防止重复初始化
+    const result = await this.redisService
+      .getRedis()
+      .multi()
+      .setnx(initKey, new Date().getTime())
+      .expire(initKey, 60 * 30)
+      .exec();
+    if (result[0][1] === 0) {
+      // 存在锁则直接跳过防止重复初始化
+      this.logger.log('Init task is lock', SysTaskService.name);
+      return;
+    }
     const jobs = await this.taskQueue.getJobs([
       'active',
       'delayed',
@@ -48,9 +68,11 @@ export class SysTaskService implements OnModuleInit {
     const tasks = await this.taskRepository.find({ status: 1 });
     if (tasks && tasks.length > 0) {
       for (const t of tasks) {
-        this.start(t);
+        await this.start(t);
       }
     }
+    // 启动后释放锁
+    await this.redisService.getRedis().del(initKey);
   }
 
   /**

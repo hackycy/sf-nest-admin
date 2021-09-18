@@ -31,7 +31,7 @@ export class TaskLogInfo {
   name: string;
 
   @ApiProperty({ description: '创建时间' })
-  createTime: string;
+  createdAt: string;
 
   @ApiProperty({ description: '耗时' })
   consumeTime: number;

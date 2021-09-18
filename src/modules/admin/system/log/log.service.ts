@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import SysLoginLog from 'src/entities/admin/sys-login-log.entity';
-import SysReqLog from 'src/entities/admin/sys-req-log.entity';
 import SysTaskLog from 'src/entities/admin/sys-task-log.entity';
 import { Repository } from 'typeorm';
 import { UAParser } from 'ua-parser-js';
@@ -12,8 +11,6 @@ export class SysLogService {
   constructor(
     @InjectRepository(SysLoginLog)
     private loginLogRepository: Repository<SysLoginLog>,
-    @InjectRepository(SysReqLog)
-    private reqLogRepository: Repository<SysReqLog>,
     @InjectRepository(SysTaskLog)
     private taskLogRepository: Repository<SysTaskLog>,
   ) {}
@@ -50,7 +47,7 @@ export class SysLogService {
     const result = await this.loginLogRepository
       .createQueryBuilder('login_log')
       .innerJoinAndSelect('sys_user', 'user', 'login_log.user_id = user.id')
-      .orderBy('login_log.createTime', 'DESC')
+      .orderBy('login_log.created_at', 'DESC')
       .offset(page * count)
       .limit(count)
       .getRawMany();
@@ -62,7 +59,7 @@ export class SysLogService {
         ip: e.login_log_ip,
         os: `${u.os.name} ${u.os.version}`,
         browser: `${u.browser.name} ${u.browser.version}`,
-        time: e.login_log_createTime,
+        time: e.login_log_created_at,
         username: e.user_username,
       };
     });
@@ -74,60 +71,6 @@ export class SysLogService {
   async clearLoginLog(): Promise<void> {
     await this.loginLogRepository.clear();
   }
-
-  // ------ req
-
-  /**
-   * 记录日志
-   */
-  async saveReqLog(
-    ip: string,
-    url: string,
-    params: any,
-    status: number,
-    consumeTime: number,
-    method: string | undefined,
-    userId: number | null,
-  ): Promise<void> {
-    await this.reqLogRepository.insert({
-      action: url,
-      params: JSON.stringify(params),
-      userId: userId === null ? undefined : userId,
-      ip,
-      method: method ? method.toUpperCase() : undefined,
-      status,
-      consumeTime,
-    });
-  }
-
-  /**
-   * 计算日志总数
-   */
-  async countReqLog(): Promise<number> {
-    return await this.reqLogRepository.count();
-  }
-
-  /**
-   * 分页加载日志信息
-   */
-  async pageGetReqLog(page: number, count: number): Promise<SysReqLog[]> {
-    const result = await this.reqLogRepository.find({
-      order: {
-        id: 'DESC',
-      },
-      take: count,
-      skip: page * count,
-    });
-    return result;
-  }
-
-  /**
-   * 清空表中的所有数据
-   */
-  async clearReqLog(): Promise<void> {
-    await this.reqLogRepository.clear();
-  }
-
   // ----- task
 
   /**
@@ -178,7 +121,7 @@ export class SysLogService {
         id: e.task_log_id,
         taskId: e.task_id,
         name: e.task_name,
-        createTime: e.task_log_createTime,
+        createdAt: e.task_log_created_at,
         consumeTime: e.task_log_consume_time,
         detail: e.task_log_detail,
         status: e.task_log_status,

@@ -8,7 +8,7 @@ export default class SysDepartment extends BaseEntity {
   @ApiProperty()
   id: number;
 
-  @Column({ name: 'parend_id', nullable: true })
+  @Column({ name: 'parent_id', nullable: true })
   @ApiProperty()
   parentId: number;
 

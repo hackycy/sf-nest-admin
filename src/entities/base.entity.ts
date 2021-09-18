@@ -2,11 +2,11 @@ import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 export abstract class BaseEntity {
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   @ApiProperty()
-  createTime: Date;
+  createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   @ApiProperty()
-  updateTime: Date;
+  updatedAt: Date;
 }

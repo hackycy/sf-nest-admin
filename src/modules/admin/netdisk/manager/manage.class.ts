@@ -1,16 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export type FileType = 'file' | 'dir';
-export type ActionType = 'delete' | 'rename' | 'copy' | 'cut' | 'zip';
-
-//  0 -> 启动
-//  1 -> 成功 | 不存在redis key
-//  2 -> 失败，在获取状态后会自动移除
-export enum ActionStatus {
-  RUNNING = 0,
-  SUCCESS = 1,
-  FAIL = 2,
-}
 
 export class SFileInfo {
   @ApiProperty({ description: '文件id' })
@@ -41,14 +31,6 @@ export class SFileList {
 
   @ApiProperty({ description: '分页标志，空则代表加载完毕' })
   marker?: string;
-}
-
-export class TaskExecStatusInfo {
-  @ApiProperty({ description: '执行状态' })
-  status: number;
-
-  @ApiProperty({ description: '错误信息' })
-  err?: string;
 }
 
 export class UploadToken {
@@ -83,12 +65,4 @@ export class SFileInfoDetail {
 
   @ApiProperty({ description: '文件备注' })
   mark?: string;
-}
-
-export class TaskInfo {
-  @ApiProperty({ description: '是否为后台运行模式' })
-  bgMode: boolean;
-
-  @ApiProperty({ description: '任务Id，只有在bgMode为true下可用' })
-  taskId?: string;
 }

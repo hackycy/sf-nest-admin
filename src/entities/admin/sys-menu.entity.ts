@@ -44,7 +44,7 @@ export default class SysMenu extends BaseEntity {
   @ApiProperty()
   keepalive: boolean;
 
-  @Column({ type: 'boolean', nullable: true, default: true })
+  @Column({ name: 'is_show', type: 'boolean', nullable: true, default: true })
   @ApiProperty()
   isShow: boolean;
 }

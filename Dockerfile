@@ -6,8 +6,6 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 RUN echo 'Asia/Shanghai' > /etc/timezone
 
 # RUN npm set registry https://registry.npm.taobao.org
-# install pm2
-RUN npm install pm2 -g
 # cache step
 COPY package.json /sf-nest-admin/package.json
 RUN npm install

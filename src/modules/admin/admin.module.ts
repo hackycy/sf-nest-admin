@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD, APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
+import { APP_GUARD, RouterModule } from '@nestjs/core';
 import { AccountModule } from './account/account.module';
 import { ADMIN_PREFIX } from './admin.constants';
 import { AuthGuard } from './core/guards/auth.guard';
-import { ReqLogInterceptor } from './core/interceptors/req-log.interceptor';
 import { LoginModule } from './login/login.module';
 import { NetdiskModule } from './netdisk/netdisk.module';
 import { SystemModule } from './system/system.module';
@@ -39,10 +38,6 @@ import { SystemModule } from './system/system.module';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ReqLogInterceptor,
     },
   ],
   exports: [SystemModule],

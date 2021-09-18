@@ -23,7 +23,7 @@ export class AccountInfo {
 
 export class PageSearchUserInfo {
   @ApiProperty()
-  createTime: string;
+  createdAt: string;
 
   @ApiProperty()
   departmentId: number;
@@ -53,7 +53,7 @@ export class PageSearchUserInfo {
   status: number;
 
   @ApiProperty()
-  updateTime: string;
+  updatedAt: string;
 
   @ApiProperty()
   username: string;
