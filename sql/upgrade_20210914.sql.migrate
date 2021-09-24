@@ -1,4 +1,4 @@
--- 移除 用于兼容旧表更新
+-- 用于旧版本兼容迁移脚本，请手动执行
 
 DROP TABLE IF EXISTS `sys_req_log`;
 
