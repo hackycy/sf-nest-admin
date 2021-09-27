@@ -34,6 +34,9 @@ import { SysTaskConsumer } from './task/task.processor';
 import { SysOnlineController } from './online/online.controller';
 import { SysOnlineService } from './online/online.service';
 import { WSModule } from 'src/modules/ws/ws.module';
+import SysConfig from 'src/entities/admin/sys-config.entity';
+import { SysParamConfigController } from './param-config/param-config.controller';
+import { SysParamConfigService } from './param-config/param-config.service';
 
 @Module({
   imports: [
@@ -49,6 +52,7 @@ import { WSModule } from 'src/modules/ws/ws.module';
       SysLoginLog,
       SysTask,
       SysTaskLog,
+      SysConfig,
     ]),
     BullModule.registerQueueAsync({
       name: SYS_TASK_QUEUE_NAME,
@@ -74,6 +78,7 @@ import { WSModule } from 'src/modules/ws/ws.module';
     SysLogController,
     SysTaskController,
     SysOnlineController,
+    SysParamConfigController,
   ],
   providers: [
     rootRoleIdProvider(),
@@ -85,6 +90,7 @@ import { WSModule } from 'src/modules/ws/ws.module';
     SysTaskService,
     SysTaskConsumer,
     SysOnlineService,
+    SysParamConfigService,
   ],
   exports: [
     ROOT_ROLE_ID,
