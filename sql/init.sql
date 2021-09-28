@@ -1,16 +1,4 @@
 /*
- Navicat Premium Data Transfer
-
- Source Server         : Mac
- Source Server Type    : MySQL
- Source Server Version : 50728
- Source Host           : localhost:3306
- Source Schema         : sf-admin
-
- Target Server Type    : MySQL
- Target Server Version : 50728
- File Encoding         : 65001
-
  Date: 26/10/2020 17:30:38
 */
 
@@ -102,7 +90,6 @@ INSERT INTO `sys_menu` VALUES ('2020-09-09 07:10:08.435753', '2020-09-10 03:41:3
 INSERT INTO `sys_menu` VALUES ('2020-09-10 05:09:31.904519', '2020-09-10 05:09:31.904519', 35, 4, '更新', '', 'sys:user:update', 2, '', 0, '', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-09-10 08:02:29.853643', '2020-09-10 08:02:40.000000', 36, 4, '部门转移', '', 'sys:dept:transfer', 2, '', 0, '', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-09-11 04:34:00.379002', '2020-09-14 03:29:59.000000', 37, 1, '系统监控', '/sys/monitor', '', 0, 'monitor', 0, '', 1, 1);
-INSERT INTO `sys_menu` VALUES ('2020-09-11 04:34:52.949262', '2020-10-12 08:14:58.000000', 38, 37, '请求追踪', '/sys/monitor/log', '', 1, 'log', 0, 'views/system/monitor/req-log', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-09-11 06:12:14.621531', '2020-09-11 06:12:14.621531', 39, 4, '部门新增', '', 'sys:dept:add', 2, '', 0, '', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-09-11 06:13:23.752133', '2020-09-11 06:13:23.752133', 40, 4, '部门删除', '', 'sys:dept:delete', 2, '', 0, '', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-09-11 06:29:52.437621', '2020-09-11 06:29:52.437621', 41, 4, '部门更新', '', 'sys:dept:update', 2, '', 0, '', 1, 1);
@@ -111,7 +98,6 @@ INSERT INTO `sys_menu` VALUES ('2020-09-14 03:56:24.740870', '2020-10-09 07:47:0
 INSERT INTO `sys_menu` VALUES ('2020-10-12 10:00:49.463487', '2020-10-12 10:00:49.463487', 51, 37, '在线用户', '/sys/monitor/online', NULL, 1, 'people', 0, 'views/system/monitor/online', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-10-13 03:01:13.787832', '2020-10-13 03:01:13.787832', 52, 51, '查询', '', 'sys:online:list', 2, '', 0, '', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-10-13 03:01:51.480667', '2020-10-13 03:01:51.480667', 53, 51, '下线', '', 'sys:online:kick', 2, '', 0, '', 1, 1);
-INSERT INTO `sys_menu` VALUES ('2020-10-13 09:37:29.097828', '2020-10-13 09:37:29.097828', 54, 38, '查询', '', 'sys:log:req:page,sys:log:req:search', 2, '', 0, '', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-10-13 09:52:08.932501', '2020-10-13 09:53:44.000000', 55, 37, '登录日志', '/sys/monitor/login-log', NULL, 1, 'guide', 0, 'views/system/monitor/login-log', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-10-13 09:56:13.285772', '2020-10-13 09:56:13.285772', 56, 55, '查询', '', 'sys:log:login:page', 2, '', 0, '', 1, 1);
 INSERT INTO `sys_menu` VALUES ('2020-10-19 03:07:18.221647', '2020-10-19 07:26:37.000000', 57, 1, '任务调度', '/sys/schedule', NULL, 0, 'task', 0, '', 1, 1);
