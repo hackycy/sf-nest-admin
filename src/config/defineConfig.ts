@@ -69,3 +69,11 @@ export interface DataBaseConfigOptions {
   synchronize?: boolean;
   logging?: LoggerOptions;
 }
+
+export interface SwaggerConfigOptions {
+  enable?: boolean;
+  path?: string;
+  title?: string;
+  desc?: string;
+  version?: string;
+}
