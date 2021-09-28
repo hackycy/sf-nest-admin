@@ -20,7 +20,10 @@ BEGIN;
 INSERT INTO `sys_menu` (`created_at`, `updated_at`, `id`, `parent_id`, `name`, `router`, `perms`, `type`, `icon`, `order_num`, `view_path`, `keepalive`, `is_show`) VALUES
 ('2021-09-28 03:22:42.570291', '2021-09-28 03:22:42.570291', 85, 1, '参数配置', '/sys/param-config', NULL, 0, 'param-config', 255, NULL, 1, 1),
 ('2021-09-28 03:25:47.197582', '2021-09-28 03:25:47.197582', 86, 85, '参数列表', '/sys/param-config/list', NULL, 1, 'param-config-list', 255, 'views/system/param-config/config-list', 1, 1),
-('2021-09-28 03:26:27.243134', '2021-09-28 03:26:27.243134', 87, 86, '查询', NULL, 'sys:param-config:page', 2, NULL, 255, NULL, 1, 1);
+('2021-09-28 03:26:27.243134', '2021-09-28 07:55:44.000000', 87, 86, '查询', NULL, 'sys:param-config:page,sys:param-config:info', 2, NULL, 255, NULL, 1, 1),
+('2021-09-28 07:56:03.132765', '2021-09-28 07:56:03.132765', 88, 86, '新增', NULL, 'sys:param-config:add', 2, NULL, 255, NULL, 1, 1),
+('2021-09-28 07:56:26.180445', '2021-09-28 07:56:26.180445', 89, 86, '删除', NULL, 'sys:param-config:delete', 2, NULL, 255, NULL, 1, 1),
+('2021-09-28 07:56:47.269451', '2021-09-28 07:56:47.269451', 90, 86, '更新', NULL, 'sys:param-config:update', 2, NULL, 255, NULL, 1, 1);
 
 --
 -- 转存表中的数据 `sys_config`
