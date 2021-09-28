@@ -26,5 +26,5 @@ INSERT INTO `sys_menu` (`created_at`, `updated_at`, `id`, `parent_id`, `name`, `
 -- 转存表中的数据 `sys_config`
 --
 INSERT INTO `sys_config` (created_at,updated_at,`key`,name,value,remark) VALUES
-	 ('2021-09-28 03:14:05.256120000','2021-09-28 03:14:05.256120000','sys_user_initPassword','初始密码','123456','创建管理员账号的初始密码:123456');
+	 ('2021-09-28 03:14:05.256120000','2021-09-28 03:14:05.256120000','sys_user_initPassword','初始密码','123456','创建管理员账号的初始密码');
 COMMIT;
