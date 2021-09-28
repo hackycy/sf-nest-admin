@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ApiException } from 'src/common/exceptions/api.exception';
 import SysConfig from 'src/entities/admin/sys-config.entity';
 import { Repository } from 'typeorm';
+import { CreateParamConfigDto, UpdateParamConfigDto } from './param-config.dto';
 
 @Injectable()
 export class SysParamConfigService {
@@ -28,5 +30,36 @@ export class SysParamConfigService {
    */
   async countConfigList(): Promise<number> {
     return this.configRepository.count();
+  }
+
+  /**
+   * 新增
+   */
+  async add(dto: CreateParamConfigDto): Promise<void> {
+    await this.configRepository.insert(dto);
+  }
+
+  /**
+   * 更新
+   */
+  async update(dto: UpdateParamConfigDto): Promise<void> {
+    await this.configRepository.update(
+      { id: dto.id },
+      { name: dto.name, value: dto.value, remark: dto.remark },
+    );
+  }
+
+  /**
+   * 查询单个
+   */
+  async findOne(id: number): Promise<SysConfig> {
+    return await this.configRepository.findOne({ id });
+  }
+
+  async isExistKey(key: string): Promise<void | never> {
+    const result = await this.configRepository.findOne({ key });
+    if (result) {
+      throw new ApiException(10021);
+    }
   }
 }

@@ -1,16 +1,28 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { PageResult } from 'src/common/class/res.class';
 import { PageOptionsDto } from 'src/common/dto/page.dto';
 import SysConfig from 'src/entities/admin/sys-config.entity';
+import { ADMIN_PREFIX } from '../../admin.constants';
+import {
+  CreateParamConfigDto,
+  InfoParamConfigDto,
+  UpdateParamConfigDto,
+} from './param-config.dto';
 import { SysParamConfigService } from './param-config.service';
 
+@ApiSecurity(ADMIN_PREFIX)
 @ApiTags('参数配置模块')
 @Controller('param-config')
 export class SysParamConfigController {
   constructor(private paramConfigService: SysParamConfigService) {}
 
-  @ApiOperation({ summary: '查询当前在线用户' })
+  @ApiOperation({ summary: '分页获取参数配置列表' })
   @ApiOkResponse({ type: [SysConfig] })
   @Get('page')
   async page(@Query() dto: PageOptionsDto): Promise<PageResult<SysConfig>> {
@@ -27,5 +39,25 @@ export class SysParamConfigController {
       },
       list,
     };
+  }
+
+  @ApiOperation({ summary: '新增参数配置' })
+  @Post('add')
+  async add(@Body() dto: CreateParamConfigDto): Promise<void> {
+    await this.paramConfigService.isExistKey(dto.key);
+    await this.paramConfigService.add(dto);
+  }
+
+  @ApiOperation({ summary: '查询单个参数配置信息' })
+  @ApiOkResponse({ type: SysConfig })
+  @Get('info')
+  async info(@Query() dto: InfoParamConfigDto): Promise<SysConfig> {
+    return this.paramConfigService.findOne(dto.id);
+  }
+
+  @ApiOperation({ summary: '更新单个参数配置' })
+  @Post('update')
+  async update(@Body() dto: UpdateParamConfigDto): Promise<void> {
+    await this.paramConfigService.update(dto);
   }
 }
