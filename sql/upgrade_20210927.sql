@@ -12,3 +12,19 @@ CREATE TABLE `sys_config` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_2c363c25cf99bcaab3a7f389ba` (`key`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+BEGIN;
+--
+-- 转存表中的数据 `sys_menu`
+--
+INSERT INTO `sys_menu` (`created_at`, `updated_at`, `id`, `parent_id`, `name`, `router`, `perms`, `type`, `icon`, `order_num`, `view_path`, `keepalive`, `is_show`) VALUES
+('2021-09-28 03:22:42.570291', '2021-09-28 03:22:42.570291', 85, 1, '参数配置', '/sys/param-config', NULL, 0, 'param-config', 255, NULL, 1, 1),
+('2021-09-28 03:25:47.197582', '2021-09-28 03:25:47.197582', 86, 85, '参数列表', '/sys/param-config/list', NULL, 1, 'param-config-list', 255, 'views/system/param-config/config-list', 1, 1),
+('2021-09-28 03:26:27.243134', '2021-09-28 03:26:27.243134', 87, 86, '查询', NULL, 'sys:param-config:page', 2, NULL, 255, NULL, 1, 1);
+
+--
+-- 转存表中的数据 `sys_config`
+--
+INSERT INTO `sys_config` (created_at,updated_at,`key`,name,value,remark) VALUES
+	 ('2021-09-28 03:14:05.256120000','2021-09-28 03:14:05.256120000','sys_user_initPassword','初始密码','123456','创建管理员账号的初始密码:123456');
+COMMIT;
