@@ -16,6 +16,8 @@ import {
 import { AccountInfo, PageSearchUserInfo } from './user.class';
 import { ROOT_ROLE_ID } from 'src/modules/admin/admin.constants';
 import { RedisService } from 'src/shared/services/redis.service';
+import { SysParamConfigService } from '../param-config/param-config.service';
+import { SYS_USER_INITPASSWORD } from 'src/common/contants/param-config.contants';
 
 @Injectable()
 export class SysUserService {
@@ -26,6 +28,7 @@ export class SysUserService {
     @InjectRepository(SysUserRole)
     private userRoleRepository: Repository<SysUserRole>,
     private redisService: RedisService,
+    private paramConfigService: SysParamConfigService,
     @InjectEntityManager() private entityManager: EntityManager,
     @Inject(ROOT_ROLE_ID) private rootRoleId: number,
     private util: UtilService,
@@ -113,7 +116,13 @@ export class SysUserService {
     // 所有用户初始密码为123456
     await this.entityManager.transaction(async (manager) => {
       const salt = this.util.generateRandomValue(32);
-      const password = this.util.md5(`123456${salt}`);
+
+      // 查找配置的初始密码
+      const initPassword = await this.paramConfigService.findValueByKey(
+        SYS_USER_INITPASSWORD,
+      );
+
+      const password = this.util.md5(`${initPassword ?? '123456'}${salt}`);
       const u = manager.create(SysUser, {
         departmentId: param.departmentId,
         username: param.username,

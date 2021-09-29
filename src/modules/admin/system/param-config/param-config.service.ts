@@ -69,4 +69,15 @@ export class SysParamConfigService {
       throw new ApiException(10021);
     }
   }
+
+  async findValueByKey(key: string): Promise<string | null> {
+    const result = await this.configRepository.findOne(
+      { key },
+      { select: ['value'] },
+    );
+    if (result) {
+      return result.value;
+    }
+    return null;
+  }
 }
