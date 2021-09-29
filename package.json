@@ -37,6 +37,7 @@
     "cache-manager": "^3.4.3",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "cross-env": "^7.0.3",
     "crypto-js": "^4.0.0",
     "date-fns": "^2.21.3",
     "fastify-swagger": "^4.7.0",
@@ -48,11 +49,11 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "svg-captcha": "^1.4.0",
+    "systeminformation": "^5.9.4",
     "typeorm": "^0.2.32",
     "ua-parser-js": "^0.7.28",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5",
-    "cross-env": "^7.0.3"
+    "winston-daily-rotate-file": "^4.5.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.1.1",
