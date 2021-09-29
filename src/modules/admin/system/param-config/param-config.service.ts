@@ -50,6 +50,13 @@ export class SysParamConfigService {
   }
 
   /**
+   * 删除
+   */
+  async delete(ids: number[]): Promise<void> {
+    await this.configRepository.delete(ids);
+  }
+
+  /**
    * 查询单个
    */
   async findOne(id: number): Promise<SysConfig> {

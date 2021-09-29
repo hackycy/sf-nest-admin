@@ -11,6 +11,7 @@ import SysConfig from 'src/entities/admin/sys-config.entity';
 import { ADMIN_PREFIX } from '../../admin.constants';
 import {
   CreateParamConfigDto,
+  DeleteParamConfigDto,
   InfoParamConfigDto,
   UpdateParamConfigDto,
 } from './param-config.dto';
@@ -59,5 +60,11 @@ export class SysParamConfigController {
   @Post('update')
   async update(@Body() dto: UpdateParamConfigDto): Promise<void> {
     await this.paramConfigService.update(dto);
+  }
+
+  @ApiOperation({ summary: '删除指定的参数配置' })
+  @Post('delete')
+  async delete(@Body() dto: DeleteParamConfigDto): Promise<void> {
+    await this.paramConfigService.delete(dto.ids);
   }
 }
