@@ -226,6 +226,7 @@ export class SysTaskService implements OnModuleInit {
    * 查看队列中任务是否存在
    */
   async existJob(jobId: string): Promise<boolean> {
+    // https://github.com/OptimalBits/bull/blob/develop/REFERENCE.md#queueremoverepeatablebykey
     const jobs = await this.taskQueue.getRepeatableJobs();
     const ids = jobs.map((e) => {
       return e.id;
@@ -301,12 +302,29 @@ export class SysTaskService implements OnModuleInit {
       }
       const methodName = arr[1];
       const service = await this.moduleRef.get(arr[0], { strict: false });
+      // 安全注解检查
       await this.checkHasMissionMeta(service, methodName);
       if (isEmpty(args)) {
         await service[methodName]();
       } else {
-        await service[methodName](JSON.parse(args));
+        // 参数安全判断
+        const parseArgs = this.safeParse(args);
+
+        if (Array.isArray(parseArgs)) {
+          // 数组形式则自动扩展成方法参数回掉
+          await service[methodName](...parseArgs);
+        } else {
+          await service[methodName](parseArgs);
+        }
       }
+    }
+  }
+
+  safeParse(args: string): unknown | string {
+    try {
+      return JSON.parse(args);
+    } catch (e) {
+      return args;
     }
   }
 }
