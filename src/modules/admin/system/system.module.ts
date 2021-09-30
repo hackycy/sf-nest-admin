@@ -37,6 +37,8 @@ import { WSModule } from 'src/modules/ws/ws.module';
 import SysConfig from 'src/entities/admin/sys-config.entity';
 import { SysParamConfigController } from './param-config/param-config.controller';
 import { SysParamConfigService } from './param-config/param-config.service';
+import { SysServeController } from './serve/serve.controller';
+import { SysServeService } from './serve/serve.service';
 
 @Module({
   imports: [
@@ -79,6 +81,7 @@ import { SysParamConfigService } from './param-config/param-config.service';
     SysTaskController,
     SysOnlineController,
     SysParamConfigController,
+    SysServeController,
   ],
   providers: [
     rootRoleIdProvider(),
@@ -91,6 +94,7 @@ import { SysParamConfigService } from './param-config/param-config.service';
     SysTaskConsumer,
     SysOnlineService,
     SysParamConfigService,
+    SysServeService,
   ],
   exports: [
     ROOT_ROLE_ID,
