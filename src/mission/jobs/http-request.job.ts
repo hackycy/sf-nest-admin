@@ -15,6 +15,10 @@ export class HttpRequestJob {
    * @param config {AxiosRequestConfig}
    */
   async handle(config: unknown): Promise<void> {
-    await this.httpService.axiosRef.request(config);
+    if (config) {
+      await this.httpService.axiosRef.request(config);
+    } else {
+      throw new Error('Http request job param is empty');
+    }
   }
 }
