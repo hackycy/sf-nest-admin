@@ -120,14 +120,14 @@ export class LoggerService implements NestLoggerService {
   /**
    * 获取日志存放路径
    */
-  public getLogDir(): string {
+  protected getLogDir(): string {
     return this.logDir;
   }
 
   /**
    * 获取winston实例
    */
-  public getWinstonLogger(): WinstonLogger {
+  protected getWinstonLogger(): WinstonLogger {
     return this.winstonLogger;
   }
 
@@ -241,7 +241,7 @@ export class LoggerService implements NestLoggerService {
     this.recordMessages(messages, context, 'verbose');
   }
 
-  isConsoleLevelEnabled(level: WinstonLogLevel): boolean {
+  protected isConsoleLevelEnabled(level: WinstonLogLevel): boolean {
     // 默认禁止生产模式控制台日志输出
     if (!isDev() && !this.options.disableConsoleAtProd) {
       return false;
@@ -252,7 +252,7 @@ export class LoggerService implements NestLoggerService {
     return LOG_LEVEL_VALUES[level] <= LOG_LEVEL_VALUES[level];
   }
 
-  isWinstonLevelEnabled(level: WinstonLogLevel): boolean {
+  protected isWinstonLevelEnabled(level: WinstonLogLevel): boolean {
     // 默认禁止生产模式控制台日志输出
     if (this.options.level === 'none') {
       return false;
