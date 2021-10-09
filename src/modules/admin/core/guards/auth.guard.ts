@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // 检测是否是开放类型的，例如获取验证码类型的接口不需要校验，可以加入@Open可自动放过
+    // 检测是否是开放类型的，例如获取验证码类型的接口不需要校验，可以加入@Authorize可自动放过
     const authorize = this.reflector.get<boolean>(
       AUTHORIZE_KEY_METADATA,
       context.getHandler(),
