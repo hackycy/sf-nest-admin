@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { LoggerService } from 'src/shared/logger/logger.service';
 import { Mission } from '../mission.decorator';
 
 /**
@@ -8,7 +9,10 @@ import { Mission } from '../mission.decorator';
 @Injectable()
 @Mission()
 export class HttpRequestJob {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly logger: LoggerService,
+  ) {}
 
   /**
    * 发起请求
@@ -16,7 +20,8 @@ export class HttpRequestJob {
    */
   async handle(config: unknown): Promise<void> {
     if (config) {
-      await this.httpService.axiosRef.request(config);
+      const result = await this.httpService.axiosRef.request(config);
+      this.logger.log(result, HttpRequestJob.name);
     } else {
       throw new Error('Http request job param is empty');
     }
