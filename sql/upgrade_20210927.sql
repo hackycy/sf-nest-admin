@@ -23,7 +23,8 @@ INSERT INTO `sys_menu` (`created_at`, `updated_at`, `id`, `parent_id`, `name`, `
 ('2021-09-28 03:26:27.243134', '2021-09-28 07:55:44.000000', 87, 86, '查询', NULL, 'sys:param-config:page,sys:param-config:info', 2, NULL, 255, NULL, 1, 1),
 ('2021-09-28 07:56:03.132765', '2021-09-28 07:56:03.132765', 88, 86, '新增', NULL, 'sys:param-config:add', 2, NULL, 255, NULL, 1, 1),
 ('2021-09-28 07:56:26.180445', '2021-09-28 07:56:26.180445', 89, 86, '删除', NULL, 'sys:param-config:delete', 2, NULL, 255, NULL, 1, 1),
-('2021-09-28 07:56:47.269451', '2021-09-28 07:56:47.269451', 90, 86, '更新', NULL, 'sys:param-config:update', 2, NULL, 255, NULL, 1, 1);
+('2021-09-28 07:56:47.269451', '2021-09-28 07:56:47.269451', 90, 86, '更新', NULL, 'sys:param-config:update', 2, NULL, 255, NULL, 1, 1),
+('2021-10-11 09:53:38.305927', '2021-10-12 07:20:18.000000', 91, 37, '服务监控', '/sys/monitor/serve', NULL, 1, 'serve', 255, 'views/system/monitor/serve', 1, 1);
 
 --
 -- 转存表中的数据 `sys_config`
