@@ -1,6 +1,6 @@
 {
   "name": "sf-nest-admin",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "simple and efficient authority management system with separation of front and backends",
   "author": "hackycy",
   "private": true,
