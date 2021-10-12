@@ -48,7 +48,7 @@ export class SysServeService {
           };
         }),
       },
-      disks: diskinfo,
+      disk: diskinfo,
       memory: {
         total: meminfo.total,
         used: meminfo.used,

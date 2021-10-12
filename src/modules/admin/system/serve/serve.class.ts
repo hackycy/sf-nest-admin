@@ -85,7 +85,7 @@ export class ServeStatInfo {
   cpu?: Cpu;
 
   @ApiProperty({ description: '磁盘信息', type: Disk })
-  disks?: Disk;
+  disk?: Disk;
 
   @ApiProperty({ description: '内存信息', type: Memory })
   memory?: Memory;
