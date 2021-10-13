@@ -38,7 +38,6 @@ export class SysServeService {
         physicalCores: cpuinfo.physicalCores,
         model: cpuinfo.model,
         speed: cpuinfo.speed,
-        speedMax: cpuinfo.speedMax,
         rawCurrentLoad: currentLoadinfo.rawCurrentLoad,
         rawCurrentLoadIdle: currentLoadinfo.rawCurrentLoadIdle,
         coresLoad: currentLoadinfo.cpus.map((e) => {
@@ -51,8 +50,7 @@ export class SysServeService {
       disk: diskinfo,
       memory: {
         total: meminfo.total,
-        used: meminfo.used,
-        free: meminfo.free,
+        available: meminfo.available,
       },
     };
   }

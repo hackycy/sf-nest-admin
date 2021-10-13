@@ -39,9 +39,6 @@ export class Cpu {
   @ApiProperty({ description: '速度 in GHz e.g. 3.4' })
   speed?: number;
 
-  @ApiProperty({ description: '最大速度 in GHz 例如 3.9' })
-  speedMax?: number;
-
   @ApiProperty({ description: 'CPU资源消耗 原始滴答' })
   rawCurrentLoad?: number;
 
@@ -67,11 +64,8 @@ export class Memory {
   @ApiProperty({ description: 'total memory in bytes' })
   total?: number;
 
-  @ApiProperty({ description: 'not used in bytes' })
-  free?: number;
-
-  @ApiProperty({ description: 'used (incl. buffers/cache)' })
-  used?: number;
+  @ApiProperty({ description: '可用内存' })
+  available?: number;
 }
 
 /**
