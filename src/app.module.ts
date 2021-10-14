@@ -76,7 +76,7 @@ import { LOGGER_MODULE_OPTIONS } from './shared/logger/logger.constants';
     // custom module
     SharedModule,
     // mission module
-    MissionModule,
+    MissionModule.forRoot(),
     // application modules import
     AdminModule,
     // websocket module

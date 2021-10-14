@@ -17,26 +17,38 @@ export interface IConfig {
    * 管理员角色ID，一旦分配，该角色下分配的管理员都为超级管理员
    */
   rootRoleId?: number;
+  /**
+   * 用户鉴权Token密钥
+   */
   jwt?: JwtConfigOptions;
+  /**
+   * Mysql数据库配置
+   */
   database?: DataBaseConfigOptions;
+  /**
+   * Redis配置
+   */
   redis?: RedisConfigOptions;
+  /**
+   * 七牛云配置
+   */
   qiniu?: QiniuConfigOptions;
   /**
    * 应用级别日志配置
    */
   logger?: LoggerConfigOptions;
+  /**
+   * Swagger文档配置
+   */
+  swagger?: SwaggerConfigOptions;
 }
 
-/**
- * Jwt密钥配置
- */
+//--------- config interface ------------
+
 export interface JwtConfigOptions {
   secret: string;
 }
 
-/**
- * 七牛配置
- */
 export interface QiniuConfigOptions {
   accessKey?: string;
   secretKey?: string;
@@ -46,9 +58,6 @@ export interface QiniuConfigOptions {
   access?: string;
 }
 
-/**
- * redis 配置
- */
 export interface RedisConfigOptions {
   host?: string;
   port?: number | string;
@@ -56,9 +65,6 @@ export interface RedisConfigOptions {
   db?: number;
 }
 
-/**
- * MySQL 数据库配置
- */
 export interface DataBaseConfigOptions {
   type?: string;
   host?: string;
@@ -68,4 +74,12 @@ export interface DataBaseConfigOptions {
   database?: string;
   synchronize?: boolean;
   logging?: LoggerOptions;
+}
+
+export interface SwaggerConfigOptions {
+  enable?: boolean;
+  path?: string;
+  title?: string;
+  desc?: string;
+  version?: string;
 }
