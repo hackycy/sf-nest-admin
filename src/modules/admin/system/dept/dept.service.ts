@@ -28,7 +28,7 @@ export class SysDeptService {
    * 获取所有部门
    */
   async list(): Promise<SysDepartment[]> {
-    return await this.deptRepositoty.find();
+    return await this.deptRepositoty.find({ order: { orderNum: 'ASC' } );
   }
 
   /**
