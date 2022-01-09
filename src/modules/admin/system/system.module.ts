@@ -50,7 +50,6 @@ import { SysServeService } from './serve/serve.service';
       SysRoleMenu,
       SysRole,
       SysRoleDepartment,
-      SysUserRole,
       SysLoginLog,
       SysTask,
       SysTaskLog,
