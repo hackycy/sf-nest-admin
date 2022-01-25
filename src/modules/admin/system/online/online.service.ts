@@ -60,7 +60,7 @@ export class SysOnlineService {
   /**
    * 根据uid查找socketid
    */
-  async findSocketIdByUid(uid: number): Promise<RemoteSocket<unknown>> {
+  async findSocketIdByUid(uid: number): Promise<RemoteSocket<any, any>> {
     const onlineSockets = await this.adminWsGateWay.socketServer.fetchSockets();
     const socket = onlineSockets.find((socket) => {
       const token = socket.handshake.query?.token as string;
