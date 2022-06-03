@@ -21,4 +21,4 @@ EXPOSE 7001
 # websokcet set port
 EXPOSE 7002
 
-CMD ["npm", "run", "start:prod"]
+CMD ["yarn", "start:prod"]
