@@ -8,13 +8,13 @@ RUN echo 'Asia/Shanghai' > /etc/timezone
 # RUN npm set registry https://registry.npm.taobao.org
 # cache step
 COPY package.json /sf-nest-admin/package.json
-RUN npm install
+RUN yarn install
 # build
 COPY ./ /sf-nest-admin
-RUN npm run build
+RUN yarn build
 # clean dev dep
 RUN rm -rf node_modules && rm package-lock.json
-RUN npm install --production
+RUN yarn install --production
 
 # httpserver set port
 EXPOSE 7001
