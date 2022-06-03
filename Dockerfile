@@ -13,7 +13,7 @@ RUN yarn install
 COPY ./ /sf-nest-admin
 RUN yarn build
 # clean dev dep
-RUN rm -rf node_modules && rm package-lock.json
+RUN rm -rf node_modules
 RUN yarn install --production
 
 # httpserver set port
