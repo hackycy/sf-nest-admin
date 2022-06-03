@@ -41,7 +41,9 @@ export class SysMenuService {
     let menus: SysMenu[] = [];
     if (includes(roleIds, this.rootRoleId)) {
       // root find all
-      menus = await this.menuRepository.find();
+      menus = await this.menuRepository.find({
+        order: { id: 'ASC', orderNum: 'DESC' },
+      });
     } else {
       // [ 1, 2, 3 ] role find
       menus = await this.menuRepository
@@ -53,6 +55,7 @@ export class SysMenuService {
         )
         .andWhere('role_menu.role_id IN (:...roldIds)', { roldIds: roleIds })
         .orderBy('menu.order_num', 'DESC')
+        .orderBy('menu.id', 'ASC')
         .getMany();
     }
     return menus;
