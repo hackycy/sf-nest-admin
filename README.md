@@ -6,7 +6,7 @@
 
 - 使用文档：[https://blog.si-yee.com/sf-admin-cli/](https://blog.si-yee.com/sf-admin-cli/)
 - 演示站点：[http://opensource.admin.si-yee.com](http://opensource.admin.si-yee.com/)
-- **Vue3版演示地址：**[http://next.admin.si-yee.com](http://next.admin.si-yee.com/)
+- **Vue3版请移步：**[https://github.com/arklnk/ark-admin-nest](https://github.com/arklnk/ark-admin-nest)
 - Swagger Api文档：[http://opensource.admin.si-yee.com/api/doc/admin/swagger-api/static/index.html](http://opensource.admin.si-yee.com/api/doc/admin/swagger-api/static/index.html)
 
 演示环境账号密码：
